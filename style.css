@@ -11,7 +11,7 @@ body {
   min-height: 100vh;
 }
 
-/* TOPBAR IGUAL À IMAGEM */
+/* TOPBAR */
 .topbar {
   background: #ffffff;
   border-bottom: 1px solid #dbe3ef;
@@ -49,12 +49,9 @@ body {
   font-size: 1.05rem;
   font-weight: 900;
   color: #0f172a;
-  letter-spacing: 0.02em;
 }
 
-.brand-title span {
-  color: #f59e0b;
-}
+.brand-title span { color: #f59e0b; }
 
 .brand-sub {
   font-size: 0.62rem;
@@ -99,7 +96,7 @@ body {
 .main-wrapper {
   max-width: 1380px;
   margin: 22px auto;
-  padding: 0 20px 40px;
+  padding: 0 20px 44px;
 }
 
 .view-section {
@@ -112,7 +109,84 @@ body {
   display: flex;
 }
 
-/* HERO CARD & 5 CARDS COLORIDOS (PÁGINA INICIAL) */
+/* BANNERS AZUIS/ROXOS NO TOPO DAS SUBPÁGINAS (IGUAL ÀS IMAGENS 1 E 4) */
+.banner-topo {
+  border-radius: 16px;
+  padding: 24px 28px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.banner-blue { background: linear-gradient(90deg, #0056b3 0%, #003d82 100%); }
+.banner-purple { background: linear-gradient(90deg, #7e22ce 0%, #581c87 100%); }
+.banner-navy { background: linear-gradient(90deg, #004494 0%, #075985 100%); }
+
+.banner-icon {
+  width: 58px;
+  height: 58px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.banner-kicker {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  opacity: 0.9;
+}
+
+.banner-topo h2 {
+  font-size: 1.7rem;
+  font-weight: 900;
+  margin: 2px 0 4px;
+}
+
+.banner-topo p {
+  font-size: 0.9rem;
+  opacity: 0.92;
+}
+
+/* BREADCRUMB (Início > Minhas Aulas > ...) */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.breadcrumb a {
+  background: #e0e7ff;
+  color: #1e40af;
+  padding: 4px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.section-heading h3 {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.section-heading p {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* HERO CARD INICIAL */
 .hero-card {
   background: #ffffff;
   border: 2px solid #1e293b;
@@ -143,11 +217,33 @@ body {
   margin-top: 6px;
 }
 
+/* GRIDS DE CARDS VERTICAIS (5, 4, 3 E BANCAS) */
 .cards-5-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 18px;
   margin-bottom: 26px;
+}
+
+.cards-4-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.cards-3-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.bancas-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .portal-card {
@@ -156,7 +252,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 270px;
+  min-height: 255px;
   padding-top: 32px;
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
   transition: transform 0.2s ease;
@@ -167,19 +263,19 @@ body {
 }
 
 .portal-icon-badge {
-  width: 54px;
-  height: 54px;
+  width: 52px;
+  height: 52px;
   border-radius: 14px;
   position: absolute;
-  top: -18px;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.22);
 }
 
 .portal-body {
@@ -212,7 +308,7 @@ body {
 .portal-tag {
   background: #ffffff;
   color: #0f172a;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 800;
   padding: 5px 14px;
   border-radius: 20px;
@@ -220,7 +316,7 @@ body {
 }
 
 .portal-footer {
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   padding: 12px;
   border-radius: 0 0 14px 14px;
   text-align: center;
@@ -230,17 +326,17 @@ body {
   width: 100%;
   border: none;
   border-radius: 20px;
-  padding: 9px 16px;
+  padding: 9px 14px;
   color: #ffffff;
   font-weight: 800;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   cursor: pointer;
   transition: opacity 0.15s;
 }
 
 .btn-acessar:hover { opacity: 0.9; }
 
-/* Cores dos 5 Cards */
+/* CORES DOS CARDS */
 .card-blue { background: linear-gradient(180deg, #0056b3 0%, #003d82 100%); }
 .card-blue .portal-icon-badge, .card-blue .btn-acessar { background: #004494; }
 
@@ -270,7 +366,157 @@ body {
   color: #334155;
 }
 
-/* PAINÉIS INTERNOS (CONCURSOS, MINHAS AULAS, QUESTÕES, MATERIAIS) */
+/* =========================================================
+   BLOCOS DE CONTEÚDO COM OS 3 CARDS DE IMAGEM / PDF A4
+   (IGUAL ÀS IMAGENS 2 E 3: DEFINIÇÕES, EXERCÍCIOS, RESOLUÇÕES)
+========================================================= */
+.conteudos-bloco-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.bloco-assunto {
+  background: #ffffff;
+  border: 1px solid #dce3ec;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+}
+
+.bloco-assunto-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.bloco-assunto-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.bloco-subtitulo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 12px;
+}
+
+.tres-etapas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 14px;
+}
+
+.etapa-card {
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid transparent;
+}
+
+/* Cores suaves iguais às das Imagens 2 e 3 */
+.etapa-1 {
+  background: #edf4ff;
+  border-color: #cfe0fc;
+}
+
+.etapa-2 {
+  background: #eef6ff;
+  border-color: #d4e6fc;
+}
+
+.etapa-3 {
+  background: #f3ebff;
+  border-color: #e2d1fc;
+}
+
+.etapa-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.etapa-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+}
+
+.etapa-titulo {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+}
+
+.etapa-desc {
+  font-size: 0.78rem;
+  color: #475569;
+  margin-top: 3px;
+}
+
+.etapa-status {
+  font-size: 0.74rem;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.status-pronto { color: #15803d; }
+.status-aguardando { color: #64748b; }
+
+.etapa-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-etapa {
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-etapa-ativo-pdf { background: #1d4ed8; color: #ffffff; }
+.btn-etapa-ativo-pdf:hover { background: #1e40af; }
+
+.btn-etapa-ativo-vid { background: #7e22ce; color: #ffffff; }
+.btn-etapa-ativo-vid:hover { background: #6b21a8; }
+
+.btn-etapa-aguardando {
+  background: #94a3b8;
+  color: #ffffff;
+  cursor: default;
+}
+
+/* PAINÉIS GERAIS & KPIs */
 .panel {
   background: #ffffff;
   border: 1px solid #dce3ec;
@@ -305,7 +551,28 @@ body {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  min-width: 280px;
+}
+
+.btn-voltar {
+  background: #e2e8f0;
+  color: #0f172a;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-voltar:hover { background: #cbd5e1; }
+
+select, input[type="text"] {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  color: #0f172a;
+  background-color: #ffffff;
 }
 
 .concurso-selector-box {
@@ -321,16 +588,6 @@ body {
   color: #475569;
 }
 
-select, input[type="text"], input[type="number"] {
-  padding: 8px 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  color: #0f172a;
-  background-color: #ffffff;
-}
-
-/* KPIs */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
@@ -364,22 +621,16 @@ select, input[type="text"], input[type="number"] {
   gap: 14px;
 }
 
-.two-col-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 14px;
-}
-
 .sub-box {
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 14px;
   background: #fafbfc;
 }
 
 .sub-box h3 {
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.92rem;
+  font-weight: 800;
   color: #1e293b;
   margin-bottom: 10px;
 }
@@ -413,162 +664,20 @@ select, input[type="text"], input[type="number"] {
   font-weight: 600;
 }
 
-.empty-msg {
-  font-size: 0.82rem;
-  color: #64748b;
-}
-
-.filter-bar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 16px;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.filter-group label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #475569;
-}
-
-/* CARDS DE AULAS POR PARTES & LINKS ONEDRIVE */
-.aulas-progresso-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.aula-box {
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 16px;
-  background: #ffffff;
-}
-
-.aula-box-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.aula-meta {
-  font-size: 0.74rem;
-  color: #1d4ed8;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.aula-title {
-  font-size: 1.02rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin-top: 2px;
-}
-
-.questoes-box {
-  display: flex;
+.chk-concluido {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 6px 10px;
-  border-radius: 6px;
+  gap: 5px;
   font-size: 0.78rem;
-}
-
-.questoes-box input {
-  width: 60px;
-  padding: 4px 6px;
-  font-size: 0.8rem;
-}
-
-.partes-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 10px;
-}
-
-.parte-item {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 12px;
-  background: #f8fafc;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.parte-item.concluida {
-  background: #f0fdf4;
-  border-color: #86efac;
-}
-
-.parte-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-.parte-titulo {
-  font-size: 0.85rem;
   font-weight: 700;
-  color: #0f172a;
-}
-
-.chk-label {
-  font-size: 0.78rem;
-  font-weight: 600;
   color: #15803d;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  background: #dcfce7;
+  padding: 4px 10px;
+  border-radius: 20px;
   cursor: pointer;
 }
 
-.midia-iframe {
-  width: 100%;
-  height: 190px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  background: #000;
+.empty-msg {
+  font-size: 0.84rem;
+  color: #64748b;
 }
-
-.links-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
-}
-
-.btn-link {
-  display: inline-block;
-  padding: 6px 11px;
-  border-radius: 6px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-decoration: none;
-  color: #ffffff;
-}
-
-.btn-pdf { background: #dc2626; }
-.btn-pdf:hover { background: #b91c1c; }
-
-.btn-video { background: #2563eb; }
-.btn-video:hover { background: #1d4ed8; }
-
-.btn-img { background: #0d9488; }
-.btn-img:hover { background: #0f766e; }

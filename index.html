@@ -1,13 +1,509 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MÁRCIO EDUCA 360 — Meus Estudos PRO</title><link rel="stylesheet" href="./style.css"></head><body>
-<header><div class="brand"><strong>MÁRCIO EDUCA <em>360</em></strong><small>MEUS ESTUDOS · CONCURSOS PRO · NOTEBOOK FULL HD</small></div><div class="head-right"><span class="saved" id="saved">● Pronto para estudar</span><button class="btn neutral" id="help-btn">❔ Ajuda</button><button class="btn slate" id="backup-btn">⬇ Backup / Importar</button></div></header>
-<main>
-<section class="overview"><div class="section-top"><div><h1>Central de Concursos</h1><p>Cadastre uma vez. Estude, atualize e acompanhe tudo na mesma tela.</p></div><div class="select-wrap"><label for="active-contest">CONCURSO SELECIONADO</label><select id="active-contest"><option value="">Selecione um concurso</option></select></div></div><div id="stats" class="stats"></div></section>
-<nav class="actions" aria-label="Ações rápidas"><button class="btn blue" data-action="contest">＋ Concurso</button><button class="btn indigo" data-action="role">＋ Cargo</button><button class="btn violet" data-action="board">＋ Banca</button><button class="btn purple" data-action="subject">＋ Disciplina</button><button class="btn cyan" data-action="topic">＋ Conteúdo</button><button class="btn indigo" data-action="link">↳ Vincular conteúdo</button><button class="btn green" data-action="session">＋ Questões rápidas</button><button class="btn orange" data-action="review">📅 Revisar</button><button class="btn slate" data-action="library">📚 Biblioteca</button></nav>
-<div class="context" id="context"></div>
-<details class="panel" open id="control-panel"><summary><span>📊 Controle geral de estudos</span><span id="rows-count" class="count"></span></summary><div class="panel-body"><div class="grid-tools"><input id="search" placeholder="⌕ Pesquisar disciplina, conteúdo, plataforma, aula..."><select id="subject-filter"><option value="">Todas as disciplinas</option></select><select id="status-filter"><option value="">Todas as situações</option><option value="pending">Teoria pendente</option><option value="review">Revisão vencida</option><option value="errors">Com erros</option></select><button class="btn indigo" data-action="link">↳ Vincular</button></div><div class="table-holder"><table class="study-table"><colgroup><col style="width:16%"><col style="width:11%"><col style="width:12%"><col style="width:11%"><col style="width:11%"><col style="width:11%"><col style="width:12%"><col style="width:10%"><col style="width:6%"></colgroup><thead><tr><th>Disciplina / Conteúdo</th><th>Plataforma / Aula</th><th class="th-purple">🟣 Teoria</th><th class="th-blue">🔵 Fixação</th><th class="th-green">🟢 Diversas</th><th class="th-violet">🟪 Banca</th><th class="th-orange">🟠 Revisão</th><th>Resumo / Caderno de Erros</th><th>Ações</th></tr></thead><tbody id="study-rows"></tbody></table></div><div class="footnote">Clique nas partes para atualizar · Conclusão e revisões (+1, +7, +15 e +30 dias) automáticas · Dados salvos neste navegador</div></div></details>
-<div class="sections"><details class="panel" id="sessions-panel"><summary><span>📝 Histórico de sessões de questões</span><span id="session-count" class="count"></span></summary><div class="panel-body" id="session-list"></div></details><details class="panel" id="reviews-panel"><summary><span>📅 Revisões programadas</span><span id="review-count" class="count"></span></summary><div class="panel-body" id="review-list"></div></details><details class="panel" id="errors-panel"><summary><span>🎯 Caderno de erros</span><span id="error-count" class="count"></span></summary><div class="panel-body"><div class="error-toolbar"><label>Visualização <select id="error-scope"><option value="all">Todos os concursos e cargos</option><option value="current">Concurso e cargo selecionados</option></select></label><button class="btn red" data-action="error">＋ Registrar erro</button><button class="btn neutral" id="clear-error-filter" type="button" hidden>Mostrar todos os erros</button><span id="error-filter-note" class="muted"></span></div><div id="error-list"></div></div></details><details class="panel" id="library-panel"><summary><span>📚 Biblioteca permanente de conhecimentos</span><span id="library-count" class="count"></span></summary><div class="panel-body" id="library-list"></div></details><details class="panel" id="contests-panel"><summary><span>🗂️ Gerenciar concursos, cargos e bancas</span><span id="contest-count" class="count"></span></summary><div class="panel-body" id="contest-list"></div></details></div>
-</main>
-<dialog id="modal"><form id="modal-form"><div class="modal-head"><h2 id="modal-title"></h2><button type="button" class="icon-btn" id="close-modal" aria-label="Fechar">✕</button></div><div id="modal-fields" class="form-fields"></div><div class="modal-foot"><button type="button" class="btn neutral" id="cancel-modal">Cancelar</button><button type="submit" class="btn blue">✓ Salvar</button></div></form></dialog>
-<dialog id="backup-modal"><div class="modal-head"><h2>⬇ Segurança e backup</h2><button type="button" class="icon-btn" data-close="backup-modal">✕</button></div><p>Os dados ficam armazenados neste navegador. Exporte um backup regularmente. Para trocar de notebook ou navegador, importe o arquivo JSON.</p><div class="backup-actions"><button class="btn blue" id="export-json">⬇ Exportar backup completo</button><label class="btn slate file-label">⬆ Importar backup JSON<input type="file" id="import-json" accept=".json,application/json" hidden></label><button class="btn green" id="export-csv">⬇ Exportar planilha CSV</button></div><p class="muted">A importação substitui os dados desta versão após confirmação. O ZIP anterior permanece separado e não é alterado.</p></dialog>
-<dialog id="help-modal"><div class="modal-head"><h2>❔ Guia rápido</h2><button type="button" class="icon-btn" data-close="help-modal">✕</button></div><ol><li>Cadastre um <b>concurso</b>, sua <b>banca</b> e os <b>cargos</b> desejados.</li><li>Selecione o concurso e o cargo na faixa azul de contexto.</li><li>Cadastre disciplinas e conteúdos na <b>Biblioteca</b> ou pelos botões coloridos.</li><li>Vincule os conteúdos ao cargo e edite teoria e plataforma diretamente na tabela; a conclusão e as revisões são automáticas.</li><li>Registre questões pelo botão <b>＋</b> azul (fixação), verde (diversas) ou violeta (banca).</li><li>Use <b>Questões detalhadas</b> para marcar alternativa e gabarito; os erros vão automaticamente ao caderno.</li><li>Arquive concursos concluídos; os conhecimentos da biblioteca permanecem.</li><li>Use <b>Backup / Importar</b> para proteger os dados.</li></ol></dialog>
-<dialog id="detailed-modal" class="detailed-modal"><form id="detailed-form"><div class="modal-head"><h2>🎯 Registro detalhado de questões</h2><button type="button" class="icon-btn" id="detailed-close">✕</button></div><p class="muted">Marque suas respostas e salve. O gabarito pode ser informado depois. Somente questões respondidas incorretamente e com gabarito informado entram no Caderno de Erros.</p><div class="form-fields"><label>Conteúdo<select id="detail-link" required></select></label><label>Modalidade<select id="detail-type"><option value="fixacao">🔵 Fixação</option><option value="diversas">🟢 Diversas</option><option value="banca">🟣 Banca do concurso</option></select></label><label>Data<input id="detail-date" type="date" required></label><label>Banca / Prova (opcional)<input id="detail-board" placeholder="Ex.: CEBRASPE — 2026"></label><label>Formato da sessão antiga<select id="detail-format"><option value="ABCDE">Alternativas A–E</option><option value="ABCD">Alternativas A–D</option><option value="CE">Certo / Errado</option><option value="OPEN">Aberta / Discursiva</option></select></label><label>Quantidade de questões<input id="detail-count" type="number" min="1" max="100" value="20" required></label></div><div class="detail-table-wrap"><table class="detail-table"><thead><tr><th>Nº / Referência</th><th>Marquei</th><th>Gabarito</th><th>Conteúdo da questão / Imagens</th><th>Resultado</th></tr></thead><tbody id="detail-rows"></tbody></table></div><div id="detail-summary" class="detail-summary"></div><div class="modal-foot"><button type="button" class="btn neutral" id="detailed-cancel">Cancelar</button><button type="submit" class="btn green">✓ Salvar respostas / gabarito</button></div></form></dialog><dialog id="open-question-modal" class="open-question-modal"><div class="attach-top"><strong id="open-question-title">✍ Questão discursiva</strong><button type="button" id="open-question-close">✕ Fechar</button></div><div class="open-question-body"><label>Enunciado / pergunta da questão<textarea id="open-question-statement" rows="4" placeholder="Cole aqui o enunciado completo da questão..."></textarea></label><label>Alternativas (se houver)<textarea id="open-question-alternatives" rows="3" placeholder="Digite as alternativas, se aplicável..."></textarea></label><label>Minha resposta<textarea id="open-question-marked" rows="5" placeholder="Digite sua resposta..."></textarea></label><label>Gabarito / resposta esperada<textarea id="open-question-answer" rows="5" placeholder="Pode preencher depois..."></textarea></label><label>Resolução / explicação<textarea id="open-question-explanation" rows="3" placeholder="Opcional..."></textarea></label><p id="paste-feedback" role="status" style="font-size:12px;color:#345;min-height:16px">Cole uma captura diretamente no campo com Ctrl+V, ou use o editor para anexos e links.</p><div class="open-media-actions" id="open-media-actions"><strong>Texto, imagens ou links por campo:</strong><div class="field-buttons"></div></div><label>Motivo do erro (opcional)<textarea id="open-question-reason" rows="2" placeholder="O que preciso revisar?"></textarea></label><label>Avaliação manual<select id="open-question-grade"><option value="">Aguardando avaliação</option><option value="correct">Correta</option><option value="partial">Parcialmente correta</option><option value="wrong">❌ Errada — enviar ao Caderno de Erros</option></select></label><p class="muted">Para questões discursivas, selecione «Errada» após comparar sua resposta com o gabarito. A comparação de textos não é automática. Ao salvar a sessão, a questão entrará no Caderno de Erros.</p><button type="button" id="open-question-save" class="btn green">✓ Aplicar à questão</button></div></dialog><dialog id="field-editor-modal" class="open-question-modal"><div class="attach-top"><strong id="field-editor-title">Editor de conteúdo</strong><button type="button" id="field-editor-close">✕ Fechar</button></div><div class="open-question-body"><label>Digite ou cole o texto<textarea id="field-editor-text" rows="6" placeholder="Digite o texto, ou utilize as imagens e links abaixo..."></textarea></label><div class="attach-controls"><button type="button" id="field-editor-files">📁 Anexar imagens</button><input id="field-editor-file-input" type="file" accept="image/*" multiple hidden><input id="field-editor-url" type="url" placeholder="https://... imagem ou documento"><button type="button" id="field-editor-add-url">🔗 Adicionar link</button></div><div id="field-editor-paste" class="paste-area" tabindex="0">📋 Clique aqui e pressione Ctrl + V para colar uma ou mais imagens</div><div id="field-editor-images" class="attach-list"></div><small>É possível misturar texto, várias imagens e links, inclusive páginas diferentes. Use ↑ e ↓ para ordenar.</small><button type="button" class="btn green" id="field-editor-save">✓ Aplicar à questão</button></div></dialog><dialog id="image-attachment-modal" aria-label="Imagens da questão"><div class="attach-top"><strong id="attach-title">📎 Imagens da questão</strong><button type="button" id="attach-close">✕ Fechar</button></div><div class="attach-body"><div class="attach-controls"><button type="button" id="attach-files">📁 Anexar imagens</button><input id="attach-file-input" type="file" accept="image/*" multiple hidden><input type="url" id="attach-link" placeholder="https://... link da imagem"><button type="button" id="attach-add-link">🔗 Adicionar link</button></div><div id="attach-paste" class="paste-area" tabindex="0">📋 Clique aqui e pressione <b>Ctrl + V</b> para colar uma ou várias imagens copiadas</div><div id="attach-list" class="attach-list"></div><small>Várias imagens por questão. Use ↑ e ↓ para ordenar páginas. Os arquivos são guardados neste navegador (IndexedDB); links externos dependem de acesso à internet. O backup JSON comum do site não inclui os arquivos de imagem.</small></div></dialog><script src="./script.js" defer></script></body></html>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="MÁRCIO EDUCA 360 — Sistema de controle de estudos para concursos públicos."
+  >
+
+  <title>MÁRCIO EDUCA 360 | CONCURSOS PRO</title>
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+  <!-- =====================================
+       CABEÇALHO PRINCIPAL
+  ====================================== -->
+
+  <header class="topo">
+
+    <div class="marca">
+      <h1>
+        MÁRCIO EDUCA <span>360</span>
+      </h1>
+
+      <p>
+        MEUS ESTUDOS · CONCURSOS PRO
+      </p>
+    </div>
+
+    <div class="topo-acoes">
+
+      <span
+        id="situacao"
+        role="status"
+        aria-live="polite"
+      >
+        ● Sistema iniciado
+      </span>
+
+      <button
+        type="button"
+        id="btn-backup"
+        class="btn-topo"
+      >
+        Exportar backup
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- =====================================
+       CONTEÚDO PRINCIPAL
+  ====================================== -->
+
+  <main class="container">
+
+    <!-- ===================================
+         ETAPA 01 — CENTRAL DE CONCURSOS
+    ==================================== -->
+
+    <section
+      class="painel"
+      id="central"
+    >
+
+      <div class="cabecalho-painel">
+
+        <div>
+          <h2>Central de Concursos</h2>
+
+          <p>
+            Acompanhamento geral dos estudos
+            para concursos públicos.
+          </p>
+        </div>
+
+        <label class="seletor-concurso">
+
+          CONCURSO SELECIONADO
+
+          <select id="active-contest">
+
+            <option value="">
+              Selecione um concurso
+            </option>
+
+          </select>
+
+        </label>
+
+      </div>
+
+      <div
+        id="stats"
+        class="indicadores"
+        aria-live="polite"
+      ></div>
+
+    </section>
+
+    <!-- ===================================
+         ETAPA 02 — GERENCIAR CONCURSOS
+    ==================================== -->
+
+    <section
+      class="painel"
+      id="gerenciamento"
+    >
+
+      <div class="cabecalho-painel">
+
+        <div>
+          <h2>Gerenciar Concursos</h2>
+
+          <p>
+            Cadastro e gerenciamento de
+            bancas, concursos e cargos.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="acoes-cadastro">
+
+        <button
+          type="button"
+          class="btn btn-azul"
+          data-cadastro="bancas"
+        >
+          + Banca
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-roxo"
+          data-cadastro="concursos"
+        >
+          + Concurso
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-verde"
+          data-cadastro="cargos"
+        >
+          + Cargo
+        </button>
+
+      </div>
+
+      <div class="listas-cadastro">
+
+        <div class="coluna-cadastro">
+
+          <h3>Bancas</h3>
+
+          <div id="lista-bancas"></div>
+
+        </div>
+
+        <div class="coluna-cadastro">
+
+          <h3>Concursos</h3>
+
+          <div id="lista-concursos"></div>
+
+        </div>
+
+        <div class="coluna-cadastro">
+
+          <h3>Cargos</h3>
+
+          <div id="lista-cargos"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================
+         ETAPA 03 — BIBLIOTECA PERMANENTE
+    ==================================== -->
+
+    <section
+      class="painel"
+      id="biblioteca"
+    >
+
+      <div class="cabecalho-painel">
+
+        <div>
+          <h2>Biblioteca Permanente</h2>
+
+          <p>
+            Organize disciplinas e conteúdos
+            para utilização nos estudos.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="acoes-cadastro">
+
+        <button
+          type="button"
+          class="btn btn-azul"
+          data-cadastro="disciplinas"
+        >
+          + Disciplina
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-roxo"
+          data-cadastro="conteudos"
+        >
+          + Conteúdo
+        </button>
+
+      </div>
+
+      <div class="listas-cadastro biblioteca-grid">
+
+        <div class="coluna-cadastro">
+
+          <h3>Disciplinas</h3>
+
+          <div id="lista-disciplinas"></div>
+
+        </div>
+
+        <div class="coluna-cadastro">
+
+          <h3>Conteúdos</h3>
+
+          <div id="lista-conteudos"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================
+         ETAPA 04 — CONTEÚDOS DOS CARGOS
+    ==================================== -->
+
+    <section
+      class="painel"
+      id="vinculacoes"
+    >
+
+      <div class="cabecalho-painel">
+
+        <div>
+          <h2>Conteúdos dos Cargos</h2>
+
+          <p>
+            Vincule conteúdos da Biblioteca
+            Permanente aos cargos dos concursos.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="acoes-cadastro">
+
+        <button
+          type="button"
+          class="btn btn-azul"
+          id="btn-vincular-conteudo"
+        >
+          + Vincular Conteúdo
+        </button>
+
+      </div>
+
+      <div
+        id="lista-vinculos"
+        class="lista-vinculos"
+      ></div>
+
+    </section>
+
+    <!-- ===================================
+         ETAPA 05 — CONTROLE GERAL
+    ==================================== -->
+
+    <section
+      class="painel"
+      id="controle-geral"
+    >
+
+      <div class="cabecalho-painel">
+
+        <div>
+          <h2>Controle Geral de Estudos</h2>
+
+          <p>
+            Gerencie plataformas, aulas
+            e o progresso das partes de teoria.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="acoes-cadastro">
+
+        <button
+          type="button"
+          class="btn btn-roxo"
+          id="btn-plataforma"
+        >
+          + Plataforma
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-azul"
+          id="btn-aula"
+        >
+          + Aula
+        </button>
+
+      </div>
+
+      <!-- FILTROS DO CONTROLE GERAL -->
+
+      <div class="filtros-controle">
+
+        <label>
+
+          Concurso
+
+          <select id="filtro-concurso">
+            <option value="">
+              Todos os concursos
+            </option>
+          </select>
+
+        </label>
+
+        <label>
+
+          Cargo
+
+          <select id="filtro-cargo">
+            <option value="">
+              Todos os cargos
+            </option>
+          </select>
+
+        </label>
+
+        <label>
+
+          Plataforma
+
+          <select id="filtro-plataforma">
+            <option value="">
+              Todas as plataformas
+            </option>
+          </select>
+
+        </label>
+
+        <label>
+
+          Pesquisar aula
+
+          <input
+            type="search"
+            id="pesquisa-aulas"
+            placeholder="Pesquisar conteúdo ou aula..."
+            autocomplete="off"
+          >
+
+        </label>
+
+      </div>
+
+      <!-- CADASTROS DO CONTROLE GERAL -->
+
+      <div class="listas-cadastro biblioteca-grid">
+
+        <div class="coluna-cadastro">
+
+          <h3>Plataformas</h3>
+
+          <div id="lista-plataformas"></div>
+
+        </div>
+
+        <div class="coluna-cadastro">
+
+          <h3>Aulas cadastradas</h3>
+
+          <div id="lista-aulas"></div>
+
+        </div>
+
+      </div>
+
+      <!-- ACOMPANHAMENTO DO PROGRESSO -->
+
+      <div class="secao-progresso">
+
+        <div class="cabecalho-painel">
+
+          <div>
+            <h3>Progresso das Aulas</h3>
+
+            <p>
+              Acompanhe as partes concluídas
+              de cada aula.
+            </p>
+          </div>
+
+        </div>
+
+        <div
+          id="progresso-aulas"
+          class="progresso-aulas"
+        ></div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =====================================
+       MODAL UNIVERSAL DE CADASTRO
+  ====================================== -->
+
+  <dialog id="modal-cadastro">
+
+    <form id="form-cadastro">
+
+      <h2 id="titulo-modal">
+        Cadastro
+      </h2>
+
+      <div id="campos-modal"></div>
+
+      <div class="acoes-modal">
+
+        <button
+          type="button"
+          id="cancelar-modal"
+          class="btn btn-cinza"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-azul"
+        >
+          Salvar
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- =====================================
+       RODAPÉ
+  ====================================== -->
+
+  <footer class="rodape">
+
+    <p>
+      MÁRCIO EDUCA 360 — CONCURSOS PRO
+    </p>
+
+    <small>
+      Ambiente pessoal de controle de estudos
+    </small>
+
+  </footer>
+
+  <!-- =====================================
+       ARQUIVOS JAVASCRIPT
+       A ORDEM DEVE SER MANTIDA
+  ====================================== -->
+
+  <script src="./dados.js" defer></script>
+
+  <script src="./script.js" defer></script>
+
+</body>
+
+</html>

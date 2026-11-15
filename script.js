@@ -1,344 +1,1779 @@
 
-'use strict';
-(()=>{
-const $=s=>document.querySelector(s), esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const KEY='marcio360-concursos-pro-v1';const blank=()=>({contests:[],roles:[],boards:[],subjects:[],topics:[],links:[],sessions:[],errors:[],revisions:[],selectedContest:'',selectedRole:''});
-let db;try{db=JSON.parse(localStorage.getItem(KEY))||blank()}catch{db=blank()};for(const k of Object.keys(blank()))if(!(k in db))db[k]=blank()[k];for(const k of ['contests','roles','boards','subjects','topics','links','sessions','errors','revisions'])if(!Array.isArray(db[k]))db[k]=[];
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8), today=()=>new Date().toLocaleDateString('en-CA'), n=x=>Math.max(0,Number(x)||0), pct=(a,b)=>b?Math.round(a/b*100):0;
-const REVIEW_DAYS=[1,7,15,30];
-const addDays=(date,days)=>{const [y,m,d]=date.split('-').map(Number);const x=new Date(y,m-1,d+days);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,'0'),String(x.getDate()).padStart(2,'0')].join('-')};
-function syncCompletion(l,previousComplete=false){const complete=n(l.parts)>0&&n(l.done)>=n(l.parts);if(complete&&!l.completedAt){l.completedAt=today();l.reviewStep=0;l.nextReview=addDays(l.completedAt,REVIEW_DAYS[0]);}else if(!complete&&previousComplete){l.completedAt='';l.nextReview='';l.reviewStep=0;}else if(complete&&l.completedAt&&l.reviewStep<REVIEW_DAYS.length&&!l.nextReview){l.nextReview=addDays(l.completedAt,REVIEW_DAYS[l.reviewStep]||1)}}
-const contest=()=>db.contests.find(c=>c.id===db.selectedContest),role=()=>db.roles.find(r=>r.id===db.selectedRole),topic=id=>db.topics.find(t=>t.id===id),subject=id=>db.subjects.find(s=>s.id===id),board=id=>db.boards.find(b=>b.id===id);
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(db));$('#saved').textContent='✓ Salvo às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});render()}catch(e){alert('Não foi possível salvar. Exporte um backup e verifique o espaço do navegador. '+e.message)}};
-const val=(id)=>$('#'+id)?.value||'';const label=(s)=>esc(s||'—');
-function activeLinks(){return db.links.filter(l=>l.contestId===db.selectedContest&&l.roleId===db.selectedRole)}
-function activeSessions(){return db.sessions.filter(s=>s.contestId===db.selectedContest&&s.roleId===db.selectedRole)}
-function sums(linkId,type){const a=activeSessions().filter(s=>s.linkId===linkId&&s.type===type);return [a.reduce((v,s)=>v+n(s.total),0),a.reduce((v,s)=>v+n(s.correct),0)]}
-function updateSelect(el,items,chosen,empty){el.innerHTML='<option value="">'+empty+'</option>'+items.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');el.value=items.some(x=>x.id===chosen)?chosen:''}
-function render(){
-const active=db.contests.filter(c=>c.status!=='archived');if(db.selectedContest&&!active.some(c=>c.id===db.selectedContest)){db.selectedContest='';db.selectedRole=''}
-updateSelect($('#active-contest'),active,db.selectedContest,'Selecione um concurso');const roles=db.roles.filter(r=>r.contestId===db.selectedContest);if(!roles.some(r=>r.id===db.selectedRole))db.selectedRole='';
-$('#context').innerHTML=`<b>🎯 Preparação:</b> ${contest()?`<strong>${esc(contest().name)}</strong> <span>· Banca: ${label(board(contest().boardId)?.name)}</span> <label for="active-role">Cargo:</label><select id="active-role"><option value="">Selecione o cargo</option>${roles.map(r=>`<option value="${esc(r.id)}" ${r.id===db.selectedRole?'selected':''}>${esc(r.name)}</option>`).join('')}</select>`:'<span>Cadastre ou selecione um concurso para começar.</span>'}<span class="muted">${role()?'Cargo ativo: '+esc(role().name):''}</span>`;
-$('#active-role')?.addEventListener('change',e=>{db.selectedRole=e.target.value;save()});
-const links=activeLinks(),sessions=activeSessions(),q=sessions.reduce((v,s)=>v+n(s.total),0),a=sessions.reduce((v,s)=>v+n(s.correct),0),errors=db.errors.filter(e=>e.contestId===db.selectedContest&&e.roleId===db.selectedRole&&e.status!=='resolved');
-const stats=[['Concursos ativos',active.length],['Cargos',db.roles.filter(r=>r.contestId===db.selectedContest).length],['Conteúdos',links.length],['Teoria concluída',links.filter(l=>n(l.parts)>0&&n(l.done)>=n(l.parts)).length],['Questões',q],['Acertos',a],['Aproveitamento',pct(a,q)+'%']];$('#stats').innerHTML=stats.map(([name,num])=>`<div class="stat"><strong>${num}</strong><small>${name}</small></div>`).join('');
-const subIds=[...new Set(links.map(l=>topic(l.topicId)?.subjectId).filter(Boolean))];const sf=$('#subject-filter'),old=sf.value;sf.innerHTML='<option value="">Todas as disciplinas</option>'+subIds.map(id=>`<option value="${esc(id)}">${esc(subject(id)?.name)}</option>`).join('');sf.value=subIds.includes(old)?old:'';
-const search=val('search').toLocaleLowerCase('pt-BR'),status=val('status-filter');const filtered=links.filter(l=>{const t=topic(l.topicId),s=subject(t?.subjectId);return (!sf.value||t?.subjectId===sf.value)&&(!search||[s?.name,t?.name,l.platform,l.lesson].join(' ').toLocaleLowerCase('pt-BR').includes(search))&&(!status||status==='pending'&&n(l.done)<n(l.parts)||status==='review'&&l.nextReview&&l.nextReview<today()||status==='errors'&&errors.some(e=>e.linkId===l.id))});
-$('#rows-count').textContent=filtered.length+' conteúdos';$('#study-rows').innerHTML=filtered.length?filtered.map(l=>{const t=topic(l.topicId),s=subject(t?.subjectId),[qf,af]=sums(l.id,'fixacao'),[qd,ad]=sums(l.id,'diversas'),[qb,ab]=sums(l.id,'banca'),progress=pct(n(l.done),n(l.parts));return `<tr data-link="${esc(l.id)}"><td><span class="name">${label(t?.name)}</span><span class="sub">${label(s?.name)}</span></td><td><input data-edit="platform" value="${esc(l.platform)}" title="Plataforma" placeholder="Plataforma"><input data-edit="lesson" value="${esc(l.lesson)}" title="Aula" placeholder="Aula"></td><td><div class="pair"><input data-edit="done" type="number" min="0" value="${n(l.done)}" title="Partes concluídas"><span>/</span><input data-edit="parts" type="number" min="0" value="${n(l.parts)}" title="Total de partes"></div><span class="pill ${progress===100&&n(l.parts)?'good':'warn'}">${n(l.parts)?progress+'%':'Não iniciada'}</span></td><td><div class="cell-actions"><button class="mini blue" data-session="${esc(l.id)}" data-type="fixacao" title="Registrar questões de fixação">＋</button><b>${qf} Q / ${af} A</b></div><span class="pill ${qf&&pct(af,qf)>=80?'good':'warn'}">${qf?pct(af,qf)+'%':'—'}</span></td><td><div class="cell-actions"><button class="mini green" data-session="${esc(l.id)}" data-type="diversas" title="Registrar questões diversas">＋</button><b>${qd} Q / ${ad} A</b></div><span class="pill ${qd&&pct(ad,qd)>=80?'good':'warn'}">${qd?pct(ad,qd)+'%':'—'}</span></td><td><div class="cell-actions"><button class="mini violet" data-session="${esc(l.id)}" data-type="banca" title="Registrar questões da banca">＋</button><b>${qb} Q / ${ab} A</b></div><span class="pill ${qb&&pct(ab,qb)>=80?'good':'warn'}">${qb?pct(ab,qb)+'%':'—'}</span></td><td><span class="pill ${l.nextReview&&l.nextReview<=today()?'warn':'good'}">${l.nextReview?'📅 '+esc(l.nextReview):l.completedAt?'✓ Ciclo concluído':'Aguardando conclusão'}</span><div class="tiny">${l.completedAt?'Concluída: '+esc(l.completedAt):'Aula em andamento'}</div></td><td><div class="material-links"><div class="material-line"><span>📄 Resumo</span><div class="material-actions"><button class="mini blue" type="button" data-material="attach" data-kind="summary" data-link="${esc(l.id)}" title="Anexar PDF, imagem ou link">📎 Anexar</button><button class="mini green" type="button" data-material="open" data-kind="summary" data-link="${esc(l.id)}" title="Abrir material">Abrir</button><button class="mini red" type="button" data-material="delete" data-kind="summary" data-link="${esc(l.id)}" title="Excluir somente o material">✕ Excluir</button></div></div><div class="material-line"><span>📕 Caderno de erros</span><div class="material-actions"><button class="mini blue" type="button" data-material="attach" data-kind="errors" data-link="${esc(l.id)}" title="Anexar PDF, imagem ou link">📎 Anexar</button><button class="mini green" type="button" data-material="open" data-kind="errors" data-link="${esc(l.id)}" title="Abrir caderno e seus registros">Abrir (${db.errors.filter(e=>e.linkId===l.id).length})</button><button class="mini red" type="button" data-material="delete" data-kind="errors" data-link="${esc(l.id)}" title="Excluir somente o material anexado, sem apagar questões">✕ Excluir</button></div></div></div></td><td><div class="cell-actions"><button class="mini" data-action="edit-link" data-link="${esc(l.id)}" title="Editar vínculo">✎</button>${l.completedAt?`<button class="mini orange" data-action="reopen-lesson" data-link="${esc(l.id)}" title="Reabrir aula">↶</button>`:''}<button class="mini red" data-action="unlink" data-link="${esc(l.id)}" title="Remover do cargo">✕</button></div></td></tr>`}).join(''):`<tr><td colspan="9"><div class="empty">${!contest()?'Selecione ou cadastre um concurso.':!role()?'Selecione ou cadastre um cargo.':'Nenhum conteúdo vinculado. Clique em ＋ Conteúdo para começar.'}</div></td></tr>`;
-$('#session-count').textContent=sessions.length+' sessões';$('#session-list').innerHTML=table(['Data','Tipo','Disciplina / Conteúdo','Banca','Questões','Acertos','%','Ações'],sessions.slice().reverse().map(s=>{const t=topic(db.links.find(l=>l.id===s.linkId)?.topicId);return [s.date,s.type==='banca'?'Banca':s.type==='fixacao'?'Fixação':'Diversas',subject(t?.subjectId)?.name+' · '+(t?.name||''),s.boardName||'—',s.total,s.correct,s.questions?.length&&s.questions.some(q=>!q.answer)?'Pendente':pct(s.correct,s.total)+'%',`<button class="mini blue" data-action="view-session" data-id="${esc(s.id)}" title="Ver questões">${s.questions?.length?'✎ Respostas / Gabarito':'—'}</button> <button class="mini" data-action="edit-session" data-id="${esc(s.id)}" ${s.questions?.length?'disabled title="Edite as respostas pelo botão Respostas / Gabarito"':''}>✎</button> <button class="mini red" data-action="delete-session" data-id="${esc(s.id)}">✕</button>`]}));
-const due=links.filter(l=>l.nextReview);$('#review-count').textContent=due.filter(l=>l.nextReview<=today()).length+' pendentes';$('#review-list').innerHTML=table(['Disciplina','Conteúdo','Próxima revisão','Situação','Ação'],due.sort((a,b)=>a.nextReview.localeCompare(b.nextReview)).map(l=>{const t=topic(l.topicId);return [subject(t?.subjectId)?.name,t?.name,l.nextReview,l.nextReview<today()?'🔴 Vencida':l.nextReview===today()?'🟠 Hoje':'Programada',`<button class="mini orange" data-action="review-done" data-link="${esc(l.id)}">✓ Revisado</button>`]}));
-$('#review-list').innerHTML += '<h3>Histórico de revisões realizadas</h3>'+table(['Data','Conteúdo','Etapa','Programada para'],db.revisions.filter(r=>r.contestId===db.selectedContest&&r.roleId===db.selectedRole).slice().reverse().map(r=>[r.date,topic(db.links.find(l=>l.id===r.linkId)?.topicId)?.name||'—',r.stage+'ª revisão',r.scheduledDate]));
-const errorScope=$('#error-scope')?.value||'all';const errorLinkFilter=window._errorLinkFilter||'';const allErrors=db.errors.filter(e=>(!errorLinkFilter||e.linkId===errorLinkFilter)&&(errorScope!=='current'||(e.contestId===db.selectedContest&&e.roleId===db.selectedRole)));const errorPending=allErrors.filter(e=>e.status!=='resolved').length;$('#error-count').textContent=allErrors.length+' erros · '+errorPending+' pendentes';$('#clear-error-filter').hidden=!errorLinkFilter;$('#error-filter-note').textContent=errorLinkFilter?'Exibindo somente os erros desta aula.':'';$('#error-list').innerHTML=table(['Questão / Referência','Concurso / Cargo','Disciplina / Conteúdo','Enunciado','Marquei','Gabarito','Motivo do erro','Situação','Ações'],allErrors.map(e=>{const l=db.links.find(l=>l.id===e.linkId),t=topic(l?.topicId);return [e.reference,(db.contests.find(c=>c.id===e.contestId)?.name||'—')+' / '+(db.roles.find(r=>r.id===e.roleId)?.name||'—'),(subject(t?.subjectId)?.name||'—')+' / '+(t?.name||'—'),e.statement||'—',e.markedText||e.marked||'—',e.answerText||e.answer||'—',e.reason||'—',e.status==='resolved'?'✓ Corrigido':'Pendente',`<button class="mini" data-action="view-error-question" data-id="${esc(e.id)}">👁 Questão</button> <button class="mini green" data-action="resolve-error" data-id="${esc(e.id)}">${e.status==='resolved'?'Reabrir':'✓ Corrigir'}</button> <button class="mini red" data-action="delete-error" data-id="${esc(e.id)}">✕</button>`]}));
-$('#library-count').textContent=db.topics.length+' conteúdos';$('#library-list').innerHTML=`<div class="row-actions" style="margin-bottom:12px"><button class="btn purple" data-action="subject">＋ Disciplina</button><button class="btn cyan" data-action="topic">＋ Conteúdo</button></div>`+table(['Disciplina','Conteúdo','Vinculado a cargos','Ações'],db.topics.map(t=>[subject(t.subjectId)?.name,t.name,db.links.filter(l=>l.topicId===t.id).length,`<button class="mini" data-action="edit-topic" data-id="${esc(t.id)}">✎ Editar</button> <button class="mini green" data-action="link-topic" data-id="${esc(t.id)}">＋ Vincular</button> <button class="mini red" data-action="delete-topic" data-id="${esc(t.id)}">Excluir</button>`]));
-$('#contest-count').textContent=db.contests.length+' concursos';$('#contest-list').innerHTML=`<div class="row-actions" style="margin-bottom:12px"><button class="btn blue" data-action="contest">＋ Concurso</button><button class="btn indigo" data-action="role">＋ Cargo</button><button class="btn violet" data-action="board">＋ Banca</button></div>`+table(['Concurso','Banca','Prova','Situação','Cargos','Ações'],db.contests.map(c=>[c.name,board(c.boardId)?.name||'—',c.examDate||'—',c.status==='archived'?'Arquivado':'Ativo',db.roles.filter(r=>r.contestId===c.id).map(r=>`<span>${esc(r.name)} <button class="mini" data-action="edit-role" data-id="${esc(r.id)}">✎</button></span>`).join('<br>')||'—',`<button class="mini" data-action="edit-contest" data-id="${esc(c.id)}">✎</button> <button class="mini orange" data-action="archive-contest" data-id="${esc(c.id)}">${c.status==='archived'?'Reativar':'Arquivar'}</button> <button class="mini red" data-action="delete-contest" data-id="${esc(c.id)}">Excluir</button>`]));
-}
-function table(headers,rows){if(!rows.length)return '<div class="empty">Nenhum registro nesta seção.</div>';return `<table class="small-table"><thead><tr>${headers.map(h=>'<th>'+esc(h)+'</th>').join('')}</tr></thead><tbody>${rows.map(r=>'<tr>'+r.map((x,i)=>'<td>'+((i===r.length-1||headers[i]==='Cargos')?String(x??''):esc(x??'—'))+'</td>').join('')+'</tr>').join('')}</tbody></table>`}
-const specs={contest:{title:'Concurso',fields:[['name','Nome do concurso','text',true],['boardId','Banca organizadora','board'],['examDate','Data da prova','date'],['notice','Edital / Observações','textarea']]},role:{title:'Cargo',fields:[['contestId','Concurso','contest',true],['name','Nome do cargo','text',true]]},board:{title:'Banca organizadora',fields:[['name','Nome da banca','text',true]]},subject:{title:'Disciplina',fields:[['name','Nome da disciplina','text',true]]},topic:{title:'Conteúdo da biblioteca',fields:[['subjectId','Disciplina','subject',true],['name','Nome do conteúdo','text',true]]},link:{title:'Vincular conteúdo ao cargo',fields:[['topicId','Conteúdo da biblioteca','topic',true],['platform','Plataforma','text'],['lesson','Aula','text'],['parts','Total de partes','number'],['done','Partes concluídas','number'],['pdfUrl','Link do PDF / resumo','url'],['errorsUrl','Link do Caderno de Erros (PDF / Google Drive)','url']]},session:{title:'Sessão de questões',fields:[['linkId','Conteúdo','link',true],['type','Tipo de questões','type',true],['date','Data','date',true],['total','Questões resolvidas','number',true],['correct','Acertos','number',true],['boardName','Banca (opcional)','text']]},error:{title:'Registrar erro',fields:[['linkId','Conteúdo','link',true],['reference','Questão / referência','text',true],['reason','Motivo do erro / anotação','textarea',true]]}};
-let mode='',editing='',pref={};
-function optionsFor(kind){const items=kind==='board'?db.boards:kind==='contest'?db.contests:kind==='subject'?db.subjects:kind==='topic'?db.topics:kind==='link'?activeLinks():[];return items.map(x=>({id:x.id,name:kind==='topic'?`${subject(x.subjectId)?.name||''} · ${x.name}`:kind==='link'?`${subject(topic(x.topicId)?.subjectId)?.name||''} · ${topic(x.topicId)?.name||''}`:x.name}))}
-function openForm(kind,id='',defaults={}){if(['link','session','error'].includes(kind)&&(!contest()||!role()))return alert('Selecione um concurso e um cargo primeiro.');if(kind==='role'&&!db.contests.length)return alert('Cadastre primeiro um concurso.');if(kind==='topic'&&!db.subjects.length)return alert('Cadastre primeiro uma disciplina.');if(kind==='link'&&!db.topics.length)return alert('Cadastre primeiro um conteúdo na biblioteca.');const spec=specs[kind];mode=kind;editing=id;pref=defaults;const collection={contest:'contests',role:'roles',board:'boards',subject:'subjects',topic:'topics',link:'links',session:'sessions',error:'errors'}[kind];const old=db[collection].find(x=>x.id===id)||{};const current={date:today(),contestId:db.selectedContest,roleId:db.selectedRole,...defaults,...old};$('#modal-title').textContent=(id?'Editar ':'＋ Novo ')+spec.title;$('#modal-fields').innerHTML=spec.fields.map(([key,title,type='text',required])=>{const v=String(current[key]??'');let control;if(['board','contest','subject','topic','link'].includes(type)){const opts=optionsFor(type);control=`<select name="${key}" ${required?'required':''}><option value="">Selecione...</option>${opts.map(x=>`<option value="${esc(x.id)}" ${v===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`}else if(type==='type'){control=`<select name="type"><option value="fixacao" ${v==='fixacao'?'selected':''}>Questões de fixação</option><option value="diversas" ${v==='diversas'?'selected':''}>Questões diversas</option><option value="banca" ${v==='banca'?'selected':''}>Questões da banca do concurso</option></select>`}else if(type==='textarea'){control=`<textarea name="${key}">${esc(v)}</textarea>`}else control=`<input name="${key}" type="${type}" ${required?'required':''} ${type==='number'?'min="0" step="1"':''} value="${esc(v)}">`;return `<label class="${type==='textarea'?'full':''}">${esc(title)}${control}</label>`}).join('');$('#modal').showModal()}
-$('#modal-form').addEventListener('submit',e=>{e.preventDefault();const data=Object.fromEntries(new FormData(e.currentTarget));const map={contest:'contests',role:'roles',board:'boards',subject:'subjects',topic:'topics',link:'links',session:'sessions',error:'errors'},list=db[map[mode]];if(mode==='session'){if(!Number.isInteger(+data.total)||+data.total<1||!Number.isInteger(+data.correct)||+data.correct<0||+data.correct>+data.total)return alert('Informe quantidades válidas de questões e acertos.');data.total=+data.total;data.correct=+data.correct}if(mode==='link'){data.parts=n(data.parts);data.done=Math.min(data.parts,n(data.done));if(list.some(l=>l.id!==editing&&l.contestId===db.selectedContest&&l.roleId===db.selectedRole&&l.topicId===data.topicId))return alert('Este conteúdo já está vinculado a este cargo.');}if(mode==='topic'&&list.some(t=>t.id!==editing&&t.subjectId===data.subjectId&&t.name.toLowerCase()===data.name.trim().toLowerCase()))return alert('Esse conteúdo já existe na disciplina.');if(mode==='contest'&&!data.boardId)return alert('Selecione ou cadastre uma banca antes.');if(mode==='contest'&&list.some(c=>c.id!==editing&&c.name.toLowerCase()===data.name.trim().toLowerCase()))return alert('Esse concurso já está cadastrado.');if(mode==='role'&&!data.contestId)return alert('Selecione o concurso.');if(mode==='error')data.status=(list.find(x=>x.id===editing)?.status)||'pending';if(['link','session','error'].includes(mode)){data.contestId=db.selectedContest;data.roleId=db.selectedRole}const prev=list.find(x=>x.id===editing);if(prev){const was=mode==='link'&&!!prev.completedAt;Object.assign(prev,data);if(mode==='link')syncCompletion(prev,was)}else{const id=uid();const record={id,...data,...(mode==='contest'?{status:'active'}:{}),...(mode==='link'?{lastStudy:''}:{})};if(mode==='link')syncCompletion(record);list.push(record);if(mode==='contest')db.selectedContest=id}$('#modal').close();save()});
-function action(name,el){const id=el?.dataset.id||'',linkId=el?.dataset.link||'';
-switch(name){case'contest':case'role':case'board':case'subject':return openForm(name);case'topic':return openForm('topic');case'link':return openForm('link');case'library':$('#library-panel').open=true;return $('#library-panel').scrollIntoView({behavior:'smooth'});case'review':$('#reviews-panel').open=true;return $('#reviews-panel').scrollIntoView({behavior:'smooth'});case'session':return openForm('session');case'detailed-session':return mixedStart();case'view-session':return viewDetailed(id);case'open-errors-lesson':{window._errorLinkFilter=linkId;$('#errors-panel').open=true;render();$('#errors-panel').scrollIntoView({behavior:'smooth',block:'start'});return}case'error':{if(!db.selectedContest||!db.selectedRole)return alert('Selecione o concurso e o cargo para cadastrar um erro manualmente.');return openForm('error','',{linkId})}case'pdf':{const l=db.links.find(x=>x.id===linkId);if(!l)return;if(l.pdfUrl&&/^https?:\/\//i.test(l.pdfUrl))return window.open(l.pdfUrl,'_blank','noopener');return openForm('link',l.id)}case'edit-pdf-url':case'edit-errors-url':{const l=db.links.find(x=>x.id===linkId);if(!l)return;const key=name==='edit-pdf-url'?'pdfUrl':'errorsUrl';const title=key==='pdfUrl'?'Resumo / PDF':'Caderno de Erros / PDF';const entered=prompt('Cole o link de '+title+' desta aula (deixe vazio para remover):',l[key]||'');if(entered===null)return;const url=entered.trim();if(url&&!/^https?:\/\//i.test(url))return alert('Informe um link iniciado por https:// ou http://');l[key]=url;return save()}case'open-errors-url':{const l=db.links.find(x=>x.id===linkId);if(!l)return;if(l.errorsUrl&&/^https?:\/\//i.test(l.errorsUrl))return window.open(l.errorsUrl,'_blank','noopener');return action('edit-errors-url',el)}case'edit-link':return openForm('link',linkId);case'edit-session':return openForm('session',id);case'edit-topic':return openForm('topic',id);case'edit-role':return openForm('role',id);case'edit-contest':return openForm('contest',id);case'link-topic':return openForm('link','',{topicId:id});case'archive-contest':{const c=db.contests.find(x=>x.id===id);if(!c)return;if(!confirm((c.status==='archived'?'Reativar':'Arquivar')+' o concurso '+c.name+'? Os dados serão preservados.'))return;c.status=c.status==='archived'?'active':'archived';if(c.status==='archived'&&db.selectedContest===c.id){db.selectedContest='';db.selectedRole=''}return save()}case'delete-contest':{const c=db.contests.find(x=>x.id===id);if(!c)return;if(!confirm(`Excluir DEFINITIVAMENTE o concurso "${c.name}" e seus cargos, sessões, erros e vínculos? As disciplinas e conteúdos da biblioteca serão mantidos.`))return;const confirmName=prompt('Para confirmar a exclusão definitiva, digite exatamente o nome do concurso:');if(confirmName!==c.name)return alert('Nome diferente. Exclusão cancelada.');const linkIds=new Set(db.links.filter(l=>l.contestId===id).map(l=>l.id));db.contests=db.contests.filter(x=>x.id!==id);db.roles=db.roles.filter(x=>x.contestId!==id);db.links=db.links.filter(x=>x.contestId!==id);db.sessions=db.sessions.filter(x=>x.contestId!==id);db.errors=db.errors.filter(x=>x.contestId!==id);db.revisions=db.revisions.filter(x=>!linkIds.has(x.linkId));if(db.selectedContest===id){db.selectedContest='';db.selectedRole=''}return save()}case'unlink':if(confirm('Remover este conteúdo deste cargo? As sessões vinculadas também serão excluídas. O conteúdo permanecerá na biblioteca.')){db.links=db.links.filter(l=>l.id!==linkId);db.sessions=db.sessions.filter(s=>s.linkId!==linkId);db.errors=db.errors.filter(e=>e.linkId!==linkId);db.revisions=db.revisions.filter(r=>r.linkId!==linkId);return save()}return;case'delete-topic':if(db.links.some(l=>l.topicId===id))return alert('Este conteúdo está vinculado a um cargo. Desvincule-o antes de excluir da biblioteca.');if(confirm('Excluir este conteúdo da biblioteca permanente?')){db.topics=db.topics.filter(t=>t.id!==id);return save()}return;case'delete-session':if(confirm('Excluir esta sessão e seus erros gerados automaticamente?')){db.sessions=db.sessions.filter(s=>s.id!==id);db.errors=db.errors.filter(e=>e.sessionId!==id);return save()}return;case'view-error-question':return viewErrorQuestion(id);case'delete-error':if(confirm('Excluir este erro?')){db.errors=db.errors.filter(e=>e.id!==id);return save()}return;case'resolve-error':{const e=db.errors.find(x=>x.id===id);if(e){e.status=e.status==='resolved'?'pending':'resolved';save()}return}case'review-done':{const l=db.links.find(x=>x.id===linkId);if(!l||!l.completedAt||!l.nextReview)return;const step=Number(l.reviewStep)||0;db.revisions.push({id:uid(),linkId:l.id,contestId:l.contestId,roleId:l.roleId,date:today(),scheduledDate:l.nextReview,stage:step+1});l.lastStudy=today();l.reviewStep=step+1;l.nextReview=l.reviewStep<REVIEW_DAYS.length?addDays(l.completedAt,REVIEW_DAYS[l.reviewStep]):'';return save()}case'reopen-lesson':{const l=db.links.find(x=>x.id===linkId);if(!l||!l.completedAt)return;if(!confirm('Reabrir esta aula? A conclusão e as próximas revisões serão reiniciadas. O histórico de revisões realizadas será preservado.'))return;l.done=Math.max(0,n(l.parts)-1);l.completedAt='';l.nextReview='';l.reviewStep=0;return save()}}
-}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(b)action(b.dataset.action,b);const close=e.target.closest('[data-close]');if(close)$('#'+close.dataset.close).close();if(e.target.matches('[data-session]'))openForm('session','',{linkId:e.target.dataset.session,type:e.target.dataset.type,boardName:board(contest()?.boardId)?.name||''});if(e.target.matches('[data-detailed]'))mixedStart(null,e.target.dataset.detailed,e.target.dataset.type)});
-$('#study-rows').addEventListener('change',e=>{const input=e.target.closest('[data-edit]');if(!input)return;const l=db.links.find(x=>x.id===input.closest('tr').dataset.link);if(!l)return;const k=input.dataset.edit;const was=!!l.completedAt;if(['done','parts'].includes(k)){if(!Number.isSafeInteger(+input.value)||+input.value<0)return alert('Informe um número inteiro não negativo.');l[k]=+input.value;l.done=Math.min(l.done,n(l.parts));syncCompletion(l,was)}else l[k]=input.value;l.lastStudy=today();save()});
-$('#active-contest').addEventListener('change',e=>{db.selectedContest=e.target.value;db.selectedRole='';save()});$('#search').addEventListener('input',render);$('#subject-filter').addEventListener('change',render);$('#status-filter').addEventListener('change',render);
-$('#close-modal').onclick=$('#cancel-modal').onclick=()=>$('#modal').close();$('#backup-btn').onclick=()=>$('#backup-modal').showModal();$('#help-btn').onclick=()=>$('#help-modal').showModal();
-function download(str,name,mime){const blob=new Blob([str],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-$('#export-json').onclick=()=>download(JSON.stringify({app:'MARCIO_EDUCA_360_CONCURSOS_PRO',version:1,exportedAt:new Date().toISOString(),data:db},null,2),'MARCIO_EDUCA_360_BACKUP_'+today()+'.json','application/json');
-$('#import-json').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{if(f.size>20e6)throw Error('Arquivo muito grande.');const x=JSON.parse(await f.text());if(x.app!=='MARCIO_EDUCA_360_CONCURSOS_PRO'||!x.data||!Array.isArray(x.data.contests)||!Array.isArray(x.data.topics)||!Array.isArray(x.data.links))throw Error('Backup incompatível com esta versão.');if(!confirm('Substituir todos os dados desta versão pelos dados do backup?'))return;db=x.data;for(const k of Object.keys(blank()))if(!(k in db))db[k]=blank()[k];save();$('#backup-modal').close();alert('Backup restaurado.')}catch(err){alert('Erro na importação: '+err.message)}finally{e.target.value=''}});
-$('#export-csv').onclick=()=>{const headers=['Concurso','Cargo','Banca','Disciplina','Conteúdo','Plataforma','Aula','Partes concluídas','Partes totais','Fixação questões','Fixação acertos','Diversas questões','Diversas acertos','Banca questões','Banca acertos','Conclusão','Próxima revisão','PDF do resumo','PDF do caderno de erros'];const records=db.links.map(l=>{const c=db.contests.find(x=>x.id===l.contestId),r=db.roles.find(x=>x.id===l.roleId),t=topic(l.topicId);const sum=type=>{const a=db.sessions.filter(s=>s.linkId===l.id&&s.type===type);return [a.reduce((v,s)=>v+n(s.total),0),a.reduce((v,s)=>v+n(s.correct),0)]};const [qf,af]=sum('fixacao'),[qd,ad]=sum('diversas'),[qb,ab]=sum('banca');return [c?.name,r?.name,board(c?.boardId)?.name,subject(t?.subjectId)?.name,t?.name,l.platform,l.lesson,l.done,l.parts,qf,af,qd,ad,qb,ab,l.completedAt||'',l.nextReview,l.pdfUrl,l.errorsUrl||'']});const csv='\ufeff'+[headers,...records].map(r=>r.map(x=>'"'+String(x??'').replaceAll('"','""')+'"').join(';')).join('\r\n');download(csv,'MARCIO_EDUCA_360_ESTUDOS_'+today()+'.csv','text/csv;charset=utf-8')};
+/* =====================================================
+   MÁRCIO EDUCA 360 — CONCURSOS PRO
+   ARQUIVO: script.js
+   VERSÃO CONSOLIDADA — ETAPAS 01 A 05
+===================================================== */
 
-// Registro detalhado: cada questão possui alternativa marcada, gabarito e referência.
-const detailModal=$('#detailed-modal');
-const detailOptions=()=>$('#detail-format').value==='CE'?[['C','Certo'],['E','Errado']]:$('#detail-format').value==='ABCD'?[...'ABCD'].map(x=>[x,x]):[...'ABCDE'].map(x=>[x,x]);
-function detailRow(i,old={}){const opts=detailOptions(),options=val=>'<option value="">—</option>'+opts.map(([v,label])=>`<option value="${v}" ${val===v?'selected':''}>${label}</option>`).join('');return `<tr><td><input class="dq-ref" value="${esc(old.reference||String(i+1))}" aria-label="Referência da questão ${i+1}" required></td><td>${$('#detail-format').value==='OPEN'?`<button type="button" class="dq-open" data-open-question="${i}">✍ Responder</button><input type="hidden" class="dq-marked" value="${esc(old.marked||'')}"><input type="hidden" class="dq-grade" value="${esc(old.grade||'')}"><input type="hidden" class="dq-statement" value="${esc(old.statement||'')}">`:`<select class="dq-marked">${options(old.marked)}</select>`}</td><td>${$('#detail-format').value==='OPEN'?`<button type="button" class="dq-open" data-open-question="${i}">📖 Gabarito</button><input type="hidden" class="dq-answer" value="${esc(old.answer||'')}">`:`<select class="dq-answer">${options(old.answer)}</select>`}</td><td><div class="dq-media-cell"><input class="dq-reason" type="hidden" value="${esc(old.reason||'')}"><input class="dq-url" type="hidden" value="${esc(old.url||'')}"><button type="button" class="dq-edit-fields" data-edit-fields="${i}" title="Editar enunciado, alternativas, resposta, gabarito e resolução">✎ Questão</button><button type="button" class="dq-attach" title="Anexar, colar ou vincular várias imagens" data-attach="${i}">📎 <span class="dq-attach-count">Imagens</span></button></div><input type="hidden" class="dq-statement-extra" value="${esc(old.statement||'')}"><input type="hidden" class="dq-alternatives" value="${esc(old.alternatives||'')}"><input type="hidden" class="dq-marked-text" value="${esc(old.markedText||'')}"><input type="hidden" class="dq-answer-text" value="${esc(old.answerText||'')}"><input type="hidden" class="dq-explanation" value="${esc(old.explanation||'')}"></td><td class="dq-result">—</td></tr>`}
-function drawDetailRows(){const count=Math.max(1,Math.min(100,Number($('#detail-count').value)||1));$('#detail-count').value=count;const previous=[...$('#detail-rows').querySelectorAll('tr')].map(tr=>({reference:tr.querySelector('.dq-ref').value,marked:tr.querySelector('.dq-marked').value,answer:tr.querySelector('.dq-answer').value,reason:tr.querySelector('.dq-reason').value,url:tr.querySelector('.dq-url').value,grade:tr.querySelector('.dq-grade')?.value||'',statement:tr.querySelector('.dq-statement')?.value||tr.querySelector('.dq-statement-extra')?.value||'',alternatives:tr.querySelector('.dq-alternatives')?.value||'',markedText:tr.querySelector('.dq-marked-text')?.value||'',answerText:tr.querySelector('.dq-answer-text')?.value||'',explanation:tr.querySelector('.dq-explanation')?.value||''}));$('#detail-rows').innerHTML=Array.from({length:count},(_,i)=>detailRow(i,previous[i]||{})).join('');detailSummary()}
-function detailOutcome(q,format){if(format==='MIXED')format=q.format||'ABCDE';if(!q.answer)return 'pending';if(!q.marked)return 'blank';if(format==='OPEN')return q.grade==='correct'?'correct':q.grade==='wrong'?'wrong':q.grade==='partial'?'partial':'pending';return q.marked===q.answer?'correct':'wrong'}
-function detailSummary(){let correct=0,wrong=0,pending=0,partial=0;for(const tr of $('#detail-rows').querySelectorAll('tr')){const q={marked:tr.querySelector('.dq-marked').value,answer:tr.querySelector('.dq-answer').value,grade:tr.querySelector('.dq-grade')?.value||''};const outcome=detailOutcome(q,$('#detail-format').value),r=tr.querySelector('.dq-result');r.style.color='';if(outcome==='correct'){correct++;r.textContent='✓ Acerto';r.style.color='#16835d'}else if(outcome==='wrong'){wrong++;r.textContent='✕ Erro';r.style.color='#b13e48'}else if(outcome==='partial'){partial++;r.textContent='◐ Parcial';r.style.color='#ae741a'}else{pending++;r.textContent=!q.answer?'Aguardando gabarito':outcome==='blank'?'Em branco':'Aguardando avaliação'}}$('#detail-summary').textContent=`${correct} acertos · ${wrong} erros · ${partial} parciais · ${pending} pendentes`}
+"use strict";
 
-function openDetailed(linkId='',type='fixacao'){if(!contest()||!role())return alert('Selecione um concurso e um cargo primeiro.');const links=activeLinks();if(!links.length)return alert('Vincule primeiro um conteúdo ao cargo.');$('#detail-link').innerHTML=links.map(l=>`<option value="${esc(l.id)}">${esc(subject(topic(l.topicId)?.subjectId)?.name||'')} · ${esc(topic(l.topicId)?.name||'')}</option>`).join('');$('#detail-link').disabled=false;$('#detail-link').value=links.some(l=>l.id===linkId)?linkId:links[0].id;$('#detail-type').value=type;$('#detail-date').value=today();$('#detail-board').value=board(contest()?.boardId)?.name||'';$('#detail-format').value='ABCDE';$('#detail-count').value='20';$('#detail-rows').innerHTML='';window._editingDetailSession='';window._attachmentSessionId=uid();$('#detail-format').disabled=false;$('#detail-count').disabled=false;drawDetailRows();detailModal.showModal()}
-function viewDetailed(id){const s=db.sessions.find(x=>x.id===id);if(!s)return;if(s.format==='MIXED')return openMixedSession(s);if(!s.questions?.length)return alert('Esta sessão foi registrada no modo rápido, sem alternativas individuais.');openDetailed(s.linkId,s.type);window._editingDetailSession=s.id;window._attachmentSessionId=s.id;$('#detail-link').value=s.linkId;$('#detail-link').disabled=true;$('#detail-type').value=s.type;$('#detail-date').value=s.date;$('#detail-board').value=s.boardName||'';$('#detail-format').value=s.format||'ABCDE';$('#detail-format').disabled=true;$('#detail-count').value=s.questions.length;$('#detail-count').disabled=true;$('#detail-rows').innerHTML=s.questions.map((q,i)=>detailRow(i,q)).join('');detailSummary()}
-function syncDetailedErrors(session){const old=db.errors.filter(e=>e.sessionId===session.id);const keys=new Map(old.map(e=>[e.reference,e]));db.errors=db.errors.filter(e=>e.sessionId!==session.id);for(const q of session.questions){if(detailOutcome(q,session.format)!=='wrong')continue;const prior=keys.get(q.reference);db.errors.push({id:prior?.id||uid(),sessionId:session.id,linkId:session.linkId,contestId:session.contestId,roleId:session.roleId,reference:q.reference,marked:q.marked,answer:q.answer,reason:q.reason,url:q.url,statement:q.statement||'',alternatives:q.alternatives||'',markedText:q.markedText||'',answerText:q.answerText||'',explanation:q.explanation||'',mediaFields:q.mediaFields||{},type:session.type,status:prior?.status||'pending'})}}
-async function viewErrorQuestion(id){
- const e=db.errors.find(x=>x.id===id);if(!e)return;
- const s=db.sessions.find(x=>x.id===e.sessionId);const index=s?.questions?.findIndex(q=>q.reference===e.reference)??-1;
- const lines=[['Enunciado',e.statement],['Alternativas',e.alternatives],['Minha resposta',e.markedText||e.marked],['Gabarito',e.answerText||e.answer],['Resolução',e.explanation],['Motivo do erro',e.reason]];
- const win=document.createElement('dialog');win.className='error-viewer';win.innerHTML='<div class="modal-head"><h2>📕 Caderno de Erros — Questão '+esc(e.reference)+'</h2><button type="button" class="icon-btn" data-close-view>✕</button></div><div class="error-view-body"></div>';
- document.body.append(win);const body=win.querySelector('.error-view-body');
- for(const [title,value] of lines){const section=document.createElement('section');const h=document.createElement('h3');h.textContent=title;section.append(h);if(value){const p=document.createElement('p');p.textContent=value;section.append(p)}
- const field=({Enunciado:'statement',Alternativas:'alternatives','Minha resposta':'marked',Gabarito:'answer',Resolução:'explanation'})[title];
- if(field&&index>=0){try{const key=String(s.id)+'::'+index+'::field::'+field;const entries=await attachGet(key);for(const entry of entries){if(entry.kind==='link'){const a=document.createElement('a');a.href=entry.url;a.target='_blank';a.rel='noopener';a.textContent='🔗 '+(entry.name||entry.url);section.append(a)}else{const img=document.createElement('img');const u=URL.createObjectURL(entry.blob);img.src=u;img.onload=()=>URL.revokeObjectURL(u);img.alt=title+' — imagem';section.append(img)}}}catch(err){console.warn('Imagem não encontrada',err)}}body.append(section)}
- if(index>=0){try{const entries=await attachGet(String(s.id)+'::'+index);if(entries.length){const sec=document.createElement('section');sec.innerHTML='<h3>Imagens adicionais</h3>';for(const item of entries){if(item.kind==='link'){const a=document.createElement('a');a.href=item.url;a.textContent='🔗 '+item.url;a.target='_blank';a.rel='noopener';sec.append(a)}else{const img=document.createElement('img');const u=URL.createObjectURL(item.blob);img.src=u;img.onload=()=>URL.revokeObjectURL(u);sec.append(img)}}body.append(sec)}}catch(err){console.warn(err)}}
- win.querySelector('[data-close-view]').onclick=()=>win.close();win.addEventListener('close',()=>win.remove());win.showModal();
-}
-$('#detail-count').addEventListener('change',drawDetailRows);$('#detail-format').addEventListener('change',()=>{$('#detail-rows').innerHTML='';drawDetailRows()});$('#detail-rows').addEventListener('change',detailSummary);$('#detailed-close').onclick=$('#detailed-cancel').onclick=()=>detailModal.close();
-$('#detailed-form').addEventListener('submit',async e=>{e.preventDefault();const questions=[...$('#detail-rows').querySelectorAll('tr')].map(tr=>({reference:tr.querySelector('.dq-ref').value.trim(),marked:tr.querySelector('.dq-marked').value,answer:tr.querySelector('.dq-answer').value,reason:tr.querySelector('.dq-reason').value.trim(),url:tr.querySelector('.dq-url').value.trim(),grade:tr.querySelector('.dq-grade')?.value||'',statement:tr.querySelector('.dq-statement')?.value||tr.querySelector('.dq-statement-extra')?.value||'',alternatives:tr.querySelector('.dq-alternatives')?.value||'',markedText:tr.querySelector('.dq-marked-text')?.value||'',answerText:tr.querySelector('.dq-answer-text')?.value||'',explanation:tr.querySelector('.dq-explanation')?.value||''}));if($('#detail-format').value==='OPEN'){
- for(let i=0;i<questions.length;i++){
-  const q=questions[i];for(const f of ['statement','alternatives','marked','answer','explanation']){
-   const entries=await attachGet(fieldKey(i,f));
-   if(entries.length){q.mediaFields=q.mediaFields||{};q.mediaFields[f]=entries.map(x=>({kind:x.kind,name:x.name||'',url:x.kind==='link'?x.url:'',hasLocalFile:x.kind==='file'}));}
-  }
-  if(!q.marked&&q.mediaFields?.marked?.length)q.marked='[Resposta em imagem/link]';
-  if(!q.answer&&q.mediaFields?.answer?.length)q.answer='[Gabarito em imagem/link]';
-  if(!q.statement&&q.mediaFields?.statement?.length)q.statement='[Enunciado em imagem/link]';
-  if(q.grade==='wrong'&&(!q.marked||!q.answer))return alert('Questão '+q.reference+': registre sua resposta e o gabarito, por texto ou imagem, antes de classificar como errada.');
- }
-}
-if(questions.some(q=>!q.reference))return alert('Informe a referência de cada questão.');if(new Set(questions.map(q=>q.reference)).size!==questions.length)return alert('Cada questão deve ter uma referência única nesta sessão.');const old=db.sessions.find(x=>x.id===window._editingDetailSession);const linkId=$('#detail-link').value;const record=old||{id:window._attachmentSessionId||uid(),linkId,contestId:db.selectedContest,roleId:db.selectedRole};Object.assign(record,{type:$('#detail-type').value,date:$('#detail-date').value,boardName:$('#detail-board').value.trim(),format:$('#detail-format').value,total:questions.length,correct:questions.filter(q=>detailOutcome(q,$('#detail-format').value)==='correct').length,questions});if(!old)db.sessions.push(record);syncDetailedErrors(record);const pending=questions.filter(q=>['pending','blank'].includes(detailOutcome(q,record.format))).length;const errors=questions.filter(q=>detailOutcome(q,record.format)==='wrong').length;detailModal.close();if(errors){$('#errors-panel').open=true;}$('#detail-link').disabled=false;$('#detail-format').disabled=false;$('#detail-count').disabled=false;window._editingDetailSession='';save();$('#sessions-panel').open=true;alert(`Respostas salvas: ${record.correct} acertos, ${errors} erros e ${pending} sem gabarito. ${errors} questão(ões) no Caderno de Erros.`)});
+/* =====================================================
+   01 — CONFIGURAÇÕES E ARMAZENAMENTO
+===================================================== */
 
+const CHAVE_DADOS = "marcio360-etapa03";
 
-// Editor de respostas discursivas: mantém a tabela compacta e aceita textos longos.
-let openQuestionIndex=-1;
-const openQuestionModal=$('#open-question-modal');
-$('#detail-rows').addEventListener('click',e=>{const b=e.target.closest('[data-open-question]');if(!b)return;openQuestionIndex=Number(b.dataset.openQuestion);const tr=$('#detail-rows').querySelectorAll('tr')[openQuestionIndex];if(!tr)return;$('#open-question-title').textContent='✍ Questão '+tr.querySelector('.dq-ref').value+' — Discursiva';$('#open-question-statement').value=tr.querySelector('.dq-statement').value;$('#open-question-marked').value=tr.querySelector('.dq-marked').value;$('#open-question-answer').value=tr.querySelector('.dq-answer').value;$('#open-question-grade').value=tr.querySelector('.dq-grade').value;$('#open-question-alternatives').value=tr.querySelector('.dq-alternatives').value;$('#open-question-explanation').value=tr.querySelector('.dq-explanation').value;$('#open-question-reason').value=tr.querySelector('.dq-reason').value;openQuestionModal.showModal()});
-$('#open-question-close').onclick=()=>openQuestionModal.close();
-$('#open-question-save').onclick=async()=>{
- const tr=$('#detail-rows').querySelectorAll('tr')[openQuestionIndex];if(!tr)return;
- const isOpen=$('#detail-format').value==='OPEN';
- const ids={statement:'open-question-statement',alternatives:'open-question-alternatives',marked:'open-question-marked',answer:'open-question-answer',explanation:'open-question-explanation'};
- const media={};for(const f of Object.keys(ids)){media[f]=(await attachGet(fieldKey(openQuestionIndex,f))).length>0}
- const val=f=>$('#'+ids[f]).value.trim();
- const marked=val('marked')||(media.marked?'[Resposta em imagem/link]':'');
- const answer=val('answer')||(media.answer?'[Gabarito em imagem/link]':'');
- const grade=$('#open-question-grade').value;
- if(isOpen&&grade&&(!marked||!answer))return alert('Para corrigir a discursiva, informe sua resposta e o gabarito por texto, imagem ou link.');
- for(const f of Object.keys(ids))fieldSet(openQuestionIndex,f,val(f));
- tr.querySelector('.dq-statement-extra').value=val('statement');
- tr.querySelector('.dq-reason').value=$('#open-question-reason').value.trim();
- if(isOpen){tr.querySelector('.dq-statement').value=val('statement')||(media.statement?'[Enunciado em imagem/link]':'');tr.querySelector('.dq-marked').value=marked;tr.querySelector('.dq-answer').value=answer;tr.querySelector('.dq-grade').value=grade;
- const buttons=tr.querySelectorAll('.dq-open');if(buttons[0])buttons[0].textContent=marked?'✍ Registrada':'✍ Responder';if(buttons[1])buttons[1].textContent=answer?'📖 Informado':'📖 Gabarito';}
- openQuestionModal.close();detailSummary();
+const $ = seletor => document.querySelector(seletor);
+
+const COLECOES = [
+  "bancas",
+  "concursos",
+  "cargos",
+  "disciplinas",
+  "conteudos",
+  "vinculos",
+  "plataformas",
+  "aulas",
+  "questoes",
+  "revisoes",
+  "erros"
+];
+
+const TITULOS = {
+  bancas: "Banca",
+  concursos: "Concurso",
+  cargos: "Cargo",
+  disciplinas: "Disciplina",
+  conteudos: "Conteúdo",
+  plataformas: "Plataforma",
+  aulas: "Aula"
 };
-// Armazenamento de imagens em IndexedDB: independente do limite de localStorage.
-const attachDialog=document.getElementById('image-attachment-modal');
-let attachIndex=-1,attachEntries=[],attachDBPromise;
-function attachDB(){if(!attachDBPromise)attachDBPromise=new Promise((resolve,reject)=>{const req=indexedDB.open('marcio_educa_360_questao_imagens',1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('items'))d.createObjectStore('items',{keyPath:'key'})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});return attachDBPromise}
-async function attachGet(key){const d=await attachDB();return new Promise((resolve,reject)=>{const r=d.transaction('items','readonly').objectStore('items').get(key);r.onsuccess=()=>resolve(r.result?.entries||[]);r.onerror=()=>reject(r.error)})}
-async function attachPut(key,entries){const d=await attachDB();return new Promise((resolve,reject)=>{const r=d.transaction('items','readwrite').objectStore('items').put({key,entries});r.onsuccess=()=>resolve();r.onerror=()=>reject(r.error)})}
-function attachKey(i=attachIndex){return String(window._attachmentSessionId||window._editingDetailSession||'')+'::'+i}
-function attachEscape(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function attachFileUrl(e){return e.kind==='file'?URL.createObjectURL(e.blob):e.url}
-async function attachRefreshCount(i){try{const entries=await attachGet(attachKey(i));const tr=document.querySelectorAll('#detail-rows tr')[i];if(tr){const label=tr.querySelector('.dq-attach-count');if(label)label.textContent=entries.length?entries.length+' imagem(ns)':'Imagens'}}catch(err){console.warn('Anexos:',err)}}
-async function attachOpen(i){attachIndex=i;try{attachEntries=await attachGet(attachKey());attachRender();document.getElementById('attach-title').textContent='📎 Imagens — Questão '+(document.querySelectorAll('#detail-rows tr')[i]?.querySelector('.dq-ref')?.value||i+1);attachDialog.showModal()}catch(err){alert('Não foi possível abrir o armazenamento de imagens: '+err.message)}}
-function attachRender(){const root=document.getElementById('attach-list');root.innerHTML='';if(!attachEntries.length){root.textContent='Nenhuma imagem adicionada nesta questão.';return}attachEntries.forEach((entry,i)=>{const card=document.createElement('div');card.className='attach-card';const img=document.createElement('img');img.alt='Página '+(i+1);const url=attachFileUrl(entry);img.src=url;if(entry.kind==='file')img.onload=()=>URL.revokeObjectURL(url);const label=document.createElement('div');label.className='attach-label';label.textContent='Página '+(i+1)+' — '+(entry.name||'Imagem');const actions=document.createElement('div');actions.className='attach-actions';for(const [txt,action] of [['↑','up'],['↓','down'],['Abrir','open'],['Excluir','remove']]){const btn=document.createElement('button');btn.type='button';btn.textContent=txt;btn.dataset.attachAction=action;btn.dataset.idx=i;actions.append(btn)}card.append(img,label,actions);root.append(card)})}
-async function attachPersist(){await attachPut(attachKey(),attachEntries);attachRender();await attachRefreshCount(attachIndex)}
-async function attachAddFiles(files){const arr=[...files].filter(f=>f.type.startsWith('image/'));if(!arr.length)return alert('Selecione arquivos de imagem.');for(const file of arr)attachEntries.push({kind:'file',name:file.name,blob:file});try{await attachPersist()}catch(err){alert('Falha ao salvar imagem (verifique espaço do navegador): '+err.message)}}
-document.getElementById('attach-files').onclick=()=>document.getElementById('attach-file-input').click();
-document.getElementById('attach-file-input').onchange=async e=>{await attachAddFiles(e.target.files);e.target.value=''};
-document.getElementById('attach-add-link').onclick=async()=>{const field=document.getElementById('attach-link');const url=field.value.trim();if(!/^https?:\/\//i.test(url))return alert('Cole um link http:// ou https://');attachEntries.push({kind:'link',name:url,url});await attachPersist();field.value=''};
-document.getElementById('attach-paste').addEventListener('paste',async e=>{const files=[...e.clipboardData.items].filter(x=>x.type.startsWith('image/')).map(x=>x.getAsFile()).filter(Boolean);if(files.length){e.preventDefault();await attachAddFiles(files)}else alert('Copie uma imagem ou recorte de tela antes de colar.')});
-document.getElementById('attach-list').addEventListener('click',async e=>{const btn=e.target.closest('[data-attach-action]');if(!btn)return;const i=Number(btn.dataset.idx),a=btn.dataset.attachAction;if(a==='open'){const entry=attachEntries[i];const u=attachFileUrl(entry);window.open(u,'_blank','noopener');return}if(a==='remove'){if(!confirm('Excluir esta imagem da questão?'))return;attachEntries.splice(i,1)}if(a==='up'&&i>0)[attachEntries[i-1],attachEntries[i]]=[attachEntries[i],attachEntries[i-1]];if(a==='down'&&i<attachEntries.length-1)[attachEntries[i+1],attachEntries[i]]=[attachEntries[i],attachEntries[i+1]];await attachPersist()});
-document.getElementById('attach-close').onclick=()=>attachDialog.close();
-document.getElementById('detail-rows').addEventListener('click',e=>{const btn=e.target.closest('[data-attach]');if(btn)attachOpen(Number(btn.dataset.attach))});
-// Atualiza contadores ao reabrir sessões e ao alterar quantidade de linhas.
-const attachObserver=new MutationObserver(()=>{if(window._attachmentSessionId){document.querySelectorAll('#detail-rows tr').forEach((_,i)=>attachRefreshCount(i))}});
-attachObserver.observe(document.getElementById('detail-rows'),{childList:true});
 
-/* Materiais: três ações; armazenamento IndexedDB com fallback para links. */
-const materialDbPromise = new Promise(resolve=>{
+function copiar(valor) {
+  return JSON.parse(JSON.stringify(valor));
+}
+
+function criarId() {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return (
+    "id-" +
+    Date.now().toString(36) +
+    "-" +
+    Math.random().toString(36).slice(2)
+  );
+}
+
+function carregarDados() {
+  const base = copiar(window.MARCIO_DADOS || {});
+
+  COLECOES.forEach(nome => {
+    if (!Array.isArray(base[nome])) {
+      base[nome] = [];
+    }
+  });
+
   try {
-    if(!window.indexedDB){resolve(null);return}
-    const req=indexedDB.open('marcio-educa-materials',1);
-    req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('attachments'))req.result.createObjectStore('attachments')};
-    req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>resolve(null);
-    req.onblocked=()=>resolve(null);
-  }catch(e){resolve(null)}
-});
-function materialKey(id,kind){return kind+':'+id}
-function materialProp(kind){return kind==='summary'?'pdfUrl':'errorsUrl'}
-async function materialStorage(method,key,value){
- const database=await materialDbPromise;
- if(!database) {if(method==='get')return null;throw new Error('O navegador não permite guardar arquivos neste endereço. Use um link HTTPS ou abra o site por um servidor local.')}
- return new Promise((resolve,reject)=>{
-   try {const tx=database.transaction('attachments',method==='get'?'readonly':'readwrite');const st=tx.objectStore('attachments');const req=method==='get'?st.get(key):method==='put'?st.put(value,key):st.delete(key);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('Falha ao salvar arquivo'))}
-   catch(e){reject(e)}
- });
+    const salvo = localStorage.getItem(CHAVE_DADOS);
+
+    if (!salvo) {
+      return base;
+    }
+
+    const objeto = JSON.parse(salvo);
+
+    if (
+      !objeto ||
+      typeof objeto !== "object" ||
+      !Array.isArray(objeto.bancas) ||
+      !Array.isArray(objeto.concursos)
+    ) {
+      return base;
+    }
+
+    COLECOES.forEach(nome => {
+      if (!Array.isArray(objeto[nome])) {
+        objeto[nome] = base[nome];
+      }
+    });
+
+    objeto.concursoSelecionado ??=
+      base.concursoSelecionado || "";
+
+    return objeto;
+
+  } catch (erro) {
+    console.error("Erro ao carregar dados:", erro);
+    return base;
+  }
 }
-async function materialGet(l,kind){
- let item=null;
- try{item=await materialStorage('get',materialKey(l.id,kind))}catch(e){}
- if(item)return item;
- const url=(l[materialProp(kind)]||'').trim();return url?{type:'url',url}:null;
+
+let dados = carregarDados();
+let edicao = null;
+
+/* =====================================================
+   02 — SALVAMENTO E CONSULTAS
+===================================================== */
+
+function salvar() {
+  try {
+    localStorage.setItem(
+      CHAVE_DADOS,
+      JSON.stringify(dados)
+    );
+
+    $("#situacao").textContent = "● Dados salvos";
+    return true;
+
+  } catch (erro) {
+    console.error("Erro ao salvar dados:", erro);
+
+    $("#situacao").textContent =
+      "● Erro ao salvar";
+
+    alert(
+      "Não foi possível salvar os dados. " +
+      "Verifique o armazenamento do navegador."
+    );
+
+    return false;
+  }
 }
-async function materialOpen(l,kind){
- const item=await materialGet(l,kind);
- if(!item)return false;
- if(item.type==='url'){window.open(item.url,'_blank');return true}
- if(item.blob){const url=URL.createObjectURL(item.blob);const tab=window.open(url,'_blank');if(!tab){const a=document.createElement('a');a.href=url;a.download=item.name||'material';document.body.appendChild(a);a.click();a.remove()}setTimeout(()=>URL.revokeObjectURL(url),120000);return true}
- return false;
+
+function encontrar(tipo, id) {
+  if (!Array.isArray(dados[tipo])) {
+    return null;
+  }
+
+  return dados[tipo].find(
+    item => item.id === id
+  ) || null;
 }
-function materialPickFile(l,kind){
- const picker=document.createElement('input');picker.type='file';picker.accept='.pdf,image/*';picker.style.display='none';document.body.appendChild(picker);
- picker.addEventListener('change',async()=>{
-  try{const file=picker.files&&picker.files[0];if(!file)return;
-   if(file.size>40*1024*1024){alert('Arquivo acima de 40 MB. Utilize um link.');return}
-   await materialStorage('put',materialKey(l.id,kind),{type:'file',name:file.name,blob:file});
-   l[materialProp(kind)]='';save();alert('Anexo salvo: '+file.name);
-  }catch(e){alert('Não foi possível anexar: '+e.message)}finally{picker.remove()}
- },{once:true});picker.click();
+
+function nomeRegistro(tipo, id) {
+  return encontrar(tipo, id)?.nome || "Não encontrado";
 }
-function materialAttach(l,kind){
- const old=document.getElementById('material-dialog');if(old)old.remove();
- const dlg=document.createElement('dialog');dlg.id='material-dialog';dlg.style.cssText='border:1px solid #cbd5e1;border-radius:14px;padding:20px;width:min(530px,92vw);max-height:85vh;box-shadow:0 12px 50px #0004;color:#14213d;background:white;';
- const h=document.createElement('h3');h.textContent='📎 Anexar — '+(kind==='summary'?'Resumo':'Caderno de Erros');dlg.append(h);
- const info=document.createElement('p');info.textContent='Selecione um PDF/imagem ou cole um link HTTPS. O material ficará vinculado a esta aula.';dlg.append(info);
- const file=document.createElement('input');file.type='file';file.accept='.pdf,image/*';file.style.cssText='display:block;margin:12px 0;width:100%';dlg.append(file);
- const url=document.createElement('input');url.type='url';url.placeholder='https://... (Google Drive ou outro)';url.style.cssText='display:block;padding:10px;width:100%;box-sizing:border-box;margin:12px 0;border:1px solid #cbd5e1;border-radius:8px';url.value=l[materialProp(kind)]||'';dlg.append(url);
- const feedback=document.createElement('p');feedback.style.color='#b45309';dlg.append(feedback);
- const row=document.createElement('div');row.style.cssText='display:flex;justify-content:flex-end;gap:8px;margin-top:14px';
- const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Cancelar';cancel.onclick=()=>dlg.close();
- const saveBtn=document.createElement('button');saveBtn.type='button';saveBtn.textContent='✓ Salvar material';saveBtn.style.cssText='background:#147d52;color:white;border:0;border-radius:8px;padding:10px 15px;cursor:pointer';
- saveBtn.onclick=async()=>{const f=file.files?.[0],u=url.value.trim();if(!f&&!u){feedback.textContent='Selecione um arquivo ou informe um link.';return}if(f&&f.size>40*1024*1024){feedback.textContent='Arquivo maior que 40 MB. Utilize um link.';return}if(!f&&!/^https?:\/\//i.test(u)){feedback.textContent='O link deve começar com https:// ou http://';return}
- saveBtn.disabled=true;feedback.textContent='Salvando...';try{if(f){await materialStorage('put',materialKey(l.id,kind),{type:'file',name:f.name,blob:f});l[materialProp(kind)]=''}else{l[materialProp(kind)]=u;await materialStorage('delete',materialKey(l.id,kind)).catch(()=>{})}save();dlg.close();alert('Material salvo com sucesso.')}catch(e){feedback.textContent='Não foi possível salvar o arquivo neste navegador: '+e.message+' — tente utilizar um link HTTPS.'}finally{saveBtn.disabled=false}};
- row.append(cancel,saveBtn);dlg.append(row);document.body.append(dlg);dlg.addEventListener('close',()=>dlg.remove());if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
+
+function ordenarPorNome(itens) {
+  return [...itens].sort((a, b) =>
+    String(a.nome || "").localeCompare(
+      String(b.nome || ""),
+      "pt-BR",
+      { numeric: true }
+    )
+  );
 }
-async function materialAction(button){
- const l=db.links.find(x=>x.id===button.dataset.link);if(!l){alert('Aula não encontrada. Atualize a página.');return}
- const kind=button.dataset.kind,what=button.dataset.material;
- try{
-  if(what==='attach'){await materialAttach(l,kind);return}
-  if(what==='open'){
-   if(kind==='errors'){
-    window._errorLinkFilter=l.id;document.getElementById('errors-panel').open=true;render();document.getElementById('errors-panel').scrollIntoView({behavior:'smooth',block:'start'});
-    const item=await materialGet(l,kind);if(item&&confirm('Abrir também o arquivo ou link anexado?'))await materialOpen(l,kind);
+
+function concursoDoVinculo(vinculo) {
+  const cargo = encontrar(
+    "cargos",
+    vinculo?.cargoId
+  );
+
+  return cargo?.concursoId || "";
+}
+
+function concursoDaAula(aula) {
+  const vinculo = encontrar(
+    "vinculos",
+    aula?.vinculoId
+  );
+
+  return concursoDoVinculo(vinculo);
+}
+
+/* =====================================================
+   03 — CONCURSO SELECIONADO
+===================================================== */
+
+function carregarConcursos() {
+  const seletor = $("#active-contest");
+
+  seletor.replaceChildren();
+
+  seletor.add(
+    new Option("Selecione um concurso", "")
+  );
+
+  ordenarPorNome(
+    dados.concursos.filter(item => item.ativo)
+  ).forEach(concurso => {
+    seletor.add(
+      new Option(concurso.nome, concurso.id)
+    );
+  });
+
+  const selecionadoValido = dados.concursos.some(
+    concurso =>
+      concurso.id === dados.concursoSelecionado &&
+      concurso.ativo
+  );
+
+  if (!selecionadoValido) {
+    dados.concursoSelecionado = "";
+  }
+
+  seletor.value = dados.concursoSelecionado;
+}
+
+/* =====================================================
+   04 — INDICADORES DA CENTRAL
+===================================================== */
+
+function atualizarIndicadores() {
+  const concursoId = dados.concursoSelecionado;
+
+  const cargos = dados.cargos.filter(
+    item => item.concursoId === concursoId
+  );
+
+  const vinculos = dados.vinculos.filter(
+    item => concursoDoVinculo(item) === concursoId
+  );
+
+  const aulas = dados.aulas.filter(
+    item => concursoDaAula(item) === concursoId
+  );
+
+  const totalPartes = aulas.reduce(
+    (soma, aula) =>
+      soma + Number(aula.totalPartes || 0),
+    0
+  );
+
+  const partesConcluidas = aulas.reduce(
+    (soma, aula) =>
+      soma + Number(aula.partesConcluidas || 0),
+    0
+  );
+
+  const percentualTeoria = totalPartes > 0
+    ? Math.round(
+        (partesConcluidas / totalPartes) * 100
+      )
+    : 0;
+
+  const indicadores = [
+    [
+      "Concursos ativos",
+      dados.concursos.filter(item => item.ativo).length
+    ],
+    ["Cargos", cargos.length],
+    ["Conteúdos", vinculos.length],
+    ["Teoria concluída", percentualTeoria + "%"],
+    ["Questões", 0],
+    ["Acertos", 0],
+    ["Aproveitamento", "0%"]
+  ];
+
+  const area = $("#stats");
+  area.replaceChildren();
+
+  indicadores.forEach(([titulo, valor]) => {
+    const cartao = document.createElement("div");
+    cartao.className = "indicador";
+
+    const numero = document.createElement("strong");
+    numero.textContent = valor;
+
+    const legenda = document.createElement("small");
+    legenda.textContent = titulo;
+
+    cartao.append(numero, legenda);
+    area.appendChild(cartao);
+  });
+}
+
+/* =====================================================
+   05 — COMPONENTES DAS LISTAS
+===================================================== */
+
+function criarBotao(texto, acao, tipo, id) {
+  const botao = document.createElement("button");
+
+  botao.type = "button";
+  botao.textContent = texto;
+
+  botao.className =
+    "acao-registro" +
+    (acao === "excluir" ? " excluir" : "");
+
+  botao.dataset.acao = acao;
+  botao.dataset.tipo = tipo;
+  botao.dataset.id = id;
+
+  return botao;
+}
+
+function criarRegistro(texto, tipo, id) {
+  const registro = document.createElement("div");
+  registro.className = "registro";
+
+  const descricao = document.createElement("div");
+  descricao.className = "registro-nome";
+  descricao.textContent = texto;
+
+  const acoes = document.createElement("div");
+  acoes.className = "registro-acoes";
+
+  acoes.append(
+    criarBotao("Editar", "editar", tipo, id),
+    criarBotao("Excluir", "excluir", tipo, id)
+  );
+
+  registro.append(descricao, acoes);
+  return registro;
+}
+
+function preencherLista(
+  seletor,
+  itens,
+  tipo,
+  descricao
+) {
+  const area = $(seletor);
+
+  if (!area) return;
+
+  area.replaceChildren();
+
+  if (!itens.length) {
+    const aviso = document.createElement("p");
+    aviso.className = "vazio";
+    aviso.textContent = "Nenhum registro cadastrado.";
+
+    area.appendChild(aviso);
     return;
-   }
-   if(!await materialOpen(l,kind))alert('Nenhum resumo anexado. Clique em Anexar.');return;
   }
-  if(what==='delete'){
-   const item=await materialGet(l,kind);if(!item){alert('Não há arquivo ou link anexado.');return}
-   if(!confirm('Excluir somente o anexo ou link? As questões e erros serão preservados.'))return;
-   try{await materialStorage('delete',materialKey(l.id,kind))}catch(e){}
-   l[materialProp(kind)]='';save();alert('Anexo ou link excluído.');return;
+
+  ordenarPorNome(itens).forEach(item => {
+    area.appendChild(
+      criarRegistro(
+        descricao(item),
+        tipo,
+        item.id
+      )
+    );
+  });
+}
+
+/* =====================================================
+   06 — LISTAS DE BANCAS, CONCURSOS E CARGOS
+===================================================== */
+
+function renderizarCadastros() {
+  preencherLista(
+    "#lista-bancas",
+    dados.bancas,
+    "bancas",
+    item => item.nome
+  );
+
+  preencherLista(
+    "#lista-concursos",
+    dados.concursos,
+    "concursos",
+    item => {
+      return [
+        item.nome,
+        nomeRegistro("bancas", item.bancaId),
+        item.ativo ? "Ativo" : "Arquivado"
+      ].join(" | ");
+    }
+  );
+
+  preencherLista(
+    "#lista-cargos",
+    dados.cargos,
+    "cargos",
+    item => {
+      return [
+        item.nome,
+        nomeRegistro("concursos", item.concursoId)
+      ].join(" | ");
+    }
+  );
+}
+
+/* =====================================================
+   07 — BIBLIOTECA PERMANENTE
+===================================================== */
+
+function renderizarBiblioteca() {
+  preencherLista(
+    "#lista-disciplinas",
+    dados.disciplinas,
+    "disciplinas",
+    item => item.nome
+  );
+
+  preencherLista(
+    "#lista-conteudos",
+    dados.conteudos,
+    "conteudos",
+    item => {
+      return [
+        item.nome,
+        nomeRegistro(
+          "disciplinas",
+          item.disciplinaId
+        )
+      ].join(" | ");
+    }
+  );
+}
+
+/* =====================================================
+   08 — VÍNCULOS DE CONTEÚDOS
+===================================================== */
+
+function renderizarVinculos() {
+  const area = $("#lista-vinculos");
+  area.replaceChildren();
+
+  if (!dados.vinculos.length) {
+    const aviso = document.createElement("p");
+    aviso.className = "vazio";
+    aviso.textContent =
+      "Nenhum conteúdo vinculado a um cargo.";
+
+    area.appendChild(aviso);
+    return;
   }
- }catch(e){alert('Erro ao executar '+what+': '+e.message)}
+
+  const ordenados = [...dados.vinculos].sort(
+    (a, b) => {
+      const nomeA = nomeRegistro(
+        "conteudos",
+        a.conteudoId
+      );
+
+      const nomeB = nomeRegistro(
+        "conteudos",
+        b.conteudoId
+      );
+
+      return nomeA.localeCompare(
+        nomeB,
+        "pt-BR",
+        { numeric: true }
+      );
+    }
+  );
+
+  ordenados.forEach(vinculo => {
+    const cargo = encontrar(
+      "cargos",
+      vinculo.cargoId
+    );
+
+    const conteudo = encontrar(
+      "conteudos",
+      vinculo.conteudoId
+    );
+
+    const disciplina = conteudo
+      ? encontrar(
+          "disciplinas",
+          conteudo.disciplinaId
+        )
+      : null;
+
+    const concurso = cargo
+      ? encontrar(
+          "concursos",
+          cargo.concursoId
+        )
+      : null;
+
+    const registro = document.createElement("div");
+    registro.className = "vinculo-registro";
+
+    const info = document.createElement("div");
+    info.className = "vinculo-info";
+
+    const titulo = document.createElement("strong");
+    titulo.textContent =
+      conteudo?.nome || "Conteúdo não encontrado";
+
+    const detalhes = document.createElement("small");
+    detalhes.textContent = [
+      disciplina?.nome,
+      cargo?.nome,
+      concurso?.nome
+    ].filter(Boolean).join(" | ");
+
+    info.append(titulo, detalhes);
+
+    const botao = criarBotao(
+      "Desvincular",
+      "excluir",
+      "vinculos",
+      vinculo.id
+    );
+
+    registro.append(info, botao);
+    area.appendChild(registro);
+  });
 }
-/* Um único delegado para os três botões; independente dos outros comandos da página. */
-document.addEventListener('click',function(event){
- const b=event.target.closest('[data-material]');if(!b)return;
- event.preventDefault();event.stopPropagation();materialAction(b);
-},true);
 
-render();
+/* =====================================================
+   09 — CAMPOS DOS FORMULÁRIOS
+===================================================== */
 
+function criarCampo(
+  nome,
+  rotulo,
+  valor = "",
+  tipo = "text"
+) {
+  const label = document.createElement("label");
+  label.textContent = rotulo;
 
-// Editor universal por campo: texto, imagens locais, colagem e links (várias páginas).
-const fieldNames={statement:'Enunciado / pergunta',alternatives:'Alternativas',marked:'Minha resposta',answer:'Gabarito',explanation:'Resolução / explicação'};
-const fieldInputs={statement:'dq-statement-extra',alternatives:'dq-alternatives',marked:'dq-marked-text',answer:'dq-answer-text',explanation:'dq-explanation'};
-let fieldCtx=null,fieldImages=[];
-const fieldModal=$('#field-editor-modal');
-function fieldKey(row,field){return attachKey(row)+'::field::'+field}
-function fieldRow(row){return $('#detail-rows').querySelectorAll('tr')[row]}
-function fieldValue(row,field){const tr=fieldRow(row);return tr?.querySelector('.'+fieldInputs[field])?.value||''}
-function fieldSet(row,field,value){const tr=fieldRow(row);if(tr)tr.querySelector('.'+fieldInputs[field]).value=value}
-function fieldRender(){const root=$('#field-editor-images');root.replaceChildren();if(!fieldImages.length){root.textContent='Nenhuma imagem ou link neste campo.';return}fieldImages.forEach((e,i)=>{const card=document.createElement('div');card.className='attach-card';const img=document.createElement('img');img.alt='Página '+(i+1);const u=attachFileUrl(e);img.src=u;if(e.kind==='file')img.onload=()=>URL.revokeObjectURL(u);const caption=document.createElement('small');caption.textContent='Página '+(i+1)+' — '+(e.name||'Imagem');card.append(img,caption);for(const [label,act] of [['↑','up'],['↓','down'],['Abrir','open'],['Excluir','remove']]){const b=document.createElement('button');b.type='button';b.textContent=label;b.dataset.fieldAction=act;b.dataset.index=i;card.append(b)}root.append(card)})}
-async function fieldOpen(row,field){if(!fieldRow(row))return;fieldCtx={row,field};$('#field-editor-title').textContent='✎ Questão '+fieldRow(row).querySelector('.dq-ref').value+' — '+fieldNames[field];$('#field-editor-text').value=fieldValue(row,field);try{fieldImages=await attachGet(fieldKey(row,field))}catch(e){alert('Falha ao carregar imagens: '+e.message);return}fieldRender();fieldModal.showModal()}
-async function fieldPersist(){if(!fieldCtx)return;await attachPut(fieldKey(fieldCtx.row,fieldCtx.field),fieldImages);fieldRender()}
-async function fieldFiles(files){const arr=[...files].filter(f=>f.type.startsWith('image/'));if(!arr.length)return alert('Selecione imagens válidas.');for(const f of arr)fieldImages.push({kind:'file',name:f.name,blob:f});try{await fieldPersist()}catch(e){alert('Não foi possível salvar as imagens: '+e.message)}}
-$('#field-editor-files').onclick=()=>$('#field-editor-file-input').click();
-$('#field-editor-file-input').onchange=async e=>{await fieldFiles(e.target.files);e.target.value=''};
-$('#field-editor-add-url').onclick=async()=>{const inp=$('#field-editor-url'),url=inp.value.trim();if(!/^https?:\/\//i.test(url))return alert('Informe um link http:// ou https://');fieldImages.push({kind:'link',url,name:url});await fieldPersist();inp.value=''};
-$('#field-editor-paste').addEventListener('paste',async e=>{const imgs=[...e.clipboardData.items].filter(x=>x.type.startsWith('image/')).map(x=>x.getAsFile()).filter(Boolean);if(imgs.length){e.preventDefault();await fieldFiles(imgs)}});
-$('#field-editor-images').addEventListener('click',async e=>{const b=e.target.closest('[data-field-action]');if(!b)return;const i=Number(b.dataset.index),act=b.dataset.fieldAction;if(act==='open'){window.open(attachFileUrl(fieldImages[i]),'_blank','noopener');return}if(act==='remove'){if(!confirm('Excluir este anexo?'))return;fieldImages.splice(i,1)}if(act==='up'&&i>0)[fieldImages[i-1],fieldImages[i]]=[fieldImages[i],fieldImages[i-1]];if(act==='down'&&i<fieldImages.length-1)[fieldImages[i+1],fieldImages[i]]=[fieldImages[i],fieldImages[i+1]];await fieldPersist()});
-$('#field-editor-close').onclick=()=>fieldModal.close();
-$('#field-editor-save').onclick=async()=>{if(!fieldCtx)return;const {row,field}=fieldCtx;const text=$('#field-editor-text').value.trim();fieldSet(row,field,text);if($('#detail-format').value==='OPEN'){
- const tr=fieldRow(row),val=text||(fieldImages.length?'[Conteúdo em imagem/link]':'');
- if(field==='statement')tr.querySelector('.dq-statement').value=val;
- if(field==='marked')tr.querySelector('.dq-marked').value=val;
- if(field==='answer')tr.querySelector('.dq-answer').value=val;
- if(openQuestionModal.open&&openQuestionIndex===row){const ids={statement:'open-question-statement',alternatives:'open-question-alternatives',marked:'open-question-marked',answer:'open-question-answer',explanation:'open-question-explanation'};$('#'+ids[field]).value=val}
- }else if(field==='marked'||field==='answer'){
- // A alternativa selecionada permanece como referência para correção automática.
- }
- fieldModal.close();detailSummary()};
-$('#detail-rows').addEventListener('click',e=>{const b=e.target.closest('[data-edit-fields]');if(!b)return;const i=Number(b.dataset.editFields);const fields=Object.keys(fieldNames);openQuestionIndex=i;const tr=fieldRow(i);$('#open-question-title').textContent='✎ Questão '+tr.querySelector('.dq-ref').value+' — Conteúdo completo';$('#open-question-statement').value=tr.querySelector('.dq-statement-extra').value;$('#open-question-marked').value=tr.querySelector('.dq-marked-text').value||tr.querySelector('.dq-marked').value;$('#open-question-answer').value=tr.querySelector('.dq-answer-text').value||tr.querySelector('.dq-answer').value;$('#open-question-grade').value=tr.querySelector('.dq-grade')?.value||'';$('#open-question-alternatives').value=tr.querySelector('.dq-alternatives').value;$('#open-question-explanation').value=tr.querySelector('.dq-explanation').value;$('#open-question-reason').value=tr.querySelector('.dq-reason').value;openQuestionModal.showModal()});
-const mediaButtons=$('#open-media-actions .field-buttons');for(const [field,name] of Object.entries(fieldNames)){const b=document.createElement('button');b.type='button';b.textContent='✎ '+name;b.onclick=()=>{if(openQuestionIndex<0)return;const ids={statement:'open-question-statement',alternatives:'open-question-alternatives',marked:'open-question-marked',answer:'open-question-answer',explanation:'open-question-explanation'};fieldSet(openQuestionIndex,field,$('#'+ids[field]).value);fieldOpen(openQuestionIndex,field)};mediaButtons.append(b)}
+  const input = document.createElement("input");
 
-// CORREÇÃO: Ctrl+V de Print Screen diretamente em qualquer campo da questão.
-// Textareas não aceitam imagens por padrão; capturamos o clipboard e salvamos no IndexedDB.
-const pasteFieldIds={
- 'open-question-statement':'statement',
- 'open-question-alternatives':'alternatives',
- 'open-question-marked':'marked',
- 'open-question-answer':'answer',
- 'open-question-explanation':'explanation'
-};
-function clipboardImages(event){
- const items=Array.from(event.clipboardData?.items||[]);
- return items.filter(item=>item.kind==='file'&&item.type.startsWith('image/')).map(item=>item.getAsFile()).filter(Boolean);
+  input.type = tipo;
+  input.name = nome;
+  input.value = valor ?? "";
+  input.required = true;
+
+  if (tipo === "number") {
+    input.min = "0";
+    input.step = "1";
+  }
+
+  label.appendChild(input);
+  return label;
 }
-async function pasteToQuestionField(event){
- const imgs=clipboardImages(event);if(!imgs.length)return;
- event.preventDefault();
- const field=pasteFieldIds[event.currentTarget.id];
- if(openQuestionIndex<0||!field)return;
- const row=openQuestionIndex;
- try{
-   const key=fieldKey(row,field);
-   const existing=await attachGet(key);
-   const added=imgs.map((blob,i)=>({kind:'file',name:'Captura de tela '+(existing.length+i+1)+'.png',blob}));
-   await attachPut(key,[...existing,...added]);
-   // Manter o conteúdo textual intacto; registrar que há mídia no campo.
-   const tr=fieldRow(row);
-   const text=event.currentTarget.value.trim();
-   fieldSet(row,field,text);
-   if($('#detail-format').value==='OPEN'){
-     const main={statement:'.dq-statement',marked:'.dq-marked',answer:'.dq-answer'}[field];
-     if(main)tr.querySelector(main).value=text||'[Conteúdo em imagem/link]';
-   }
-   detailSummary();
-   const note=document.getElementById('paste-feedback');
-   if(note){note.textContent='✓ '+added.length+' imagem(ns) colada(s) em '+fieldNames[field]+'. Total: '+(existing.length+added.length);note.style.color='#087f55'}
- }catch(err){alert('Não foi possível salvar a imagem colada: '+err.message)}
+
+function criarSelecao(
+  nome,
+  rotulo,
+  opcoes,
+  valor = ""
+) {
+  const label = document.createElement("label");
+  label.textContent = rotulo;
+
+  const select = document.createElement("select");
+  select.name = nome;
+  select.required = true;
+
+  select.add(new Option("Selecione...", ""));
+
+  ordenarPorNome(opcoes).forEach(item => {
+    select.add(
+      new Option(item.nome, item.id)
+    );
+  });
+
+  select.value = valor || "";
+
+  label.appendChild(select);
+  return label;
 }
-Object.keys(pasteFieldIds).forEach(id=>document.getElementById(id).addEventListener('paste',pasteToQuestionField));
-// O editor universal também aceita colar diretamente no campo de texto.
-$('#field-editor-text').addEventListener('paste',async event=>{
- const imgs=clipboardImages(event);if(!imgs.length)return;
- event.preventDefault();
- if(!fieldCtx)return;
- await fieldFiles(imgs);
- const note=document.getElementById('paste-feedback');
- if(note){note.textContent='✓ '+imgs.length+' imagem(ns) colada(s) no editor de '+fieldNames[fieldCtx.field];note.style.color='#087f55'}
+
+function criarSelecaoSimples(
+  nome,
+  rotulo,
+  opcoes,
+  valor = ""
+) {
+  const label = document.createElement("label");
+  label.textContent = rotulo;
+
+  const select = document.createElement("select");
+  select.name = nome;
+  select.required = true;
+
+  opcoes.forEach(item => {
+    select.add(
+      new Option(item.texto, item.valor)
+    );
+  });
+
+  select.value = String(valor);
+
+  label.appendChild(select);
+  return label;
+}
+
+/* =====================================================
+   10 — OPÇÕES PARA CARGOS E CONTEÚDOS
+===================================================== */
+
+function opcoesCargos() {
+  return dados.cargos.map(cargo => {
+    const concurso = encontrar(
+      "concursos",
+      cargo.concursoId
+    );
+
+    return {
+      id: cargo.id,
+      nome:
+        cargo.nome +
+        " — " +
+        (concurso?.nome || "Sem concurso")
+    };
+  });
+}
+
+function opcoesConteudos() {
+  return dados.conteudos.map(conteudo => {
+    const disciplina = encontrar(
+      "disciplinas",
+      conteudo.disciplinaId
+    );
+
+    return {
+      id: conteudo.id,
+      nome:
+        (disciplina?.nome || "Sem disciplina") +
+        " — " +
+        conteudo.nome
+    };
+  });
+}
+
+function opcoesVinculos() {
+  return dados.vinculos.map(vinculo => {
+    const cargo = encontrar(
+      "cargos",
+      vinculo.cargoId
+    );
+
+    const conteudo = encontrar(
+      "conteudos",
+      vinculo.conteudoId
+    );
+
+    const concurso = cargo
+      ? encontrar(
+          "concursos",
+          cargo.concursoId
+        )
+      : null;
+
+    return {
+      id: vinculo.id,
+      nome: [
+        concurso?.nome,
+        cargo?.nome,
+        conteudo?.nome
+      ].filter(Boolean).join(" — ")
+    };
+  });
+}
+
+/* =====================================================
+   11 — ABRIR FORMULÁRIO UNIVERSAL
+===================================================== */
+
+function abrirCadastro(tipo, id = null) {
+  if (!TITULOS[tipo]) return;
+
+  const registro = id
+    ? encontrar(tipo, id)
+    : null;
+
+  if (id && !registro) {
+    alert("Registro não encontrado.");
+    return;
+  }
+
+  if (
+    tipo === "concursos" &&
+    !dados.bancas.length
+  ) {
+    alert("Cadastre uma banca primeiro.");
+    return;
+  }
+
+  if (
+    tipo === "cargos" &&
+    !dados.concursos.length
+  ) {
+    alert("Cadastre um concurso primeiro.");
+    return;
+  }
+
+  if (
+    tipo === "conteudos" &&
+    !dados.disciplinas.length
+  ) {
+    alert("Cadastre uma disciplina primeiro.");
+    return;
+  }
+
+  if (tipo === "aulas") {
+    if (!dados.vinculos.length) {
+      alert(
+        "Vincule um conteúdo a um cargo primeiro."
+      );
+      return;
+    }
+
+    if (!dados.plataformas.length) {
+      alert("Cadastre uma plataforma primeiro.");
+      return;
+    }
+  }
+
+  edicao = { tipo, id };
+
+  const campos = $("#campos-modal");
+  campos.replaceChildren();
+
+  $("#titulo-modal").textContent =
+    (id ? "Editar " : "Cadastrar ") +
+    TITULOS[tipo];
+
+  if (tipo === "bancas") {
+    campos.append(
+      criarCampo(
+        "nome",
+        "Nome da banca",
+        registro?.nome
+      )
+    );
+  }
+
+  if (tipo === "concursos") {
+    campos.append(
+      criarCampo(
+        "nome",
+        "Nome do concurso",
+        registro?.nome
+      ),
+
+      criarSelecao(
+        "bancaId",
+        "Banca organizadora",
+        dados.bancas,
+        registro?.bancaId
+      ),
+
+      criarSelecaoSimples(
+        "ativo",
+        "Situação",
+        [
+          { texto: "Ativo", valor: "true" },
+          { texto: "Arquivado", valor: "false" }
+        ],
+        String(registro?.ativo ?? true)
+      )
+    );
+  }
+
+  if (tipo === "cargos") {
+    campos.append(
+      criarCampo(
+        "nome",
+        "Nome do cargo",
+        registro?.nome
+      ),
+
+      criarSelecao(
+        "concursoId",
+        "Concurso",
+        dados.concursos,
+        registro?.concursoId ||
+          dados.concursoSelecionado
+      )
+    );
+  }
+
+  if (tipo === "disciplinas") {
+    campos.append(
+      criarCampo(
+        "nome",
+        "Nome da disciplina",
+        registro?.nome
+      )
+    );
+  }
+
+  if (tipo === "conteudos") {
+    campos.append(
+      criarCampo(
+        "nome",
+        "Nome do conteúdo",
+        registro?.nome
+      ),
+
+      criarSelecao(
+        "disciplinaId",
+        "Disciplina",
+        dados.disciplinas,
+        registro?.disciplinaId
+      )
+    );
+  }
+
+  if (tipo === "plataformas") {
+    campos.append(
+      criarCampo(
+        "nome",
+        "Nome da plataforma",
+        registro?.nome
+      )
+    );
+  }
+
+  if (tipo === "aulas") {
+    campos.append(
+      criarCampo(
+        "nome",
+        "Nome da aula",
+        registro?.nome
+      ),
+
+      criarSelecao(
+        "vinculoId",
+        "Concurso / Cargo / Conteúdo",
+        opcoesVinculos(),
+        registro?.vinculoId
+      ),
+
+      criarSelecao(
+        "plataformaId",
+        "Plataforma",
+        dados.plataformas,
+        registro?.plataformaId
+      ),
+
+      criarCampo(
+        "totalPartes",
+        "Total de partes de teoria",
+        registro?.totalPartes ?? 1,
+        "number"
+      )
+    );
+  }
+
+  $("#modal-cadastro").showModal();
+}
+
+/* =====================================================
+   12 — ABRIR FORMULÁRIO DE VINCULAÇÃO
+===================================================== */
+
+function abrirVinculacao() {
+  if (!dados.cargos.length) {
+    alert("Cadastre um cargo primeiro.");
+    return;
+  }
+
+  if (!dados.conteudos.length) {
+    alert("Cadastre um conteúdo primeiro.");
+    return;
+  }
+
+  edicao = {
+    tipo: "vinculos",
+    id: null
+  };
+
+  $("#titulo-modal").textContent =
+    "Vincular Conteúdo ao Cargo";
+
+  const campos = $("#campos-modal");
+  campos.replaceChildren();
+
+  campos.append(
+    criarSelecao(
+      "cargoId",
+      "Cargo",
+      opcoesCargos()
+    ),
+
+    criarSelecao(
+      "conteudoId",
+      "Conteúdo",
+      opcoesConteudos()
+    )
+  );
+
+  $("#modal-cadastro").showModal();
+}
+
+/* =====================================================
+   13 — GRAVAR FORMULÁRIO
+===================================================== */
+
+function gravarCadastro(evento) {
+  evento.preventDefault();
+
+  if (!edicao) return;
+
+  const { tipo, id } = edicao;
+
+  const formularioDados = new FormData(
+    evento.currentTarget
+  );
+
+  /* VINCULAÇÕES */
+
+  if (tipo === "vinculos") {
+    const cargoId = String(
+      formularioDados.get("cargoId") || ""
+    );
+
+    const conteudoId = String(
+      formularioDados.get("conteudoId") || ""
+    );
+
+    if (
+      !encontrar("cargos", cargoId) ||
+      !encontrar("conteudos", conteudoId)
+    ) {
+      alert("Selecione um cargo e um conteúdo válidos.");
+      return;
+    }
+
+    const duplicado = dados.vinculos.some(
+      item =>
+        item.cargoId === cargoId &&
+        item.conteudoId === conteudoId
+    );
+
+    if (duplicado) {
+      alert(
+        "Este conteúdo já está vinculado ao cargo."
+      );
+      return;
+    }
+
+    const anterior = copiar(dados);
+
+    dados.vinculos.push({
+      id: criarId(),
+      cargoId,
+      conteudoId
+    });
+
+    if (!salvar()) {
+      dados = anterior;
+      return;
+    }
+
+    renderizar();
+    fecharModal();
+    return;
+  }
+
+  /* CADASTROS GERAIS */
+
+  const nome = String(
+    formularioDados.get("nome") || ""
+  ).trim();
+
+  if (!nome) {
+    alert("Informe o nome do registro.");
+    return;
+  }
+
+  const anterior = copiar(dados);
+
+  let registro = id
+    ? encontrar(tipo, id)
+    : null;
+
+  if (!registro) {
+    registro = { id: criarId() };
+    dados[tipo].push(registro);
+  }
+
+  registro.nome = nome;
+
+  if (tipo === "concursos") {
+    registro.bancaId = String(
+      formularioDados.get("bancaId") || ""
+    );
+
+    registro.ativo =
+      formularioDados.get("ativo") === "true";
+  }
+
+  if (tipo === "cargos") {
+    registro.concursoId = String(
+      formularioDados.get("concursoId") || ""
+    );
+  }
+
+  if (tipo === "conteudos") {
+    registro.disciplinaId = String(
+      formularioDados.get("disciplinaId") || ""
+    );
+  }
+
+  if (tipo === "aulas") {
+    const vinculoId = String(
+      formularioDados.get("vinculoId") || ""
+    );
+
+    const plataformaId = String(
+      formularioDados.get("plataformaId") || ""
+    );
+
+    const totalPartes = Number(
+      formularioDados.get("totalPartes")
+    );
+
+    if (
+      !encontrar("vinculos", vinculoId) ||
+      !encontrar("plataformas", plataformaId)
+    ) {
+      alert("Selecione vínculo e plataforma válidos.");
+      dados = anterior;
+      return;
+    }
+
+    if (
+      !Number.isInteger(totalPartes) ||
+      totalPartes < 0
+    ) {
+      alert("Informe um total de partes válido.");
+      dados = anterior;
+      return;
+    }
+
+    registro.vinculoId = vinculoId;
+    registro.plataformaId = plataformaId;
+    registro.totalPartes = totalPartes;
+
+    registro.partesConcluidas = Math.min(
+      Number(registro.partesConcluidas || 0),
+      totalPartes
+    );
+  }
+
+  if (!salvar()) {
+    dados = anterior;
+    return;
+  }
+
+  renderizar();
+  fecharModal();
+}
+
+/* =====================================================
+   14 — FECHAR MODAL
+===================================================== */
+
+function fecharModal() {
+  $("#modal-cadastro").close();
+  $("#form-cadastro").reset();
+  edicao = null;
+}
+
+/* =====================================================
+   15 — EXCLUSÃO COM PROTEÇÃO DE VÍNCULOS
+===================================================== */
+
+function excluirCadastro(tipo, id) {
+  const registro = encontrar(tipo, id);
+
+  if (!registro) {
+    alert("Registro não encontrado.");
+    return;
+  }
+
+  if (
+    tipo === "bancas" &&
+    dados.concursos.some(
+      item => item.bancaId === id
+    )
+  ) {
+    alert(
+      "Esta banca possui concursos vinculados."
+    );
+    return;
+  }
+
+  if (
+    tipo === "concursos" &&
+    dados.cargos.some(
+      item => item.concursoId === id
+    )
+  ) {
+    alert(
+      "Este concurso possui cargos vinculados."
+    );
+    return;
+  }
+
+  if (
+    tipo === "disciplinas" &&
+    dados.conteudos.some(
+      item => item.disciplinaId === id
+    )
+  ) {
+    alert(
+      "Esta disciplina possui conteúdos vinculados."
+    );
+    return;
+  }
+
+  if (
+    tipo === "cargos" &&
+    dados.vinculos.some(
+      item => item.cargoId === id
+    )
+  ) {
+    alert(
+      "Este cargo possui conteúdos vinculados."
+    );
+    return;
+  }
+
+  if (
+    tipo === "conteudos" &&
+    dados.vinculos.some(
+      item => item.conteudoId === id
+    )
+  ) {
+    alert(
+      "Este conteúdo está vinculado a um cargo."
+    );
+    return;
+  }
+
+  if (
+    tipo === "vinculos" &&
+    dados.aulas.some(
+      item => item.vinculoId === id
+    )
+  ) {
+    alert(
+      "Este vínculo possui aulas cadastradas."
+    );
+    return;
+  }
+
+  if (
+    tipo === "plataformas" &&
+    dados.aulas.some(
+      item => item.plataformaId === id
+    )
+  ) {
+    alert(
+      "Esta plataforma possui aulas vinculadas."
+    );
+    return;
+  }
+
+  const confirmado = confirm(
+    "Deseja realmente excluir este registro?"
+  );
+
+  if (!confirmado) return;
+
+  const anterior = copiar(dados);
+
+  dados[tipo] = dados[tipo].filter(
+    item => item.id !== id
+  );
+
+  if (
+    tipo === "concursos" &&
+    dados.concursoSelecionado === id
+  ) {
+    dados.concursoSelecionado = "";
+  }
+
+  if (!salvar()) {
+    dados = anterior;
+    return;
+  }
+
+  renderizar();
+}
+
+/* =====================================================
+   16 — FILTROS DO CONTROLE GERAL
+===================================================== */
+
+function preencherFiltro(
+  seletor,
+  itens,
+  textoPadrao,
+  valorAtual = ""
+) {
+  const campo = $(seletor);
+  campo.replaceChildren();
+
+  campo.add(new Option(textoPadrao, ""));
+
+  ordenarPorNome(itens).forEach(item => {
+    campo.add(
+      new Option(item.nome, item.id)
+    );
+  });
+
+  campo.value = valorAtual;
+
+  if (campo.value !== valorAtual) {
+    campo.value = "";
+  }
+}
+
+function atualizarFiltros() {
+  const filtroConcurso = $("#filtro-concurso");
+  const filtroCargo = $("#filtro-cargo");
+  const filtroPlataforma = $("#filtro-plataforma");
+
+  const concursoAtual = filtroConcurso.value;
+  const cargoAtual = filtroCargo.value;
+  const plataformaAtual = filtroPlataforma.value;
+
+  preencherFiltro(
+    "#filtro-concurso",
+    dados.concursos,
+    "Todos os concursos",
+    concursoAtual
+  );
+
+  const concursoId = filtroConcurso.value;
+
+  const cargos = concursoId
+    ? dados.cargos.filter(
+        item => item.concursoId === concursoId
+      )
+    : dados.cargos;
+
+  preencherFiltro(
+    "#filtro-cargo",
+    cargos,
+    "Todos os cargos",
+    cargoAtual
+  );
+
+  preencherFiltro(
+    "#filtro-plataforma",
+    dados.plataformas,
+    "Todas as plataformas",
+    plataformaAtual
+  );
+}
+
+function aulasFiltradas() {
+  const concursoId = $("#filtro-concurso").value;
+  const cargoId = $("#filtro-cargo").value;
+  const plataformaId = $("#filtro-plataforma").value;
+
+  const pesquisa = $("#pesquisa-aulas")
+    .value.trim()
+    .toLocaleLowerCase("pt-BR");
+
+  return dados.aulas.filter(aula => {
+    const vinculo = encontrar(
+      "vinculos",
+      aula.vinculoId
+    );
+
+    const cargo = vinculo
+      ? encontrar("cargos", vinculo.cargoId)
+      : null;
+
+    const conteudo = vinculo
+      ? encontrar(
+          "conteudos",
+          vinculo.conteudoId
+        )
+      : null;
+
+    const disciplina = conteudo
+      ? encontrar(
+          "disciplinas",
+          conteudo.disciplinaId
+        )
+      : null;
+
+    const concurso = cargo
+      ? encontrar(
+          "concursos",
+          cargo.concursoId
+        )
+      : null;
+
+    const plataforma = encontrar(
+      "plataformas",
+      aula.plataformaId
+    );
+
+    if (
+      concursoId &&
+      cargo?.concursoId !== concursoId
+    ) {
+      return false;
+    }
+
+    if (
+      cargoId &&
+      cargo?.id !== cargoId
+    ) {
+      return false;
+    }
+
+    if (
+      plataformaId &&
+      aula.plataformaId !== plataformaId
+    ) {
+      return false;
+    }
+
+    const texto = [
+      aula.nome,
+      concurso?.nome,
+      cargo?.nome,
+      disciplina?.nome,
+      conteudo?.nome,
+      plataforma?.nome
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLocaleLowerCase("pt-BR");
+
+    return texto.includes(pesquisa);
+  });
+}
+
+/* =====================================================
+   17 — LISTAS DE PLATAFORMAS E AULAS
+===================================================== */
+
+function renderizarControle() {
+  preencherLista(
+    "#lista-plataformas",
+    dados.plataformas,
+    "plataformas",
+    item => item.nome
+  );
+
+  preencherLista(
+    "#lista-aulas",
+    dados.aulas,
+    "aulas",
+    item => {
+      const vinculo = encontrar(
+        "vinculos",
+        item.vinculoId
+      );
+
+      const conteudo = vinculo
+        ? encontrar(
+            "conteudos",
+            vinculo.conteudoId
+          )
+        : null;
+
+      return [
+        item.nome,
+        conteudo?.nome || "Sem conteúdo"
+      ].join(" | ");
+    }
+  );
+
+  atualizarFiltros();
+  renderizarProgressoAulas();
+}
+
+/* =====================================================
+   18 — PROGRESSO DAS AULAS
+===================================================== */
+
+function renderizarProgressoAulas() {
+  const area = $("#progresso-aulas");
+  area.replaceChildren();
+
+  const aulas = aulasFiltradas().sort(
+    (a, b) =>
+      a.nome.localeCompare(
+        b.nome,
+        "pt-BR",
+        { numeric: true }
+      )
+  );
+
+  if (!aulas.length) {
+    const aviso = document.createElement("p");
+    aviso.className = "vazio";
+    aviso.textContent =
+      "Nenhuma aula encontrada para os filtros.";
+
+    area.appendChild(aviso);
+    return;
+  }
+
+  aulas.forEach(aula => {
+    const vinculo = encontrar(
+      "vinculos",
+      aula.vinculoId
+    );
+
+    const cargo = vinculo
+      ? encontrar(
+          "cargos",
+          vinculo.cargoId
+        )
+      : null;
+
+    const conteudo = vinculo
+      ? encontrar(
+          "conteudos",
+          vinculo.conteudoId
+        )
+      : null;
+
+    const disciplina = conteudo
+      ? encontrar(
+          "disciplinas",
+          conteudo.disciplinaId
+        )
+      : null;
+
+    const concurso = cargo
+      ? encontrar(
+          "concursos",
+          cargo.concursoId
+        )
+      : null;
+
+    const plataforma = encontrar(
+      "plataformas",
+      aula.plataformaId
+    );
+
+    const total = Math.max(
+      0,
+      Number(aula.totalPartes || 0)
+    );
+
+    const concluidas = Math.max(
+      0,
+      Math.min(
+        total,
+        Number(aula.partesConcluidas || 0)
+      )
+    );
+
+    const percentual = total > 0
+      ? Math.round(
+          (concluidas / total) * 100
+        )
+      : 0;
+
+    const cartao = document.createElement("div");
+    cartao.className = "aula-progresso";
+
+    const titulo = document.createElement("h4");
+    titulo.textContent = aula.nome;
+
+    const detalhes = document.createElement("div");
+    detalhes.className = "aula-detalhes";
+
+    detalhes.textContent = [
+      concurso?.nome,
+      cargo?.nome,
+      disciplina?.nome,
+      conteudo?.nome,
+      plataforma?.nome
+    ].filter(Boolean).join(" | ");
+
+    const linha = document.createElement("div");
+    linha.className = "progresso-linha";
+
+    const partes = document.createElement("span");
+    partes.textContent =
+      `Teoria: ${concluidas}/${total} partes`;
+
+    const porcentagem = document.createElement("strong");
+    porcentagem.textContent = percentual + "%";
+
+    linha.append(partes, porcentagem);
+
+    const barra = document.createElement("div");
+    barra.className = "barra-progresso";
+
+    const preenchimento = document.createElement("span");
+    preenchimento.style.width = percentual + "%";
+
+    barra.appendChild(preenchimento);
+
+    const acoes = document.createElement("div");
+    acoes.className = "acoes-progresso";
+
+    const menos = document.createElement("button");
+    menos.type = "button";
+    menos.className = "btn-parte";
+    menos.textContent = "− Parte";
+    menos.disabled = concluidas <= 0;
+
+    menos.addEventListener("click", () => {
+      alterarProgressoAula(aula.id, -1);
+    });
+
+    const mais = document.createElement("button");
+    mais.type = "button";
+    mais.className = "btn-parte";
+    mais.textContent = "+ Parte";
+    mais.disabled = concluidas >= total;
+
+    mais.addEventListener("click", () => {
+      alterarProgressoAula(aula.id, 1);
+    });
+
+    const editar = document.createElement("button");
+    editar.type = "button";
+    editar.className = "btn-parte";
+    editar.textContent = "Editar aula";
+
+    editar.addEventListener("click", () => {
+      abrirCadastro("aulas", aula.id);
+    });
+
+    acoes.append(menos, mais, editar);
+
+    cartao.append(
+      titulo,
+      detalhes,
+      linha,
+      barra,
+      acoes
+    );
+
+    area.appendChild(cartao);
+  });
+}
+
+/* =====================================================
+   19 — ALTERAR PROGRESSO DA TEORIA
+===================================================== */
+
+function alterarProgressoAula(id, diferenca) {
+  const aula = encontrar("aulas", id);
+
+  if (!aula) return;
+
+  const anterior = copiar(dados);
+
+  const total = Math.max(
+    0,
+    Number(aula.totalPartes || 0)
+  );
+
+  const atual = Number(
+    aula.partesConcluidas || 0
+  );
+
+  aula.partesConcluidas = Math.max(
+    0,
+    Math.min(
+      total,
+      atual + diferenca
+    )
+  );
+
+  if (!salvar()) {
+    dados = anterior;
+    return;
+  }
+
+  atualizarIndicadores();
+  renderizarProgressoAulas();
+}
+
+/* =====================================================
+   20 — RENDERIZAÇÃO GERAL
+===================================================== */
+
+function renderizar() {
+  carregarConcursos();
+  atualizarIndicadores();
+  renderizarCadastros();
+  renderizarBiblioteca();
+  renderizarVinculos();
+  renderizarControle();
+}
+
+/* =====================================================
+   21 — EVENTOS DE CADASTRO, EDIÇÃO E EXCLUSÃO
+===================================================== */
+
+document.addEventListener("click", evento => {
+  const cadastro = evento.target.closest(
+    "[data-cadastro]"
+  );
+
+  if (cadastro) {
+    abrirCadastro(
+      cadastro.dataset.cadastro
+    );
+    return;
+  }
+
+  const botao = evento.target.closest(
+    "[data-acao]"
+  );
+
+  if (!botao) return;
+
+  const { acao, tipo, id } = botao.dataset;
+
+  if (acao === "editar") {
+    abrirCadastro(tipo, id);
+  }
+
+  if (acao === "excluir") {
+    excluirCadastro(tipo, id);
+  }
 });
 
-// FLUXO DE QUESTÕES MISTAS: cada linha tem seu próprio formato e correção.
-const mixedTypes={CE:['C','E'],AB:['A','B'],ABCD:['A','B','C','D'],ABCDE:['A','B','C','D','E'],OPEN:[]};
-let mixedSession=null,mixedQuestions=[],mixedIndex=-1,mixedMedia={},mixedMediaDirty=false;
-const mixedHtml=`<dialog id="mixed-modal"><div class="mixed-wrap"><div class="mixed-head"><h2>🎯 Questões detalhadas — formato individual por questão</h2><button type="button" id="mixed-close">Fechar</button></div><div class="mixed-controls"><label>Conteúdo<select id="mixed-link"></select></label><label>Modalidade<select id="mixed-type"><option value="fixacao">Fixação</option><option value="diversas">Diversas</option><option value="banca">Banca</option></select></label><label>Data<input id="mixed-date" type="date"></label><label>Banca<input id="mixed-board" placeholder="Opcional"></label><label>Questões<input id="mixed-count" type="number" min="1" max="100" value="20" style="width:72px"></label><button type="button" id="mixed-resize">Atualizar quantidade</button></div><div class="mixed-table-wrap"><table class="mixed-table"><thead><tr><th style="width:7%">Nº</th><th style="width:18%">Formato de cada questão</th><th style="width:19%">Marquei</th><th style="width:19%">Gabarito</th><th style="width:15%">Resultado</th><th style="width:22%">Questão / imagens</th></tr></thead><tbody id="mixed-rows"></tbody></table></div><div class="mixed-foot"><strong id="mixed-summary">0 acertos · 0 erros</strong><button type="button" id="mixed-save">💾 Salvar respostas e gabaritos</button></div><aside id="mixed-editor" class="mixed-editor" hidden><div class="mixed-head"><h3 id="mixed-editor-title">Questão</h3><button type="button" id="mixed-editor-close">Concluir</button></div><div class="mixed-editor-body"><p class="mixed-badge">Em cada campo: digite, cole Print Screen com Ctrl+V, anexe várias imagens ou informe links. As imagens aparecem abaixo.</p><div id="mixed-fields"></div></div></aside></div></dialog>`;
-document.body.insertAdjacentHTML('beforeend',mixedHtml);
-const mixedModal=document.getElementById('mixed-modal');
-const mixedFields=[['statement','Enunciado / pergunta'],['alternatives','Alternativas'],['marked','Minha resposta'],['answer','Gabarito'],['explanation','Resolução / explicação']];
-function mixedNewQ(i){return {reference:String(i+1),format:'ABCDE',marked:'',answer:'',grade:'',statement:'',alternatives:'',markedText:'',answerText:'',explanation:'',reason:'',url:''}}
-function mixedStatus(q){return detailOutcome(q,'MIXED')}
-function mixedSelect(items,chosen,empty='—'){return '<option value="">'+empty+'</option>'+items.map(x=>'<option value="'+x+'" '+(chosen===x?'selected':'')+'>'+x+'</option>').join('')}
-function mixedDraw(){const root=document.getElementById('mixed-rows');root.innerHTML=mixedQuestions.map((q,i)=>{const options=mixedTypes[q.format]||mixedTypes.ABCDE;const open=q.format==='OPEN';const outcome=mixedStatus(q);const text={correct:'✓ Acerto',wrong:'✕ Erro',partial:'◐ Parcial',pending:'Aguardando',blank:'Em branco'}[outcome];return `<tr data-mi="${i}"><td><input class="mq-ref" aria-label="Referência" value="${esc(q.reference)}"></td><td><select class="mq-format"><option value="CE" ${q.format==='CE'?'selected':''}>Certo / Errado</option><option value="AB" ${q.format==='AB'?'selected':''}>A–B</option><option value="ABCD" ${q.format==='ABCD'?'selected':''}>A–D</option><option value="ABCDE" ${q.format==='ABCDE'?'selected':''}>A–E</option><option value="OPEN" ${open?'selected':''}>Aberta</option></select></td><td>${open?'<span class="mixed-badge">Texto / imagem</span>':`<select class="mq-marked">${mixedSelect(options,q.marked)}</select>`}</td><td>${open?'<span class="mixed-badge">Texto / imagem</span>':`<select class="mq-answer">${mixedSelect(options,q.answer)}</select>`}</td><td>${open?`<select class="mq-grade"><option value="" ${!q.grade?'selected':''}>Pendente</option><option value="correct" ${q.grade==='correct'?'selected':''}>Correta</option><option value="wrong" ${q.grade==='wrong'?'selected':''}>Errada</option><option value="partial" ${q.grade==='partial'?'selected':''}>Parcial</option></select>`:`<span class="mixed-status" style="color:${outcome==='wrong'?'#b73b47':outcome==='correct'?'#16835d':'#697990'}">${text}</span>`}</td><td><button type="button" class="mixed-edit">📎 Abrir / imagens</button></td></tr>`}).join('');mixedSummary()}
-function mixedSummary(){const statuses=mixedQuestions.map(mixedStatus);document.getElementById('mixed-summary').textContent=`${statuses.filter(x=>x==='correct').length} acertos · ${statuses.filter(x=>x==='wrong').length} erros · ${statuses.filter(x=>x==='pending'||x==='blank').length} pendentes`}
-function mixedStart(s=null,preferredLinkId="",preferredType="fixacao"){if(!s)window._mixedNewId=uid();const links=s?db.links.filter(l=>l.id===s.linkId):activeLinks();mixedSession=s||null;mixedQuestions=s?s.questions.map(q=>({...q,format:q.format||'ABCDE'})):Array.from({length:20},(_,i)=>mixedNewQ(i));const el=document.getElementById('mixed-link');el.innerHTML=links.length?links.map(l=>`<option value="${esc(l.id)}">${esc(subject(topic(l.topicId)?.subjectId)?.name||'')} · ${esc(topic(l.topicId)?.name||'')}</option>`).join(''):'<option value="">Selecione concurso, cargo e vincule conteúdo para salvar</option>';el.value=s?.linkId||(links.some(l=>l.id===preferredLinkId)?preferredLinkId:(links[0]?.id||''));el.disabled=!!s;document.getElementById('mixed-type').value=s?.type||preferredType;document.getElementById('mixed-date').value=s?.date||today();document.getElementById('mixed-board').value=s?.boardName||board(contest()?.boardId)?.name||'';document.getElementById('mixed-count').value=mixedQuestions.length;mixedDraw();mixedModal.showModal()}
-function openMixedSession(s){mixedStart(s)}
+/* =====================================================
+   22 — EVENTOS DOS FORMULÁRIOS
+===================================================== */
 
-document.getElementById('mixed-close').onclick=()=>mixedModal.close();
-document.getElementById('mixed-resize').onclick=()=>{const count=Math.max(1,Math.min(100,Number(document.getElementById('mixed-count').value)||20));while(mixedQuestions.length<count)mixedQuestions.push(mixedNewQ(mixedQuestions.length));mixedQuestions.length=count;mixedDraw()};
-document.getElementById('mixed-rows').addEventListener('change',e=>{const tr=e.target.closest('tr');if(!tr)return;const i=+tr.dataset.mi,q=mixedQuestions[i];if(e.target.matches('.mq-ref'))q.reference=e.target.value.trim();if(e.target.matches('.mq-format')){q.format=e.target.value;q.marked='';q.answer='';q.grade='';mixedDraw();return}if(e.target.matches('.mq-marked'))q.marked=e.target.value;if(e.target.matches('.mq-answer'))q.answer=e.target.value;if(e.target.matches('.mq-grade'))q.grade=e.target.value;mixedDraw()});
-document.getElementById('mixed-rows').addEventListener('click',e=>{const b=e.target.closest('.mixed-edit');if(b)mixedOpenEditor(+b.closest('tr').dataset.mi)});
-function mixedMediaKey(i,f){return (mixedSession?.id||window._mixedNewId)+'::'+i+'::field::'+f}
-async function mixedOpenEditor(i){mixedIndex=i;document.getElementById('mixed-editor-title').textContent='Questão '+mixedQuestions[i].reference;const root=document.getElementById('mixed-fields');root.replaceChildren();for(const [field,name] of mixedFields){const sec=document.createElement('section');sec.className='mixed-field';sec.dataset.field=field;const title=document.createElement('label');title.textContent=name;const ta=document.createElement('textarea');ta.placeholder='Digite ou cole texto aqui';ta.value=field==='marked'?mixedQuestions[i].markedText|| (mixedQuestions[i].format==='OPEN'?mixedQuestions[i].marked:''):field==='answer'?mixedQuestions[i].answerText||(mixedQuestions[i].format==='OPEN'?mixedQuestions[i].answer:''):mixedQuestions[i][field]||'';ta.oninput=()=>{const q=mixedQuestions[i];if(field==='marked'){q.markedText=ta.value;if(q.format==='OPEN')q.marked=ta.value}else if(field==='answer'){q.answerText=ta.value;if(q.format==='OPEN')q.answer=ta.value}else q[field]=ta.value};const drop=document.createElement('div');drop.className='mixed-drop';drop.tabIndex=0;drop.textContent='📋 Clique aqui e pressione Ctrl+V para colar uma ou várias capturas';const files=document.createElement('input');files.type='file';files.accept='image/*';files.multiple=true;const thumbs=document.createElement('div');thumbs.className='mixed-thumbs';const link=document.createElement('input');link.type='url';link.placeholder='https://link-da-imagem';const add=document.createElement('button');add.type='button';add.textContent='＋ Link';const entries=await attachGet(mixedMediaKey(i,field)).catch(()=>[]);let list=entries;
-const refresh=()=>{thumbs.replaceChildren();list.forEach((entry,j)=>{const box=document.createElement('div');box.className='mixed-thumb';if(entry.kind==='link'){const a=document.createElement('a');a.href=entry.url;a.target='_blank';a.rel='noopener';a.textContent='🔗 '+entry.url;box.append(a)}else{const img=document.createElement('img');const u=URL.createObjectURL(entry.blob);img.src=u;img.onload=()=>URL.revokeObjectURL(u);box.append(img)}const del=document.createElement('button');del.textContent='Excluir';del.type='button';del.onclick=async()=>{list.splice(j,1);await attachPut(mixedMediaKey(i,field),list);refresh()};box.append(del);thumbs.append(box)})};
-const persist=async filesArr=>{for(const f of filesArr){if(f&&f.type.startsWith('image/'))list.push({kind:'file',name:f.name||'Captura de tela',blob:f})}await attachPut(mixedMediaKey(i,field),list);refresh();drop.textContent='✓ '+list.length+' imagem(ns) ou link(s) salvos. Cole outra imagem aqui.';if(mixedQuestions[i].format==='OPEN'&&(field==='marked'||field==='answer')&&list.length){const q=mixedQuestions[i];if(field==='marked'&&!q.marked)q.marked='[Imagem anexada]';if(field==='answer'&&!q.answer)q.answer='[Imagem anexada]'}};
-drop.onpaste=async e=>{const images=Array.from(e.clipboardData?.items||[]).filter(x=>x.type.startsWith('image/')).map(x=>x.getAsFile()).filter(Boolean);if(images.length){e.preventDefault();await persist(images)}};drop.ondragover=e=>e.preventDefault();drop.ondrop=async e=>{e.preventDefault();await persist(Array.from(e.dataTransfer.files))};files.onchange=async()=>{await persist(Array.from(files.files));files.value=''};add.onclick=async()=>{const u=link.value.trim();if(!/^https?:\/\//i.test(u))return alert('Informe um link http(s) válido.');list.push({kind:'link',name:'Link',url:u});await attachPut(mixedMediaKey(i,field),list);link.value='';refresh();if(mixedQuestions[i].format==='OPEN'&&(field==='marked'||field==='answer')){const q=mixedQuestions[i];if(field==='marked'&&!q.marked)q.marked='[Link anexado]';if(field==='answer'&&!q.answer)q.answer='[Link anexado]'}};sec.append(title,ta,drop,files,link,add,thumbs);root.append(sec);refresh()}
-document.getElementById('mixed-editor').hidden=false}
-document.getElementById('mixed-editor-close').onclick=()=>{document.getElementById('mixed-editor').hidden=true;mixedDraw()};
-document.getElementById('mixed-save').onclick=async()=>{if(!db.selectedContest||!db.selectedRole||!document.getElementById('mixed-link').value)return alert('Para salvar, selecione um concurso e um cargo e vincule um conteúdo. O formulário pode ser visualizado antes disso.');if(!document.getElementById('mixed-editor').hidden)document.getElementById('mixed-editor-close').click();const refs=mixedQuestions.map(q=>q.reference.trim());if(refs.some(x=>!x)||new Set(refs).size!==refs.length)return alert('Informe referências únicas para as questões.');const id=mixedSession?.id||window._mixedNewId||uid();const record=mixedSession||{id,contestId:db.selectedContest,roleId:db.selectedRole};Object.assign(record,{linkId:document.getElementById('mixed-link').value,type:document.getElementById('mixed-type').value,date:document.getElementById('mixed-date').value,boardName:document.getElementById('mixed-board').value.trim(),format:'MIXED',questions:mixedQuestions.map(q=>({...q})),total:mixedQuestions.length,correct:mixedQuestions.filter(q=>mixedStatus(q)==='correct').length});if(!mixedSession)db.sessions.push(record);syncDetailedErrors(record);const wrong=mixedQuestions.filter(q=>mixedStatus(q)==='wrong').length;save();mixedSession=record;document.getElementById('mixed-editor').hidden=true;mixedModal.close();if(wrong)document.getElementById('errors-panel').open=true;document.getElementById('sessions-panel').open=true;alert('Sessão salva. '+record.correct+' acertos e '+wrong+' erros registrados no Caderno de Erros.');};
-window._mixedNewId=uid();const oldMixedStart=mixedStart;
-// Garante um identificador estável para anexos antes de salvar.
-// Botão Questões detalhadas já está conectado pelo delegado data-action.
+$("#form-cadastro").addEventListener(
+  "submit",
+  gravarCadastro
+);
 
-// Caderno unificado: o botão da aula apenas filtra a mesma base de registros.
-$('#error-scope').addEventListener('change',()=>render());
-$('#clear-error-filter').addEventListener('click',()=>{window._errorLinkFilter='';render()});
+$("#cancelar-modal").addEventListener(
+  "click",
+  fecharModal
+);
 
+$("#modal-cadastro").addEventListener(
+  "close",
+  () => {
+    edicao = null;
+  }
+);
 
-})();
+/* =====================================================
+   23 — EVENTOS DA CENTRAL DE CONCURSOS
+===================================================== */
+
+$("#active-contest").addEventListener(
+  "change",
+  evento => {
+    const anterior = dados.concursoSelecionado;
+
+    dados.concursoSelecionado =
+      evento.target.value;
+
+    if (!salvar()) {
+      dados.concursoSelecionado = anterior;
+    }
+
+    atualizarIndicadores();
+  }
+);
+
+/* =====================================================
+   24 — EVENTOS DE VINCULAÇÃO
+===================================================== */
+
+$("#btn-vincular-conteudo").addEventListener(
+  "click",
+  abrirVinculacao
+);
+
+/* =====================================================
+   25 — EVENTOS DO CONTROLE GERAL
+===================================================== */
+
+$("#btn-plataforma").addEventListener(
+  "click",
+  () => abrirCadastro("plataformas")
+);
+
+$("#btn-aula").addEventListener(
+  "click",
+  () => abrirCadastro("aulas")
+);
+
+/* =====================================================
+   26 — EVENTOS DOS FILTROS
+===================================================== */
+
+$("#filtro-concurso").addEventListener(
+  "change",
+  () => {
+    atualizarFiltros();
+    renderizarProgressoAulas();
+  }
+);
+
+$("#filtro-cargo").addEventListener(
+  "change",
+  renderizarProgressoAulas
+);
+
+$("#filtro-plataforma").addEventListener(
+  "change",
+  renderizarProgressoAulas
+);
+
+$("#pesquisa-aulas").addEventListener(
+  "input",
+  renderizarProgressoAulas
+);
+
+/* =====================================================
+   27 — EXPORTAR BACKUP
+===================================================== */
+
+function exportarBackup() {
+  const conteudo = JSON.stringify(
+    dados,
+    null,
+    2
+  );
+
+  const arquivo = new Blob(
+    [conteudo],
+    { type: "application/json;charset=utf-8" }
+  );
+
+  const url = URL.createObjectURL(arquivo);
+
+  const link = document.createElement("a");
+
+  link.href = url;
+
+  const data = new Date()
+    .toISOString()
+    .slice(0, 10);
+
+  link.download =
+    `marcio360-backup-${data}.json`;
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+  }, 1000);
+}
+
+$("#btn-backup").addEventListener(
+  "click",
+  exportarBackup
+);
+
+/* =====================================================
+   28 — INICIALIZAÇÃO
+===================================================== */
+
+function iniciarSistema() {
+  renderizar();
+
+  $("#situacao").textContent =
+    "● Sistema pronto";
+}
+
+iniciarSistema();
+
+/* =====================================================
+   FIM DO ARQUIVO SCRIPT.JS
+   MÁRCIO EDUCA 360 — CONCURSOS PRO
+===================================================== */

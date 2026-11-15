@@ -1,509 +1,152 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="description"
-    content="MÁRCIO EDUCA 360 — Sistema de controle de estudos para concursos públicos."
-  >
-
-  <title>MÁRCIO EDUCA 360 | CONCURSOS PRO</title>
-
-  <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Márcio Educa 360 — Central de Concursos</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-
-  <!-- =====================================
-       CABEÇALHO PRINCIPAL
-  ====================================== -->
-
-  <header class="topo">
-
-    <div class="marca">
-      <h1>
-        MÁRCIO EDUCA <span>360</span>
-      </h1>
-
-      <p>
-        MEUS ESTUDOS · CONCURSOS PRO
-      </p>
-    </div>
-
-    <div class="topo-acoes">
-
-      <span
-        id="situacao"
-        role="status"
-        aria-live="polite"
-      >
-        ● Sistema iniciado
-      </span>
-
-      <button
-        type="button"
-        id="btn-backup"
-        class="btn-topo"
-      >
-        Exportar backup
-      </button>
-
-    </div>
-
-  </header>
-
-  <!-- =====================================
-       CONTEÚDO PRINCIPAL
-  ====================================== -->
-
-  <main class="container">
-
-    <!-- ===================================
-         ETAPA 01 — CENTRAL DE CONCURSOS
-    ==================================== -->
-
-    <section
-      class="painel"
-      id="central"
-    >
-
-      <div class="cabecalho-painel">
-
+  <div class="container">
+    <!-- 1. CENTRAL DE CONCURSOS -->
+    <section class="panel">
+      <div class="panel-header-flex">
         <div>
-          <h2>Central de Concursos</h2>
-
-          <p>
-            Acompanhamento geral dos estudos
-            para concursos públicos.
-          </p>
+          <h1>Central de Concursos</h1>
+          <p class="subtitle">Acompanhamento geral dos estudos para concursos públicos.</p>
         </div>
-
-        <label class="seletor-concurso">
-
-          CONCURSO SELECIONADO
-
-          <select id="active-contest">
-
-            <option value="">
-              Selecione um concurso
-            </option>
-
-          </select>
-
-        </label>
-
+        <div class="concurso-selector-box">
+          <label for="select-concurso-topo">CONCURSO SELECIONADO</label>
+          <select id="select-concurso-topo"></select>
+        </div>
       </div>
 
-      <div
-        id="stats"
-        class="indicadores"
-        aria-live="polite"
-      ></div>
-
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-value" id="kpi-concursos">0</span>
+          <span class="kpi-label">Concursos ativos</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-value" id="kpi-cargos">0</span>
+          <span class="kpi-label">Cargos</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-value" id="kpi-conteudos">0</span>
+          <span class="kpi-label">Conteúdos</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-value" id="kpi-teoria">0%</span>
+          <span class="kpi-label">Teoria concluída</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-value" id="kpi-questoes">0</span>
+          <span class="kpi-label">Questões</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-value" id="kpi-acertos">0</span>
+          <span class="kpi-label">Acertos</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-value" id="kpi-aproveitamento">0%</span>
+          <span class="kpi-label">Aproveitamento</span>
+        </div>
+      </div>
     </section>
 
-    <!-- ===================================
-         ETAPA 02 — GERENCIAR CONCURSOS
-    ==================================== -->
+    <!-- 2. GERENCIAR CONCURSOS (VIA CÓDIGO dados.js) -->
+    <section class="panel">
+      <h2>Gerenciar Concursos</h2>
+      <p class="subtitle">Estrutura cadastrada e controlada diretamente pelo arquivo <code>dados.js</code>.</p>
 
-    <section
-      class="painel"
-      id="gerenciamento"
-    >
-
-      <div class="cabecalho-painel">
-
-        <div>
-          <h2>Gerenciar Concursos</h2>
-
-          <p>
-            Cadastro e gerenciamento de
-            bancas, concursos e cargos.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="acoes-cadastro">
-
-        <button
-          type="button"
-          class="btn btn-azul"
-          data-cadastro="bancas"
-        >
-          + Banca
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-roxo"
-          data-cadastro="concursos"
-        >
-          + Concurso
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-verde"
-          data-cadastro="cargos"
-        >
-          + Cargo
-        </button>
-
-      </div>
-
-      <div class="listas-cadastro">
-
-        <div class="coluna-cadastro">
-
+      <div class="three-col-grid">
+        <div class="sub-box">
           <h3>Bancas</h3>
-
-          <div id="lista-bancas"></div>
-
+          <div id="lista-bancas" class="item-list"></div>
         </div>
-
-        <div class="coluna-cadastro">
-
+        <div class="sub-box">
           <h3>Concursos</h3>
-
-          <div id="lista-concursos"></div>
-
+          <div id="lista-concursos" class="item-list"></div>
         </div>
-
-        <div class="coluna-cadastro">
-
+        <div class="sub-box">
           <h3>Cargos</h3>
-
-          <div id="lista-cargos"></div>
-
+          <div id="lista-cargos" class="item-list"></div>
         </div>
-
       </div>
-
     </section>
 
-    <!-- ===================================
-         ETAPA 03 — BIBLIOTECA PERMANENTE
-    ==================================== -->
+    <!-- 3. BIBLIOTECA PERMANENTE -->
+    <section class="panel">
+      <h2>Biblioteca Permanente</h2>
+      <p class="subtitle">Disciplinas e conteúdos organizados para utilização nos estudos.</p>
 
-    <section
-      class="painel"
-      id="biblioteca"
-    >
-
-      <div class="cabecalho-painel">
-
-        <div>
-          <h2>Biblioteca Permanente</h2>
-
-          <p>
-            Organize disciplinas e conteúdos
-            para utilização nos estudos.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="acoes-cadastro">
-
-        <button
-          type="button"
-          class="btn btn-azul"
-          data-cadastro="disciplinas"
-        >
-          + Disciplina
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-roxo"
-          data-cadastro="conteudos"
-        >
-          + Conteúdo
-        </button>
-
-      </div>
-
-      <div class="listas-cadastro biblioteca-grid">
-
-        <div class="coluna-cadastro">
-
+      <div class="two-col-grid">
+        <div class="sub-box">
           <h3>Disciplinas</h3>
-
-          <div id="lista-disciplinas"></div>
-
+          <div id="lista-disciplinas" class="item-list"></div>
         </div>
-
-        <div class="coluna-cadastro">
-
+        <div class="sub-box">
           <h3>Conteúdos</h3>
-
-          <div id="lista-conteudos"></div>
-
+          <div id="lista-conteudos" class="item-list"></div>
         </div>
-
       </div>
-
     </section>
 
-    <!-- ===================================
-         ETAPA 04 — CONTEÚDOS DOS CARGOS
-    ==================================== -->
-
-    <section
-      class="painel"
-      id="vinculacoes"
-    >
-
-      <div class="cabecalho-painel">
-
-        <div>
-          <h2>Conteúdos dos Cargos</h2>
-
-          <p>
-            Vincule conteúdos da Biblioteca
-            Permanente aos cargos dos concursos.
-          </p>
-        </div>
-
-      </div>
-
-      <div class="acoes-cadastro">
-
-        <button
-          type="button"
-          class="btn btn-azul"
-          id="btn-vincular-conteudo"
-        >
-          + Vincular Conteúdo
-        </button>
-
-      </div>
-
-      <div
-        id="lista-vinculos"
-        class="lista-vinculos"
-      ></div>
-
+    <!-- 4. CONTEÚDOS DOS CARGOS -->
+    <section class="panel">
+      <h2>Conteúdos dos Cargos</h2>
+      <p class="subtitle">Conteúdos da Biblioteca Permanente vinculados aos cargos dos concursos.</p>
+      <div id="lista-vinculos" class="item-list"></div>
     </section>
 
-    <!-- ===================================
-         ETAPA 05 — CONTROLE GERAL
-    ==================================== -->
+    <!-- 5. CONTROLE GERAL DE ESTUDOS & PROGRESSO DAS AULAS -->
+    <section class="panel">
+      <h2>Controle Geral de Estudos</h2>
+      <p class="subtitle">Gerencie plataformas, aulas, links do OneDrive e o progresso das partes de teoria.</p>
 
-    <section
-      class="painel"
-      id="controle-geral"
-    >
-
-      <div class="cabecalho-painel">
-
-        <div>
-          <h2>Controle Geral de Estudos</h2>
-
-          <p>
-            Gerencie plataformas, aulas
-            e o progresso das partes de teoria.
-          </p>
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label for="filtro-concurso">Concurso</label>
+          <select id="filtro-concurso"></select>
         </div>
-
+        <div class="filter-group">
+          <label for="filtro-cargo">Cargo</label>
+          <select id="filtro-cargo"></select>
+        </div>
+        <div class="filter-group">
+          <label for="filtro-plataforma">Plataforma</label>
+          <select id="filtro-plataforma"></select>
+        </div>
+        <div class="filter-group">
+          <label for="filtro-busca">Pesquisar aula</label>
+          <input type="text" id="filtro-busca" placeholder="Pesquisar conteúdo ou aula..." />
+        </div>
       </div>
 
-      <div class="acoes-cadastro">
-
-        <button
-          type="button"
-          class="btn btn-roxo"
-          id="btn-plataforma"
-        >
-          + Plataforma
-        </button>
-
-        <button
-          type="button"
-          class="btn btn-azul"
-          id="btn-aula"
-        >
-          + Aula
-        </button>
-
-      </div>
-
-      <!-- FILTROS DO CONTROLE GERAL -->
-
-      <div class="filtros-controle">
-
-        <label>
-
-          Concurso
-
-          <select id="filtro-concurso">
-            <option value="">
-              Todos os concursos
-            </option>
-          </select>
-
-        </label>
-
-        <label>
-
-          Cargo
-
-          <select id="filtro-cargo">
-            <option value="">
-              Todos os cargos
-            </option>
-          </select>
-
-        </label>
-
-        <label>
-
-          Plataforma
-
-          <select id="filtro-plataforma">
-            <option value="">
-              Todas as plataformas
-            </option>
-          </select>
-
-        </label>
-
-        <label>
-
-          Pesquisar aula
-
-          <input
-            type="search"
-            id="pesquisa-aulas"
-            placeholder="Pesquisar conteúdo ou aula..."
-            autocomplete="off"
-          >
-
-        </label>
-
-      </div>
-
-      <!-- CADASTROS DO CONTROLE GERAL -->
-
-      <div class="listas-cadastro biblioteca-grid">
-
-        <div class="coluna-cadastro">
-
+      <div class="two-col-grid" style="margin-bottom: 24px;">
+        <div class="sub-box">
           <h3>Plataformas</h3>
-
-          <div id="lista-plataformas"></div>
-
+          <div id="lista-plataformas" class="item-list"></div>
         </div>
-
-        <div class="coluna-cadastro">
-
+        <div class="sub-box">
           <h3>Aulas cadastradas</h3>
-
-          <div id="lista-aulas"></div>
-
+          <div id="lista-aulas-resumo" class="item-list"></div>
         </div>
-
       </div>
 
-      <!-- ACOMPANHAMENTO DO PROGRESSO -->
+      <hr class="divider" />
 
-      <div class="secao-progresso">
-
-        <div class="cabecalho-painel">
-
-          <div>
-            <h3>Progresso das Aulas</h3>
-
-            <p>
-              Acompanhe as partes concluídas
-              de cada aula.
-            </p>
-          </div>
-
+      <div class="progresso-header">
+        <div>
+          <h3>Progresso das Aulas</h3>
+          <p class="subtitle">Acompanhe as partes concluídas e abra PDFs, Vídeos e Imagens do OneDrive.</p>
         </div>
-
-        <div
-          id="progresso-aulas"
-          class="progresso-aulas"
-        ></div>
-
       </div>
 
+      <div id="lista-progresso-aulas" class="aulas-progresso-grid"></div>
     </section>
+  </div>
 
-  </main>
-
-  <!-- =====================================
-       MODAL UNIVERSAL DE CADASTRO
-  ====================================== -->
-
-  <dialog id="modal-cadastro">
-
-    <form id="form-cadastro">
-
-      <h2 id="titulo-modal">
-        Cadastro
-      </h2>
-
-      <div id="campos-modal"></div>
-
-      <div class="acoes-modal">
-
-        <button
-          type="button"
-          id="cancelar-modal"
-          class="btn btn-cinza"
-        >
-          Cancelar
-        </button>
-
-        <button
-          type="submit"
-          class="btn btn-azul"
-        >
-          Salvar
-        </button>
-
-      </div>
-
-    </form>
-
-  </dialog>
-
-  <!-- =====================================
-       RODAPÉ
-  ====================================== -->
-
-  <footer class="rodape">
-
-    <p>
-      MÁRCIO EDUCA 360 — CONCURSOS PRO
-    </p>
-
-    <small>
-      Ambiente pessoal de controle de estudos
-    </small>
-
-  </footer>
-
-  <!-- =====================================
-       ARQUIVOS JAVASCRIPT
-       A ORDEM DEVE SER MANTIDA
-  ====================================== -->
-
-  <script src="./dados.js" defer></script>
-
-  <script src="./script.js" defer></script>
-
+  <script src="dados.js"></script>
+  <script src="script.js"></script>
 </body>
-
 </html>

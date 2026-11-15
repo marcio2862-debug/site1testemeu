@@ -1,1098 +1,326 @@
-
-/* =====================================================
-   MÁRCIO EDUCA 360 — CONCURSOS PRO
-   ARQUIVO: style.css
-   VERSÃO CONSOLIDADA — ETAPAS 01 A 05
-===================================================== */
-
-/* =====================================================
-   01 — VARIÁVEIS DO SISTEMA
-===================================================== */
-
-:root {
-  --azul: #1769aa;
-  --azul-escuro: #173766;
-  --azul-claro: #eaf3fc;
-
-  --roxo: #6840b5;
-  --roxo-claro: #f1ecfb;
-
-  --verde: #16845d;
-  --verde-claro: #e5f5ed;
-
-  --vermelho: #bd3544;
-  --vermelho-claro: #fcebed;
-
-  --laranja: #b86a13;
-
-  --fundo: #f2f5fa;
-  --branco: #ffffff;
-  --texto: #1c2b40;
-  --cinza: #66758a;
-  --borda: #dce4ee;
-
-  --sombra: 0 3px 14px rgba(22, 42, 78, 0.06);
-  --sombra-modal: 0 18px 60px rgba(0, 0, 0, 0.24);
-
-  --raio: 10px;
-  --transicao: 0.18s ease;
-}
-
-/* =====================================================
-   02 — CONFIGURAÇÕES GERAIS
-===================================================== */
-
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-
-  background: var(--fundo);
-  color: var(--texto);
-
-  font-family: "Segoe UI", Arial, sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--azul);
-  outline-offset: 2px;
-}
-
-h1,
-h2,
-h3,
-h4,
-p {
-  overflow-wrap: anywhere;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-/* =====================================================
-   03 — CABEÇALHO PRINCIPAL
-===================================================== */
-
-.topo {
-  width: 100%;
-
-  background: linear-gradient(
-    115deg,
-    #142e59 0%,
-    #29478a 55%,
-    #503b88 100%
-  );
-
-  color: var(--branco);
-
-  padding: 18px 26px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.marca {
-  min-width: 0;
-}
-
-.marca h1 {
-  margin: 0;
-
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: 0.3px;
-  line-height: 1.2;
-}
-
-.marca h1 span {
-  color: #9be0ff;
-}
-
-.marca p {
-  margin: 6px 0 0;
-
-  color: #d9e5ff;
-
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 1px;
-}
-
-.topo-acoes {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-#situacao {
-  color: #b5f4cf;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.btn-topo {
-  padding: 9px 14px;
-
-  background: rgba(255, 255, 255, 0.13);
-  color: var(--branco);
-
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 7px;
-
-  font-weight: 600;
-
-  transition: background var(--transicao);
-}
-
-.btn-topo:hover {
-  background: rgba(255, 255, 255, 0.23);
-}
-
-/* =====================================================
-   04 — CONTAINER PRINCIPAL
-===================================================== */
-
-.container {
-  width: 100%;
-  max-width: 1920px;
-
-  margin: 0 auto;
-  padding: 20px 24px;
-}
-
-/* =====================================================
-   05 — PAINÉIS
-===================================================== */
-
-.painel {
-  width: 100%;
-  min-width: 0;
-
-  margin-bottom: 17px;
-  padding: 19px;
-
-  background: var(--branco);
-
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-
-  box-shadow: var(--sombra);
-}
-
-.cabecalho-painel {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.cabecalho-painel h2 {
-  margin: 0 0 5px;
-
-  color: var(--azul-escuro);
-
-  font-size: 18px;
-  font-weight: 750;
-}
-
-.cabecalho-painel p {
-  margin: 0;
-
-  color: var(--cinza);
-  font-size: 12px;
-}
-
-/* =====================================================
-   06 — CAMPOS E FORMULÁRIOS
-===================================================== */
-
-input,
-select,
-textarea {
-  width: 100%;
-  min-width: 0;
-
-  padding: 10px 11px;
-
-  background: var(--branco);
-  color: var(--texto);
-
-  border: 1px solid var(--borda);
-  border-radius: 7px;
-
-  transition:
-    border-color var(--transicao),
-    box-shadow var(--transicao);
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--azul);
-
-  box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.1);
-
-  outline: none;
-}
-
-input::placeholder {
-  color: #93a0b1;
-}
-
-label {
-  color: var(--texto);
-}
-
-/* =====================================================
-   07 — SELETOR DE CONCURSO
-===================================================== */
-
-.seletor-concurso {
-  display: grid;
-  gap: 7px;
-
-  color: var(--cinza);
-
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-
-.seletor-concurso select {
-  min-width: 270px;
-  max-width: 430px;
-
-  font-size: 12px;
-  font-weight: 500;
-}
-
-/* =====================================================
-   08 — INDICADORES DA CENTRAL
-===================================================== */
-
-.indicadores {
-  display: grid;
-
-  grid-template-columns: repeat(
-    7,
-    minmax(0, 1fr)
-  );
-
-  gap: 11px;
-  margin-top: 20px;
-}
-
-.indicador {
-  min-width: 0;
-
-  padding: 15px 13px;
-
-  background: #f5f8fd;
-
-  border: 1px solid #e5edf7;
-  border-radius: 9px;
-
-  transition:
-    transform var(--transicao),
-    box-shadow var(--transicao);
-}
-
-.indicador:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--sombra);
-}
-
-.indicador strong {
-  display: block;
-
-  margin-bottom: 6px;
-
-  color: var(--azul);
-
-  font-size: 23px;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.indicador small {
-  display: block;
-
-  color: var(--cinza);
-
-  font-size: 11px;
+  background-color: #eef2f6;
+  color: #1e293b;
+  padding: 20px;
   line-height: 1.4;
 }
 
-/* =====================================================
-   09 — BOTÕES PADRÃO
-===================================================== */
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  min-height: 37px;
-  padding: 9px 15px;
-
-  border: 1px solid transparent;
-  border-radius: 7px;
-
-  font-size: 12px;
-  font-weight: 650;
-  text-align: center;
-
-  transition:
-    background var(--transicao),
-    transform var(--transicao),
-    opacity var(--transicao);
-}
-
-.btn:hover:not(:disabled) {
-  filter: brightness(0.94);
-}
-
-.btn:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.btn-azul {
-  background: var(--azul);
-  color: var(--branco);
-}
-
-.btn-roxo {
-  background: var(--roxo);
-  color: var(--branco);
-}
-
-.btn-verde {
-  background: var(--verde);
-  color: var(--branco);
-}
-
-.btn-cinza {
-  background: #e7edf5;
-  color: #263d5d;
-}
-
-.btn-vermelho {
-  background: var(--vermelho);
-  color: var(--branco);
-}
-
-.acoes-cadastro {
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-
-  gap: 9px;
-  margin: 18px 0;
+  flex-direction: column;
+  gap: 18px;
 }
 
-/* =====================================================
-   10 — COLUNAS DOS CADASTROS
-===================================================== */
+.panel {
+  background: #ffffff;
+  border: 1px solid #dce3ec;
+  border-radius: 10px;
+  padding: 22px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
 
-.listas-cadastro {
+.panel h1, .panel h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.subtitle {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin-top: 2px;
+  margin-bottom: 16px;
+}
+
+.panel-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.concurso-selector-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 240px;
+}
+
+.concurso-selector-box label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.04em;
+}
+
+select, input[type="text"], input[type="number"] {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #0f172a;
+  background-color: #ffffff;
+  width: 100%;
+}
+
+/* KPIs */
+.kpi-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
 
-  grid-template-columns: repeat(
-    3,
-    minmax(0, 1fr)
-  );
+.kpi-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+}
 
+.kpi-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.kpi-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* Grids internos */
+.three-col-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 14px;
 }
 
-.coluna-cadastro {
-  min-width: 0;
-
-  padding: 14px;
-
-  background: #f7f9fd;
-
-  border: 1px solid var(--borda);
-  border-radius: 9px;
+.two-col-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 14px;
 }
 
-.coluna-cadastro h3 {
-  margin: 0 0 13px;
-
-  color: var(--azul-escuro);
-
-  font-size: 14px;
-  font-weight: 700;
-}
-
-/* =====================================================
-   11 — REGISTROS CADASTRADOS
-===================================================== */
-
-.registro {
-  min-width: 0;
-
-  padding: 12px;
-  margin-bottom: 9px;
-
-  background: var(--branco);
-
-  border: 1px solid var(--borda);
+.sub-box {
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-
-  overflow-wrap: anywhere;
-}
-
-.registro:last-child {
-  margin-bottom: 0;
-}
-
-.registro-nome {
-  color: var(--texto);
-
-  font-size: 12px;
-  font-weight: 650;
-  line-height: 1.5;
-}
-
-.registro-acoes {
-  display: flex;
-  flex-wrap: wrap;
-
-  gap: 7px;
-  margin-top: 10px;
-}
-
-.acao-registro {
-  padding: 7px 11px;
-
-  background: #e7edf8;
-  color: #243b60;
-
-  border: none;
-  border-radius: 6px;
-
-  font-size: 11px;
-  font-weight: 650;
-
-  transition: background var(--transicao);
-}
-
-.acao-registro:hover {
-  background: #d9e5f5;
-}
-
-.acao-registro.excluir {
-  background: var(--vermelho-claro);
-  color: var(--vermelho);
-}
-
-.acao-registro.excluir:hover {
-  background: #f8d6dc;
-}
-
-.vazio {
-  margin: 0;
-
-  padding: 12px 4px;
-
-  color: var(--cinza);
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-/* =====================================================
-   12 — BIBLIOTECA PERMANENTE
-===================================================== */
-
-#biblioteca {
-  margin-top: 0;
-}
-
-.biblioteca-grid {
-  grid-template-columns: repeat(
-    2,
-    minmax(0, 1fr)
-  );
-}
-
-#lista-disciplinas,
-#lista-conteudos,
-#lista-plataformas,
-#lista-aulas {
-  max-height: 480px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 3px;
-}
-
-/* =====================================================
-   13 — VINCULAÇÃO DE CONTEÚDOS
-===================================================== */
-
-#vinculacoes {
-  margin-top: 0;
-}
-
-.lista-vinculos,
-#lista-vinculos {
-  display: grid;
-  gap: 10px;
-}
-
-.vinculo-registro {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 13px;
-  min-width: 0;
-
-  padding: 13px 15px;
-
-  background: #f7f9fd;
-
-  border: 1px solid var(--borda);
-  border-radius: 9px;
-}
-
-.vinculo-info {
-  display: grid;
-  gap: 5px;
-
-  min-width: 0;
-}
-
-.vinculo-info strong {
-  color: var(--azul-escuro);
-
-  font-size: 13px;
-  font-weight: 700;
-
-  overflow-wrap: anywhere;
-}
-
-.vinculo-info small {
-  color: var(--cinza);
-
-  font-size: 11px;
-  line-height: 1.5;
-
-  overflow-wrap: anywhere;
-}
-
-/* =====================================================
-   14 — CONTROLE GERAL DE ESTUDOS
-===================================================== */
-
-#controle-geral {
-  margin-top: 0;
-}
-
-#controle-geral h3 {
-  color: var(--azul-escuro);
-
-  font-size: 14px;
-  font-weight: 700;
-}
-
-/* =====================================================
-   15 — FILTROS DO CONTROLE GERAL
-===================================================== */
-
-.filtros-controle {
-  display: grid;
-
-  grid-template-columns: repeat(
-    4,
-    minmax(0, 1fr)
-  );
-
-  gap: 12px;
-  margin: 18px 0;
   padding: 14px;
-
-  background: #f7f9fd;
-
-  border: 1px solid var(--borda);
-  border-radius: 9px;
+  background: #fafbfc;
 }
 
-.filtros-controle label {
-  display: grid;
-  gap: 7px;
-
-  min-width: 0;
-
-  color: var(--cinza);
-
-  font-size: 11px;
-  font-weight: 650;
+.sub-box h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 10px;
 }
 
-.filtros-controle select,
-.filtros-controle input {
-  width: 100%;
-  min-width: 0;
-
-  font-size: 12px;
-}
-
-/* =====================================================
-   16 — SEÇÃO DE PROGRESSO
-===================================================== */
-
-.secao-progresso {
-  margin-top: 20px;
-  padding-top: 17px;
-
-  border-top: 1px solid var(--borda);
-}
-
-.secao-progresso h3 {
-  margin: 0 0 5px;
-}
-
-.progresso-aulas,
-#progresso-aulas {
-  display: grid;
-  gap: 12px;
-
-  margin-top: 16px;
-}
-
-/* =====================================================
-   17 — CARTÃO DE PROGRESSO DA AULA
-===================================================== */
-
-.aula-progresso {
-  min-width: 0;
-
-  padding: 15px;
-
-  background: #f7f9fd;
-
-  border: 1px solid var(--borda);
-  border-radius: 9px;
-}
-
-.aula-progresso h4 {
-  margin: 0 0 6px;
-
-  color: var(--azul-escuro);
-
-  font-size: 14px;
-  font-weight: 750;
-}
-
-.aula-detalhes {
-  margin-bottom: 13px;
-
-  color: var(--cinza);
-
-  font-size: 11px;
-  line-height: 1.6;
-
-  overflow-wrap: anywhere;
-}
-
-.progresso-linha {
+.item-list {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 12px;
-  margin-bottom: 8px;
-
-  font-size: 12px;
-}
-
-.progresso-linha strong {
-  color: var(--verde);
-  font-weight: 750;
-}
-
-/* =====================================================
-   18 — BARRAS DE PROGRESSO
-===================================================== */
-
-.barra-progresso {
-  width: 100%;
-  height: 9px;
-
-  background: #dce6f3;
-
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.barra-progresso span {
-  display: block;
-
-  width: 0;
-  height: 100%;
-
-  background: var(--verde);
-
-  border-radius: 20px;
-
-  transition: width 0.25s ease;
-}
-
-/* =====================================================
-   19 — CONTROLES DAS PARTES
-===================================================== */
-
-.acoes-progresso {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-
+  flex-direction: column;
   gap: 8px;
-  margin-top: 13px;
 }
 
-.btn-parte {
-  min-height: 34px;
-  padding: 8px 12px;
-
-  background: #e6eef9;
-  color: var(--azul-escuro);
-
-  border: 1px solid #d1e0f3;
+.item-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
-
-  font-size: 12px;
-  font-weight: 650;
-
-  transition: background var(--transicao);
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #0f172a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
 }
 
-.btn-parte:hover:not(:disabled) {
-  background: #d9e8fa;
+.tag-code {
+  font-size: 0.72rem;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
 }
 
-.btn-parte:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+.empty-msg {
+  font-size: 0.8rem;
+  color: #64748b;
 }
 
-/* =====================================================
-   20 — MODAL DE CADASTRO
-===================================================== */
-
-#modal-cadastro {
-  width: min(500px, 94vw);
-  max-height: 90vh;
-
-  padding: 24px;
-
-  background: var(--branco);
-  color: var(--texto);
-
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-
-  box-shadow: var(--sombra-modal);
-
-  overflow-y: auto;
-}
-
-#modal-cadastro::backdrop {
-  background: rgba(15, 27, 49, 0.6);
-}
-
-#titulo-modal {
-  margin: 0 0 20px;
-
-  color: var(--azul-escuro);
-
-  font-size: 19px;
-  font-weight: 750;
-}
-
-#campos-modal {
+/* Filtros */
+.filter-bar {
   display: grid;
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
 }
 
-#campos-modal label {
-  display: grid;
-  gap: 7px;
-
-  color: var(--texto);
-
-  font-size: 12px;
-  font-weight: 650;
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-#campos-modal input,
-#campos-modal select,
-#campos-modal textarea {
-  width: 100%;
-  min-width: 0;
+.filter-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
 }
 
-.acoes-modal {
+.divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 18px 0;
+}
+
+/* Progresso das Aulas */
+.aulas-progresso-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.aula-box {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.aula-box-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.aula-meta {
+  font-size: 0.75rem;
+  color: #1d4ed8;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.aula-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 2px;
+}
+
+.questoes-box {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+}
 
+.questoes-box input {
+  width: 60px;
+  padding: 4px 6px;
+  font-size: 0.8rem;
+}
+
+.partes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
   gap: 10px;
-  margin-top: 24px;
 }
 
-/* =====================================================
-   21 — RODAPÉ
-===================================================== */
-
-.rodape {
-  padding: 18px 20px 25px;
-
-  text-align: center;
-  color: var(--cinza);
-
-  border-top: 1px solid var(--borda);
+.parte-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.rodape p {
-  margin: 0 0 4px;
-
-  color: var(--azul-escuro);
-
-  font-size: 12px;
-  font-weight: 750;
+.parte-item.concluida {
+  background: #f0fdf4;
+  border-color: #86efac;
 }
 
-.rodape small {
-  font-size: 11px;
+.parte-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
 }
 
-/* =====================================================
-   22 — BARRA DE ROLAGEM
-===================================================== */
-
-#lista-disciplinas::-webkit-scrollbar,
-#lista-conteudos::-webkit-scrollbar,
-#lista-plataformas::-webkit-scrollbar,
-#lista-aulas::-webkit-scrollbar {
-  width: 7px;
+.parte-titulo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
 }
 
-#lista-disciplinas::-webkit-scrollbar-thumb,
-#lista-conteudos::-webkit-scrollbar-thumb,
-#lista-plataformas::-webkit-scrollbar-thumb,
-#lista-aulas::-webkit-scrollbar-thumb {
-  background: #c3d0e2;
-  border-radius: 10px;
+.chk-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #15803d;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
 }
 
-/* =====================================================
-   23 — TELAS MÉDIAS
-===================================================== */
-
-@media (max-width: 1250px) {
-
-  .indicadores {
-    grid-template-columns: repeat(
-      4,
-      minmax(0, 1fr)
-    );
-  }
-
-  .filtros-controle {
-    grid-template-columns: repeat(
-      2,
-      minmax(0, 1fr)
-    );
-  }
-
+.midia-iframe {
+  width: 100%;
+  height: 190px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #000;
 }
 
-/* =====================================================
-   24 — TABLETS
-===================================================== */
-
-@media (max-width: 900px) {
-
-  .topo {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .topo-acoes {
-    justify-content: flex-start;
-  }
-
-  .cabecalho-painel {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .seletor-concurso select {
-    width: 100%;
-    max-width: none;
-    min-width: 0;
-  }
-
-  .listas-cadastro,
-  .biblioteca-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .indicadores {
-    grid-template-columns: repeat(
-      2,
-      minmax(0, 1fr)
-    );
-  }
-
+.links-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
 }
 
-/* =====================================================
-   25 — CELULARES
-===================================================== */
-
-@media (max-width: 600px) {
-
-  .topo {
-    padding: 16px;
-    gap: 14px;
-  }
-
-  .marca h1 {
-    font-size: 21px;
-  }
-
-  .marca p {
-    font-size: 10px;
-  }
-
-  .container {
-    padding: 12px;
-  }
-
-  .painel {
-    padding: 14px;
-    margin-bottom: 12px;
-  }
-
-  .cabecalho-painel h2 {
-    font-size: 16px;
-  }
-
-  .indicadores {
-    gap: 8px;
-    margin-top: 15px;
-  }
-
-  .indicador {
-    padding: 12px;
-  }
-
-  .indicador strong {
-    font-size: 20px;
-  }
-
-  .acoes-cadastro {
-    gap: 7px;
-  }
-
-  .acoes-cadastro .btn {
-    flex: 1 1 auto;
-  }
-
-  .filtros-controle {
-    grid-template-columns: 1fr;
-    padding: 12px;
-  }
-
-  .vinculo-registro {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .vinculo-registro .acao-registro {
-    align-self: flex-start;
-  }
-
-  #modal-cadastro {
-    padding: 18px;
-  }
-
-  .acoes-modal .btn {
-    flex: 1;
-  }
-
+.btn-link {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #ffffff;
 }
 
-/* =====================================================
-   26 — CELULARES PEQUENOS
-===================================================== */
+.btn-pdf { background: #dc2626; }
+.btn-pdf:hover { background: #b91c1c; }
 
-@media (max-width: 380px) {
+.btn-video { background: #2563eb; }
+.btn-video:hover { background: #1d4ed8; }
 
-  .marca h1 {
-    font-size: 19px;
-  }
-
-  .indicador {
-    padding: 10px;
-  }
-
-  .indicador strong {
-    font-size: 18px;
-  }
-
-  .indicador small {
-    font-size: 10px;
-  }
-
-  .btn {
-    padding: 9px 11px;
-  }
-
-}
-
-/* =====================================================
-   FIM DO ARQUIVO STYLE.CSS
-   MÁRCIO EDUCA 360 — CONCURSOS PRO
-===================================================== */
+.btn-img { background: #0d9488; }
+.btn-img:hover { background: #0f766e; }

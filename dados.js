@@ -1,189 +1,134 @@
-
 /* =====================================================
    MÁRCIO EDUCA 360 — CONCURSOS PRO
-   ARQUIVO: dados.js
-   VERSÃO CONSOLIDADA — ETAPAS 01 A 05
+   ARQUIVO ÚNICO DE CONTROLE: dados.js
+   Tudo que você adicionar, editar ou excluir aqui
+   atualiza automaticamente na tela do site!
 ===================================================== */
 
 "use strict";
 
-/* =====================================================
-   BASE INICIAL DO SISTEMA
-===================================================== */
-
 window.MARCIO_DADOS = {
-
-  /* ===================================================
-     01 — BANCAS ORGANIZADORAS
-  =================================================== */
-
+  // 1. BANCAS
   bancas: [
-    {
-      id: "banca-001",
-      nome: "IACP"
-    }
+    { id: "banca-001", nome: "IACP" }
   ],
 
-  /* ===================================================
-     02 — CONCURSOS PÚBLICOS
-  =================================================== */
-
+  // 2. CONCURSOS
   concursos: [
     {
       id: "concurso-001",
-      nome: "CONCURSO DE EXEMPLO",
+      nome: "CONCURSO DE SÃO PAULO",
+      bancaId: "banca-001",
+      ativo: true
+    },
+    {
+      id: "concurso-002",
+      nome: "CONCURSO DO RIO DE JANEIRO",
       bancaId: "banca-001",
       ativo: true
     }
   ],
 
-  /* ===================================================
-     03 — CARGOS DOS CONCURSOS
+  // 3. CARGOS
+  cargos: [
+    {
+      id: "cargo-001",
+      concursoId: "concurso-001",
+      nome: "AGENTE ADMINISTRATIVO"
+    }
+  ],
 
-     Cada cargo pertence a um concurso.
-
-     Estrutura:
-     {
-       id: "cargo-001",
-       nome: "PROFESSOR DE MATEMÁTICA",
-       concursoId: "concurso-001"
-     }
-  =================================================== */
-
-  cargos: [],
-
-  /* ===================================================
-     04 — BIBLIOTECA DE DISCIPLINAS
-
-     As disciplinas são cadastradas uma única vez
-     na Biblioteca Permanente.
-  =================================================== */
-
+  // 4. DISCIPLINAS
   disciplinas: [
-    {
-      id: "disciplina-001",
-      nome: "MATEMÁTICA"
-    }
+    { id: "disc-001", nome: "MATEMÁTICA" },
+    { id: "disc-002", nome: "PORTUGUÊS" },
+    { id: "disc-003", nome: "ADMINISTRAÇÃO PÚBLICA" }
   ],
 
-  /* ===================================================
-     05 — BIBLIOTECA DE CONTEÚDOS
-
-     Cada conteúdo pertence a uma disciplina.
-  =================================================== */
-
+  // 5. CONTEÚDOS (BIBLIOTECA PERMANENTE)
   conteudos: [
-    {
-      id: "conteudo-001",
-      disciplinaId: "disciplina-001",
-      nome: "PROGRESSÃO ARITMÉTICA"
-    }
+    { id: "cont-001", disciplinaId: "disc-001", nome: "PROGRESSÃO ARITMÉTICA" },
+    { id: "cont-002", disciplinaId: "disc-002", nome: "INTERPRETAÇÃO DE TEXTO" },
+    { id: "cont-003", disciplinaId: "disc-003", nome: "PRINCÍPIOS DA ADMINISTRAÇÃO" }
   ],
 
-  /* ===================================================
-     06 — VÍNCULOS ENTRE CARGOS E CONTEÚDOS
+  // 6. VÍNCULOS (CONTEÚDOS DOS CARGOS)
+  vinculos: [
+    { id: "vinc-001", cargoId: "cargo-001", conteudoId: "cont-001" },
+    { id: "vinc-002", cargoId: "cargo-001", conteudoId: "cont-002" },
+    { id: "vinc-003", cargoId: "cargo-001", conteudoId: "cont-003" }
+  ],
 
-     O mesmo conteúdo pode ser vinculado a cargos
-     diferentes, sem duplicar seu cadastro.
+  // 7. PLATAFORMAS
+  plataformas: [
+    { id: "plat-001", nome: "ONEDRIVE — MATERIAIS E VÍDEOS" }
+  ],
 
-     Estrutura:
-     {
-       id: "vinculo-001",
-       cargoId: "cargo-001",
-       conteudoId: "conteudo-001"
-     }
-  =================================================== */
-
-  vinculos: [],
-
-  /* ===================================================
-     07 — PLATAFORMAS DE ESTUDOS
-
-     Exemplos de plataformas:
-     - Gran Cursos
-     - Estratégia Concursos
-     - YouTube
-     - Material próprio
-
-     Os nomes serão cadastrados pelo sistema.
-
-     Estrutura:
-     {
-       id: "plataforma-001",
-       nome: "PLATAFORMA DE EXEMPLO"
-     }
-  =================================================== */
-
-  plataformas: [],
-
-  /* ===================================================
-     08 — AULAS E CONTROLE DE TEORIA
-
-     Cada aula pertence a um vínculo de conteúdo
-     com cargo e a uma plataforma de estudos.
-
-     Estrutura:
-     {
-       id: "aula-001",
-       vinculoId: "vinculo-001",
-       plataformaId: "plataforma-001",
-       nome: "AULA 01 — INTRODUÇÃO",
-       totalPartes: 3,
-       partesConcluidas: 0
-     }
-
-     totalPartes:
-       Quantidade total de partes da teoria.
-
-     partesConcluidas:
-       Quantidade de partes já estudadas.
-  =================================================== */
-
-  aulas: [],
-
-  /* ===================================================
-     09 — QUESTÕES
-
-     Estrutura reservada para a próxima etapa:
-     Controle de Questões.
-
-     Os registros serão implementados na Etapa 06.
-  =================================================== */
-
-  questoes: [],
-
-  /* ===================================================
-     10 — REVISÕES
-
-     Estrutura reservada para o controle de revisões.
-
-     Programação prevista:
-     +1 dia, +7 dias, +15 dias e +30 dias.
-  =================================================== */
-
-  revisoes: [],
-
-  /* ===================================================
-     11 — CADERNO DE ERROS
-
-     Estrutura reservada para registrar questões
-     efetivamente respondidas de forma incorreta.
-  =================================================== */
-
-  erros: [],
-
-  /* ===================================================
-     12 — CONCURSO SELECIONADO
-
-     Guarda o identificador do concurso inicialmente
-     selecionado na Central de Concursos.
-  =================================================== */
+  // 8. AULAS POR PARTES (COM LINKS DO ONEDRIVE: PDF, VÍDEO E IMAGEM)
+  aulas: [
+    {
+      id: "aula-001",
+      vinculoId: "vinc-001",
+      plataformaId: "plat-001",
+      nome: "AULA 01 — PROGRESSÃO ARITMÉTICA",
+      questoesTotal: 20,
+      questoesAcertos: 16,
+      partes: [
+        {
+          numero: 1,
+          titulo: "Parte 01 — Apostila Completa em PDF",
+          concluida: false,
+          pdfLink: "https://1drv.ms/b/c/4d7d1f2d1eb8f266/IQAv_S4EPbbkSLGMnM9Tkut9AfuqBPUFy19M6vpOGWGEAZY?e=eOSwvp",
+          videoLink: "",
+          imagemLink: ""
+        },
+        {
+          numero: 2,
+          titulo: "Parte 02 — Exercícios Resolvidos",
+          concluida: false,
+          pdfLink: "",
+          videoLink: "",
+          imagemLink: ""
+        }
+      ]
+    },
+    {
+      id: "aula-002",
+      vinculoId: "vinc-002",
+      plataformaId: "plat-001",
+      nome: "AULA 02 — INTERPRETAÇÃO DE TEXTO",
+      questoesTotal: 15,
+      questoesAcertos: 12,
+      partes: [
+        {
+          numero: 1,
+          titulo: "Parte 01 — Videoaula Explicativa",
+          concluida: false,
+          pdfLink: "",
+          videoLink: "https://1drv.ms/v/c/4d7d1f2d1eb8f266/IQBYpMYxUpY3QZzLm-yPMvh3AX9Gb6V2G3c5zF8WdVGghlk?e=FIFsu0",
+          imagemLink: ""
+        }
+      ]
+    },
+    {
+      id: "aula-003",
+      vinculoId: "vinc-003",
+      plataformaId: "plat-001",
+      nome: "AULA 03 — PRINCÍPIOS DA ADMINISTRAÇÃO",
+      questoesTotal: 10,
+      questoesAcertos: 9,
+      partes: [
+        {
+          numero: 1,
+          titulo: "Parte 01 — Videoaula LIMPE",
+          concluida: false,
+          pdfLink: "",
+          videoLink: "https://1drv.ms/v/c/4d7d1f2d1eb8f266/IQBYpMYxUpY3QZzLm-yPMvh3AX9Gb6V2G3c5zF8WdVGghlk?e=FIFsu0",
+          imagemLink: ""
+        }
+      ]
+    }
+  ],
 
   concursoSelecionado: "concurso-001"
-
 };
-
-/* =====================================================
-   FIM DO ARQUIVO DADOS.JS
-   MÁRCIO EDUCA 360 — CONCURSOS PRO
-===================================================== */

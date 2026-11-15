@@ -1,408 +1,466 @@
 /* ==========================================================================
-   PORTAL PROFESSOR MÁRCIO 360 — BASE DE DADOS COMPLETA
+   PORTAL PROFESSOR MÁRCIO 360 — DADOS.JS COMPLETO E VALIDADO (V14)
    ========================================================================== */
 
 window.PORTAL_DATA = {
-  // 1. ENSINO FUNDAMENTAL II (4 COLUNAS: 6º AO 9º ANO)
+  // ========================================================================
+  // 1. ENSINO FUNDAMENTAL II (6º AO 9º ANO)
+  // ========================================================================
   fundamental: [
+    // --- 6º ANO ---
     {
       categoria: "6º Ano — Fundamental II",
-      titulo: "Números Naturais, Operações e Divisibilidade",
-      resumo: "Etapa 1: Sistema decimal, múltiplos, divisores, critérios de divisibilidade, MMC e MDC. Etapa 2: Exercícios propostos. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "6º Ano — Fundamental II",
-      titulo: "Frações e Números Decimais",
-      resumo: "Etapa 1: Equivalência, simplificação, operações com frações e decimais. Etapa 2: Lista de fixação. Etapa 3: Gabarito comentado passo a passo.",
-      link: ""
-    },
-    {
-      categoria: "7º Ano — Fundamental II",
-      titulo: "Números Inteiros, Racionais e Equações do 1º Grau",
-      resumo: "Etapa 1: Regras de sinais, reta numérica e resolução de equações. Etapa 2: Exercícios graduados. Etapa 3: Resoluções detalhadas.",
-      link: ""
-    },
-    {
-      categoria: "7º Ano — Fundamental II",
-      titulo: "Razão, Proporção e Regra de Três Simples",
-      resumo: "Etapa 1: Grandezas direta e inversamente proporcionais. Etapa 2: Problemas contextualizados. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "8º Ano — Fundamental II",
-      titulo: "Expressões Algébricas, Polinômios e Produtos Notáveis",
-      resumo: "Etapa 1: Monômios, polinômios, quadrado da soma/diferença e fatoração. Etapa 2: Exercícios propostos. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "8º Ano — Fundamental II",
-      titulo: "Sistemas de Equações e Geometria Plana Básica",
-      resumo: "Etapa 1: Métodos da substituição e adição; ângulos, triângulos e quadriláteros. Etapa 2: Lista prática. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "9º Ano — Fundamental II",
-      titulo: "Potenciação, Radiciação e Equações do 2º Grau",
-      resumo: "Etapa 1: Propriedades de radicais, fórmula de Bhaskara e soma e produto. Etapa 2: Exercícios propostos. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "9º Ano — Fundamental II",
-      titulo: "Teorema de Tales, Semelhança e Teorema de Pitágoras",
-      resumo: "Etapa 1: Relações métricas no triângulo retângulo e trigonometria básica. Etapa 2: Exercícios propostos. Etapa 3: Resoluções comentadas.",
-      link: ""
-    }
-  ],
-
-  // 2. ENSINO MÉDIO (3 COLUNAS: 1º AO 3º ANO)
-  medio: [
-    {
-      categoria: "1º Ano — Ensino Médio",
-      titulo: "Conjuntos Numéricos e Função Afim (1º Grau)",
-      resumo: "Etapa 1: Operações entre conjuntos, intervalos reais, domínio, imagem e gráficos. Etapa 2: Exercícios ENEM/vestibulares. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "1º Ano — Ensino Médio",
-      titulo: "Função Quadrática, Exponencial e Logarítmica",
-      resumo: "Etapa 1: Vértice da parábola, equações exponenciais e propriedades dos logaritmos. Etapa 2: Lista dirigida. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "2º Ano — Ensino Médio",
-      titulo: "Progressões Aritmética (PA) e Geométrica (PG)",
-      resumo: "Etapa 1: Termo geral, soma dos termos e interpolação. Etapa 2: Exercícios propostos. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "2º Ano — Ensino Médio",
-      titulo: "Trigonometria no Ciclo e Matrizes / Sistemas Lineares",
-      resumo: "Etapa 1: Seno, cosseno, tangente, lei dos senos/cossenos, determinantes e escalonamento. Etapa 2: Exercícios propostos. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "2º Ano — Ensino Médio",
-      titulo: "Análise Combinatória e Probabilidade",
-      resumo: "Etapa 1: Princípio fundamental da contagem, arranjos, permutações, combinações e probabilidade condicional. Etapa 2: Exercícios. Etapa 3: Resoluções.",
-      link: ""
-    },
-    {
-      categoria: "3º Ano — Ensino Médio",
-      titulo: "Geometria Espacial (Prismas, Pirâmides, Cilindros, Cones e Esferas)",
-      resumo: "Etapa 1: Fórmulas de áreas e volumes dos principais sólidos geométricos. Etapa 2: Questões estilo ENEM. Etapa 3: Resoluções comentadas.",
-      link: ""
-    },
-    {
-      categoria: "3º Ano — Ensino Médio",
-      titulo: "Geometria Analítica (Ponto, Reta e Circunferência) e Estatística",
-      resumo: "Etapa 1: Distância entre pontos, equação da reta/circunferência, média, moda, mediana e desvio padrão. Etapa 2: Exercícios. Etapa 3: Resoluções.",
-      link: ""
-    }
-  ],
-
-  // 3. EMENTA GERAL DO PORTAL (EXIBIDA NA PÁGINA INICIAL)
-  ementaGeralHome: [
-    {
-      parte: "PARTE 1: MATEMÁTICA DO ENSINO FUNDAMENTAL II (6º AO 9º ANO) — 4 COLUNAS POR ANO",
-      grupos: [
+      titulo: "UNIDADE 4 – FIGURAS GEOMÉTRICAS PLANAS",
+      capitulos: [
         {
-          nome: "6º E 7º ANOS — BASE ARITMÉTICA E ALGÉBRICA",
-          itens: [
-            "Números naturais, operações fundamentais, múltiplos, divisores, MMC e MDC",
-            "Frações, números decimais, porcentagem básica e sistema métrico",
-            "Números inteiros e racionais, equações do 1º grau, razão, proporção e regra de três simples"
+          titulo: "CAPÍTULO 13 - Ângulos",
+          links: [
+            { rotulo: "4.1. TEORIA - Retas paralelas e retas perpendiculares", url: "", status: "liberado" },
+            { rotulo: "4.2 QUESTÕES PARA DISCUSSÃO", url: "", status: "liberado" },
+            { rotulo: "4.3-6 Atividades", url: "", status: "liberado" },
+            { rotulo: "4. Avaliação", url: "", status: "liberado" }
           ]
         },
         {
-          nome: "8º E 9º ANOS — ÁLGEBRA E GEOMETRIA PLANA",
-          itens: [
-            "Polinômios, produtos notáveis, fatoração e sistemas de equações do 1º grau",
-            "Potenciação, radiciação e equações do 2º grau (Bhaskara e Soma e Produto)",
-            "Teorema de Tales, semelhança de triângulos, Teorema de Pitágoras e trigonometria no triângulo retângulo"
+          titulo: "CAPÍTULO 2 - Sistema de numeração decimal",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
           ]
         }
       ]
     },
     {
-      parte: "PARTE 2: MATEMÁTICA DO ENSINO MÉDIO (1º AO 3º ANO) — 3 COLUNAS POR SÉRIE",
-      grupos: [
+      categoria: "6º Ano — Fundamental II",
+      titulo: "UNIDADE 2 – OPERAÇÕES COM NÚMEROS NATURAIS",
+      capitulos: [
         {
-          nome: "1º, 2º E 3º ANOS — PREPARAÇÃO ESCOLAR E ENEM",
-          itens: [
-            "1º Ano: Conjuntos numéricos, Função Afim, Quadrática, Modular, Exponencial e Logarítmica",
-            "2º Ano: Progressões (PA e PG), Trigonometria no Ciclo, Matrizes, Determinantes, Sistemas Lineares, Análise Combinatória e Probabilidade",
-            "3º Ano: Geometria Espacial (Prismas, Pirâmides, Cilindros, Cones e Esferas), Geometria Analítica (Ponto, Reta e Circunferência) e Estatística"
+          titulo: "CAPÍTULO 1 - Adição e Subtração",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Multiplicação, Divisão e Potenciação",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "bloqueado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        }
+      ]
+    },
+
+    // --- 7º ANO ---
+    {
+      categoria: "7º Ano — Fundamental II",
+      titulo: "UNIDADE 1 – NÚMEROS INTEIROS E RACIONAIS",
+      capitulos: [
+        {
+          titulo: "CAPÍTULO 1 - Números Inteiros e Reta Numérica",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "liberado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Operações com Números Racionais",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
           ]
         }
       ]
     },
     {
-      parte: "PARTE 3: MATEMÁTICA BÁSICA E RACIOCÍNIO LÓGICO PARA CONCURSOS",
-      grupos: [
+      categoria: "7º Ano — Fundamental II",
+      titulo: "UNIDADE 2 – EQUAÇÕES DO 1º GRAU E PROPORCIONALIDADE",
+      capitulos: [
         {
-          nome: "CONTEÚDOS MAIS COBRADOS EM PROVAS DE NÍVEL FUNDAMENTAL, MÉDIO E SUPERIOR",
-          itens: [
-            "Porcentagem, aumentos e descontos sucessivos, razão, proporção e regra de três composta",
-            "Matemática Financeira: Juros simples, juros compostos, montante e taxas equivalentes",
-            "Raciocínio Lógico-Matemático: Proposições, tabela-verdade, equivalências, negações (Leis de De Morgan) e diagramas lógicos"
+          titulo: "CAPÍTULO 1 - Equações do 1º Grau com uma Incógnita",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Razão, Proporção e Regra de Três Simples",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "bloqueado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        }
+      ]
+    },
+
+    // --- 8º ANO ---
+    {
+      categoria: "8º Ano — Fundamental II",
+      titulo: "UNIDADE 1 – EXPRESSÕES ALGÉBRICAS E POLINÔMIOS",
+      capitulos: [
+        {
+          titulo: "CAPÍTULO 1 - Monômios e Polinômios",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "liberado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Produtos Notáveis e Fatoração",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
           ]
         }
       ]
     },
     {
-      parte: "PARTE 4: MATEMÁTICA ESPECÍFICA PARA O CARGO DE PROFESSOR DE MATEMÁTICA",
-      grupos: [
+      categoria: "8º Ano — Fundamental II",
+      titulo: "UNIDADE 2 – SISTEMAS DE EQUAÇÕES E GEOMETRIA",
+      capitulos: [
         {
-          nome: "LICENCIATURA, MAGISTÉRIO E BNCC",
-          itens: [
-            "Teoria dos Números: Divisibilidade, congruências modulares e equações diofantinas",
-            "Álgebra Linear: Espaços vetoriais, transformações lineares, autovalores e autovetores",
-            "Cálculo Diferencial e Integral: Limites, continuidade, derivadas, otimização e integrais",
-            "Didática da Matemática e BNCC: Competências, habilidades e tendências em Educação Matemática"
+          titulo: "CAPÍTULO 1 - Sistemas de Equações do 1º Grau",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Ângulos, Triângulos e Quadriláteros",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "bloqueado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        }
+      ]
+    },
+
+    // --- 9º ANO ---
+    {
+      categoria: "9º Ano — Fundamental II",
+      titulo: "UNIDADE 1 – POTENCIAÇÃO, RADICIAÇÃO E EQUAÇÕES DO 2º GRAU",
+      capitulos: [
+        {
+          titulo: "CAPÍTULO 1 - Potências e Radicais",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "liberado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Equações do 2º Grau e Fórmula de Bhaskara",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
           ]
         }
       ]
     },
     {
-      parte: "PARTE 5: AULÕES E CADERNOS POR BANCAS ORGANIZADORAS",
-      grupos: [
+      categoria: "9º Ano — Fundamental II",
+      titulo: "UNIDADE 2 – PROPORCIONALIDADE E RELAÇÕES MÉTRICAS",
+      capitulos: [
         {
-          nome: "24 BANCAS DO BRASIL COM RESOLUÇÃO PASSO A PASSO",
-          itens: [
-            "Bancas Nacionais: CESPE/CEBRASPE, FGV, FCC, CESGRANRIO, VUNESP, IBFC, IADES, QUADRIX e IDECAN",
-            "Bancas Regionais e Nordeste: COPEVE/UFAL, ADM&TEC, CONSULPAM, Instituto AOCP, SELECON, UPENET/IAUPE, FUNDEP, OBJETIVA e outras"
+          titulo: "CAPÍTULO 1 - Teorema de Tales e Semelhança de Triângulos",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Teorema de Pitágoras e Trigonometria no Triângulo",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "bloqueado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
           ]
         }
       ]
     }
   ],
 
-  // 4. DÚVIDAS FREQUENTES GERAIS (EXIBIDAS NA PÁGINA INICIAL)
-  faqGeralHome: [
+  // ========================================================================
+  // 2. ENSINO MÉDIO (1º AO 3º ANO)
+  // ========================================================================
+  medio: [
+    // --- 1º ANO ---
     {
-      pergunta: "Nunca tive facilidade com Matemática, o Portal Professor Márcio 360 serve para mim?",
-      resposta: "Sim! Todo o conteúdo é trabalhado do zero ao avançado, começando pelos fundamentos básicos antes de avançar para questões de nível médio, superior e magistério."
+      categoria: "1º Ano — Ensino Médio",
+      titulo: "UNIDADE 1 – CONJUNTOS E FUNÇÕES",
+      capitulos: [
+        {
+          titulo: "CAPÍTULO 1 - Noções de Conjuntos e Conjuntos Numéricos",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "liberado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Função Afim e Função Quadrática",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        }
+      ]
     },
+
+    // --- 2º ANO ---
     {
-      pergunta: "Como funciona o método de estudo em 3 etapas do portal?",
-      resposta: "Etapa 1: Definições, propriedades, fórmulas e exemplos resolvidos. Etapa 2: Exercícios propostos graduados. Etapa 3: Resoluções comentadas passo a passo."
+      categoria: "2º Ano — Ensino Médio",
+      titulo: "UNIDADE 1 – TRIGONOMETRIA E MATRIZES",
+      capitulos: [
+        {
+          titulo: "CAPÍTULO 1 - Ciclo Trigonométrico e Funções Trigonométricas",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "liberado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Matrizes, Determinantes e Sistemas Lineares",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        }
+      ]
     },
+
+    // --- 3º ANO ---
     {
-      pergunta: "Para quem o portal foi desenvolvido?",
-      resposta: "Para estudantes do Ensino Fundamental II (6º ao 9º ano), estudantes do Ensino Médio (1º ao 3º ano), concurseiros que precisam dominar Matemática Básica e Raciocínio Lógico, e professores candidatos a concursos do Magistério."
-    },
-    {
-      pergunta: "Onde encontro os cronogramas, tabelas-resumo e mapas mentais?",
-      resposta: "Dentro da seção 'Matemática para Concursos' (tanto na frente Básica quanto na Específica), na aba 'Materiais de Apoio', além do Controle de Estudos e do Cronograma de 14 Semanas."
-    },
-    {
-      pergunta: "Como posso estudar questões da banca do meu concurso?",
-      resposta: "Acesse a aba 'Questões por Bancas' no menu superior e clique no logótipo de qualquer uma das 24 bancas organizadoras para filtrar os cadernos de questões comentadas."
+      categoria: "3º Ano — Ensino Médio",
+      titulo: "UNIDADE 1 – GEOMETRIA ANALÍTICA E ESTATÍSTICA",
+      capitulos: [
+        {
+          titulo: "CAPÍTULO 1 - Ponto, Reta e Circunferência",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "liberado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "programado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        },
+        {
+          titulo: "CAPÍTULO 2 - Análise Combinatória, Probabilidade e Estatística",
+          links: [
+            { rotulo: "1. Teoria + Exemplo", url: "", status: "programado" },
+            { rotulo: "2. Exercícios de Fixação", url: "", status: "bloqueado" },
+            { rotulo: "3. Atividade", url: "", status: "bloqueado" },
+            { rotulo: "4. Avaliação", url: "", status: "bloqueado" }
+          ]
+        }
+      ]
     }
   ],
 
-  // 5. ESTRUTURA DETALHADA DOS CURSOS DE CONCURSOS
+  // ========================================================================
+  // 3. CURSOS PARA CONCURSOS (PLATAFORMA COMPLETA)
+  // ========================================================================
   concursosCursos: {
     basica: {
-      tituloCurso: "MATEMÁTICA BÁSICA TOTAL 360 — CONCURSOS",
-      subtitulo: "Do zero à aprovação em concursos de nível fundamental, médio e superior",
-      cargaHoraria: "Carga Horária: 140h + Resolução de +900 Questões + Aulões por Bancas",
+      tituloCurso: "Matemática Básica para Concursos Públicos",
+      subtitulo: "Base completa com teoria objetiva, resolução comentada e foco nas principais bancas do Brasil.",
+      cargaHoraria: "Carga Horária: 120h • Acesso Completo",
       boasVindas: {
-        titulo: "BOAS-VINDAS AO MATEMÁTICA BÁSICA TOTAL 360!",
-        texto: "Bem-vindo(a) à preparação completa de Matemática Básica e Raciocínio Lógico para Concursos! Aqui cada conteúdo é trabalhado do zero ao avançado em 3 etapas.",
-        avisoTitulo: "ORIENTAÇÕES GERAIS DE ESTUDO",
-        orientacoes: [
-          "Siga a sequência dos módulos para construir sua base antes dos temas avançados.",
-          "Baixe a Tabela-Resumo e o Mapa Mental de cada aula na aba 'Materiais de Apoio'.",
-          "Resolva os exercícios propostos antes de conferir as resoluções comentadas.",
-          "Pratique nos Aulões por Bancas (CESGRANRIO, FGV, CESPE/CEBRASPE, AOCP, VUNESP, FCC, COPEVE e ADM&TEC)."
-        ]
+        titulo: "Boas-vindas ao Curso de Matemática Básica",
+        texto: "Este curso foi estruturado para construir sua base do zero até a resolução de questões reais de concursos públicos de nível médio e superior."
       },
-      modulosAccordion: [
-        {
-          titulo: "MAT - COMECE POR AQUI",
-          aulas: [
-            { nome: "Aula 00 — Como utilizar o Portal e o Cronograma de 14 Semanas", link: "" },
-            { nome: "Guia de Estudo em 3 Etapas: Teoria, Fixação e Revisão", link: "" }
-          ]
-        },
-        {
-          titulo: "MATEMÁTICA TOTAL 360 — PARTE 1: TEORIA + EXERCÍCIOS DE FIXAÇÃO",
-          aulas: [
-            { nome: "Aula 01 — Conjuntos Numéricos, Operações Fundamentais e Expressões", link: "" },
-            { nome: "Aula 02 — Múltiplos, Divisores, Critérios de Divisibilidade, MMC e MDC", link: "" },
-            { nome: "Aula 03 — Frações, Números Decimais e Dízimas Periódicas", link: "" },
-            { nome: "Aula 04 — Razão, Proporção e Regra de Três Simples e Composta", link: "" },
-            { nome: "Aula 05 — Porcentagem, Aumentos e Descontos Sucessivos", link: "" },
-            { nome: "Aula 06 — Matemática Financeira: Juros Simples e Compostos", link: "" },
-            { nome: "Aula 07 — Raciocínio Lógico: Proposições, Tabela-Verdade, Equivalências e Negações", link: "" },
-            { nome: "Aula 08 — Análise Combinatória, Probabilidade e Geometria", link: "" }
-          ]
-        },
-        {
-          titulo: "AULÕES POR BANCAS — QUESTÕES COMENTADAS",
-          aulas: [
-            { nome: "Aulão CESGRANRIO & FGV — Questões Comentadas", link: "" },
-            { nome: "Aulão CESPE / CEBRASPE — Estilo Certo ou Errado", link: "" },
-            { nome: "Aulão COPEVE/UFAL, ADM&TEC, AOCP e VUNESP", link: "" }
-          ]
-        }
-      ],
-      materiaisApoio: [
-        { titulo: "CONTROLE DE ESTUDOS — MATEMÁTICA BÁSICA 360", link: "" },
-        { titulo: "CRONOGRAMA 14 SEMANAS — RUMO À APROVAÇÃO", link: "" },
-        { titulo: "AULA 1 - CONJUNTOS E OPERAÇÕES - TABELA-RESUMO", link: "" },
-        { titulo: "AULA 2 - MMC E MDC - MAPA MENTAL", link: "" },
-        { titulo: "AULA 3 - RAZÃO, PROPORÇÃO E REGRA DE TRÊS - TABELA-RESUMO", link: "" },
-        { titulo: "AULA 4 - PORCENTAGEM E JUROS - FORMULÁRIO COMPLETO", link: "" },
-        { titulo: "AULA 5 - RACIOCÍNIO LÓGICO - TABELA DE EQUIVALÊNCIAS E NEGAÇÕES", link: "" }
-      ],
       ementaPartes: [
         {
-          parte: "PARTE 1: TEORIA + EXERCÍCIOS DE FIXAÇÃO + MAIS DE 900 QUESTÕES - 75 HORAS",
+          parte: "Módulo I — Aritmética e Proporcionalidade",
           grupos: [
             {
-              nome: "ARITMÉTICA, PROPORCIONALIDADE E FINANCEIRA",
+              nome: "Tópicos Essenciais",
               itens: [
-                "Conjuntos numéricos, MMC, MDC, frações e números decimais",
+                "Operações com números inteiros, fracionários e decimais",
+                "Múltiplos, divisores, MMC e MDC aplicados a problemas",
                 "Razão, proporção, divisão proporcional e regra de três simples e composta",
-                "Porcentagem, juros simples e juros compostos"
+                "Porcentagem, aumentos/descontos sucessivos e juros simples e compostos"
               ]
-            },
+            }
+          ]
+        },
+        {
+          parte: "Módulo II — Álgebra, Geometria e Raciocínio Lógico",
+          grupos: [
             {
-              nome: "RACIOCÍNIO LÓGICO-MATEMÁTICO",
+              nome: "Tópicos Essenciais",
               itens: [
-                "Proposições, conectivos, tabela-verdade, equivalências e negações",
-                "Análise combinatória, probabilidade e interpretação de gráficos"
+                "Equações e sistemas de equações do 1º e 2º graus",
+                "Perímetro, área e volume das principais figuras e sólidos geométricos",
+                "Proposições lógicas, conectivos, tabela-verdade e equivalências"
               ]
             }
           ]
         }
       ],
-      faq: [
+      modulosAccordion: [
         {
-          pergunta: "Nunca estudei Matemática para concurso, este módulo serve para mim?",
-          resposta: "Sim! O curso começa dos fundamentos e avança gradualmente até questões de nível superior das principais bancas."
+          titulo: "Módulo 01 — Conjuntos Numéricos, Frações e Decimais",
+          aulas: [
+            { nome: "Aula 01 — Operações Fundamentais e Expressões Numéricas", link: "" },
+            { nome: "Aula 02 — Frações, Dízimas e Problemas de Torneiras", link: "" }
+          ]
+        },
+        {
+          titulo: "Módulo 02 — Razão, Proporção, Regra de Três e Porcentagem",
+          aulas: [
+            { nome: "Aula 03 — Divisão Diretamente e Inversamente Proporcional", link: "" },
+            { nome: "Aula 04 — Regra de Três Simples e Composta (Método Prático)", link: "" },
+            { nome: "Aula 05 — Porcentagem e Matemática Financeira para Provas", link: "" }
+          ]
         }
+      ],
+      materiaisApoio: [
+        { titulo: "Apostila Resumo — Fórmulas de Matemática Básica (PDF)", link: "" },
+        { titulo: "Cronograma de Estudos — 8 Semanas para Concursos (PDF)", link: "" }
       ]
     },
 
     especifica: {
-      tituloCurso: "MATEMÁTICA ESPECÍFICA 360 — PROFESSOR DE MATEMÁTICA",
-      subtitulo: "Preparação completa para concursos do Magistério (Prefeituras, Estados e Institutos Federais)",
-      cargaHoraria: "Carga Horária: 160h + Resolução de Provas Docentes + Didática e BNCC",
+      tituloCurso: "Matemática Específica — Cargo de Professor de Matemática",
+      subtitulo: "Preparação aprofundada para concursos de Magistério (SME, SEDUC e Institutos Federais).",
+      cargaHoraria: "Carga Horária: 180h • Magistério",
       boasVindas: {
-        titulo: "BOAS-VINDAS À PREPARAÇÃO ESPECÍFICA PARA PROFESSOR DE MATEMÁTICA!",
-        texto: "Curso direcionado aos conteúdos específicos de Licenciatura em Matemática, Didática da Matemática e BNCC.",
-        avisoTitulo: "ORIENTAÇÕES PARA CONCURSOS DO MAGISTÉRIO",
-        orientacoes: [
-          "Domine funções, trigonometria, geometria e combinatória.",
-          "Revise Álgebra Linear, Cálculo Diferencial e Integral e Teoria dos Números.",
-          "Resolva provas anteriores específicas de Professor de Matemática."
-        ]
+        titulo: "Boas-vindas ao Curso Específico para Professores",
+        texto: "Conteúdo direcionado aos editais de Professor de Matemática, unindo domínio técnico dos conteúdos do Ensino Médio/Superior e didática da Matemática (BNCC)."
       },
-      modulosAccordion: [
+      ementaPartes: [
         {
-          titulo: "ESPECÍFICA 360 — ENSINO MÉDIO APROFUNDADO",
-          aulas: [
-            { nome: "Aula 01 — Funções (Injetora, Sobrejetora, Bijetora, Afim, Quadrática, Exponencial e Logarítmica)", link: "" },
-            { nome: "Aula 02 — Trigonometria, Matrizes, Determinantes e Sistemas Lineares", link: "" },
-            { nome: "Aula 03 — Análise Combinatória, Probabilidade, Complexos e Polinômios", link: "" },
-            { nome: "Aula 04 — Geometria Plana, Espacial e Analítica (Cônicas)", link: "" }
+          parte: "Bloco I — Funções, Álgebra e Combinatória",
+          grupos: [
+            {
+              nome: "Conteúdo Programático",
+              itens: [
+                "Funções afim, quadrática, modular, exponencial e logarítmica",
+                "Progressões Aritmética (PA) e Geométrica (PG)",
+                "Matrizes, determinantes, sistemas lineares e polinômios",
+                "Análise combinatória, binômio de Newton e probabilidade"
+              ]
+            }
           ]
         },
         {
-          titulo: "ESPECÍFICA 360 — ENSINO SUPERIOR E BNCC",
-          aulas: [
-            { nome: "Aula 05 — Teoria dos Números e Congruências Modulares", link: "" },
-            { nome: "Aula 06 — Álgebra Linear (Espaços Vetoriais e Transformações Lineares)", link: "" },
-            { nome: "Aula 07 — Cálculo Diferencial e Integral (Limites, Derivadas e Integrais)", link: "" },
-            { nome: "Aula 08 — BNCC de Matemática e Tendências em Educação Matemática", link: "" }
-          ]
-        }
-      ],
-      materiaisApoio: [
-        { titulo: "CONTROLE DE ESTUDOS — PROFESSOR DE MATEMÁTICA", link: "" },
-        { titulo: "CRONOGRAMA 14 SEMANAS — MAGISTÉRIO MATEMÁTICA", link: "" },
-        { titulo: "TABELA DE DERIVADAS, INTEGRAIS E IDENTIDADES TRIGONOMÉTRICAS", link: "" },
-        { titulo: "MAPA MENTAL — BNCC E EDUCAÇÃO MATEMÁTICA", link: "" }
-      ],
-      ementaPartes: [
-        {
-          parte: "PARTE 1: MATEMÁTICA DO ENSINO BÁSICO APROFUNDADA E SUPERIOR - 160 HORAS",
+          parte: "Bloco II — Geometria, Trigonometria, Cálculo e Educação Matemática",
           grupos: [
             {
-              nome: "CONTEÚDOS ESPECÍFICOS DO MAGISTÉRIO",
+              nome: "Conteúdo Programático",
               itens: [
-                "Funções reais, trigonometria, matrizes, sistemas lineares, polinômios e complexos",
-                "Geometria plana, espacial e analítica; combinatória e probabilidade",
-                "Teoria dos Números, Álgebra Linear, Cálculo I e BNCC"
+                "Trigonometria no ciclo, identidades, equações e leis dos senos e cossenos",
+                "Geometria plana, espacial e analítica (ponto, reta, circunferência e cônicas)",
+                "Noções de limites, derivadas e integrais aplicadas",
+                "Tendências em Educação Matemática e competências da BNCC"
               ]
             }
           ]
         }
       ],
-      faq: [
+      modulosAccordion: [
         {
-          pergunta: "Este módulo cobre concursos municipais, estaduais e IFs?",
-          resposta: "Sim! Abrange tanto a Matemática do Ensino Básico aprofundada quanto tópicos de Ensino Superior e BNCC."
+          titulo: "Módulo 01 — Estudo Completo das Funções",
+          aulas: [
+            { nome: "Aula 01 — Domínio, Imagem, Inversa e Composta", link: "" },
+            { nome: "Aula 02 — Equações e Inequações Exponenciais e Logarítmicas", link: "" }
+          ]
+        },
+        {
+          titulo: "Módulo 02 — Geometria Analítica, Trigonometria e BNCC",
+          aulas: [
+            { nome: "Aula 03 — Trigonometria Avançada em Questões de Magistério", link: "" },
+            { nome: "Aula 04 — Didática da Matemática e Resolução de Problemas na BNCC", link: "" }
+          ]
         }
+      ],
+      materiaisApoio: [
+        { titulo: "Mapas Mentais — Funções, Trigonometria e Geometria (PDF)", link: "" },
+        { titulo: "Caderno de Provas Comentadas — Professor de Matemática (PDF)", link: "" }
       ]
     }
   },
 
-  // 6. QUESTÕES POR BANCAS ORGANIZADORAS
+  // ========================================================================
+  // 4. QUESTÕES POR BANCAS
+  // ========================================================================
   bancas: [
     {
-      banca: "CEBRASPE",
-      titulo: "Caderno CEBRASPE — Matemática e Raciocínio Lógico (Certo / Errado)",
-      descricao: "Seleção de questões estilo Certo/Errado sobre conjuntos, lógica proposicional, análise combinatória e probabilidade.",
-      link: ""
-    },
-    {
-      banca: "CESPE",
-      titulo: "Caderno CESPE / UnB — Provas Comentadas de Matemática",
-      descricao: "Questões clássicas da banca com análise das pegadinhas mais recorrentes e resolução passo a passo.",
-      link: ""
-    },
-    {
       banca: "FGV",
-      titulo: "Caderno FGV Conhecimento — Matemática e Raciocínio Lógico-Matemático",
-      descricao: "Questões interpretativas de alta exigência da FGV com estratégias rápidas de resolução.",
+      titulo: "Caderno FGV — Porcentagem, Proporção e Raciocínio Quantitativo",
+      descricao: "Questões recentes da FGV comentadas passo a passo com foco nas pegadinhas de interpretação.",
+      link: ""
+    },
+    {
+      banca: "CEBRASPE",
+      titulo: "Caderno CEBRASPE — Julgamento de Itens (Certo ou Errado)",
+      descricao: "Treinamento direcionado ao estilo Cespe/Cebraspe em Matemática e Raciocínio Lógico.",
       link: ""
     },
     {
       banca: "FCC",
-      titulo: "Caderno FCC — Matemática Básica, Financeira e Raciocínio Lógico",
-      descricao: "Treinamento direcionado para tribunais e secretarias de educação organizados pela Fundação Carlos Chagas.",
-      link: ""
-    },
-    {
-      banca: "COPEVE",
-      titulo: "Caderno COPEVE / UFAL — Concursos Municipais e Estaduais de Alagoas",
-      descricao: "Questões aplicadas pela COPEVE/UFAL para cargos administrativos e Professor de Matemática.",
-      link: ""
-    },
-    {
-      banca: "ADM&TEC",
-      titulo: "Caderno ADM&TEC — Prefeituras e Concursos do Nordeste",
-      descricao: "Questões no formato de julgamento de afirmativas típico da banca ADM&TEC com comentários detalhados.",
-      link: ""
-    },
-    {
-      banca: "IBFC",
-      titulo: "Caderno IBFC — Matemática e Raciocínio Lógico",
-      descricao: "Lista focada em concursos da área da saúde, segurança pública e educação realizados pelo IBFC.",
+      titulo: "Caderno FCC — Matemática Básica e Financeira",
+      descricao: "Seleção de questões clássicas da Fundação Carlos Chagas com resolução detalhada.",
       link: ""
     },
     {
       banca: "VUNESP",
-      titulo: "Caderno VUNESP — Matemática para Concursos e Magistério",
-      descricao: "Problemas contextualizados de aritmética, álgebra e geometria no padrão da banca VUNESP.",
+      titulo: "Caderno VUNESP — Geometria, Equações e Tabelas",
+      descricao: "Questões organizadas por assunto no padrão exato das provas da Vunesp.",
       link: ""
+    }
+  ],
+
+  // ========================================================================
+  // 5. DÚVIDAS FREQUENTES
+  // ========================================================================
+  faqGeralHome: [
+    {
+      pergunta: "Como funcionam os controles Liberado, Programado e Bloqueado em Minhas Aulas?",
+      resposta: "Cada link de cada capítulo (1. Teoria + Exemplo, 2. Exercícios de Fixação, 3. Atividade e 4. Avaliação) exibe seu status de acesso e pode ser alternado rapidamente entre Liberado, Programado ou Bloqueado."
+    },
+    {
+      pergunta: "Os materiais em PDF e listas de exercícios são gratuitos?",
+      resposta: "Sim! Os resumos, tabelas, cronogramas e listas disponíveis nas abas do portal podem ser acessados e baixados gratuitamente pelos estudantes."
+    },
+    {
+      pergunta: "Como estudar pelo método em etapas do portal?",
+      resposta: "Comece pela Teoria + Exemplo para dominar os conceitos, avance para os Exercícios de Fixação, pratique com a Atividade e finalize com a Avaliação."
     }
   ]
 };
-
-window.DADOS = window.PORTAL_DATA;

@@ -11,7 +11,9 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
   <link rel="manifest" href="./site.webmanifest" />
-  <link rel="stylesheet" href="./style.css?v=8" />
+
+  <!-- CSS EXTERNO -->
+  <link rel="stylesheet" href="./style.css?v=14" />
 </head>
 <body>
 
@@ -21,9 +23,11 @@
   <header class="topbar">
     <div class="container topbar-inner">
       <div class="brand" id="go-home" role="button" tabindex="0" aria-label="Voltar para o início">
-        
+        <div class="brand-logo">
+          <img id="brand-logo-img" src="./android-chrome-192x192.png" alt="Márcio Educa 360" />
+        </div>
         <div class="brand-text">
-          <h1>Professor Márcio Educa 360</h1>
+          <h1>Professor Márcio 360</h1>
           <span>Matemática Completa: Da Base à Aprovação</span>
         </div>
       </div>
@@ -50,10 +54,9 @@
     <div id="breadcrumbs" class="breadcrumbs"></div>
 
     <!-- ======================================================================
-         1. PÁGINA INICIAL — CARTÃO DE VISITAS (SEM LINKS DE NAVEGAÇÃO INTERNA)
+         1. PÁGINA INICIAL — CARTÃO DE VISITAS (NAVEGAÇÃO PELO MENU SUPERIOR)
          ====================================================================== -->
     <section id="view-home" class="view active">
-      <!-- BANNER OFICIAL -->
       <div class="banner-box">
         <img
           id="banner-inicio-img"
@@ -63,7 +66,6 @@
         />
       </div>
 
-      <!-- APRESENTAÇÃO + PESQUISA RÁPIDA -->
       <div class="hero">
         <div class="hero-badges">
           <span class="meta-pill"><strong>PORTAL PROFESSOR MÁRCIO 360</strong></span>
@@ -88,7 +90,6 @@
 
       <div id="search-results" class="search-results hidden"></div>
 
-      <!-- DIFERENCIAIS DO PORTAL (CARTÃO DE VISITAS) -->
       <div class="section-head">
         <div>
           <h3>Por que estudar no Portal Professor Márcio 360?</h3>
@@ -116,7 +117,6 @@
         </div>
       </div>
 
-      <!-- ORIENTAÇÃO DE NAVEGAÇÃO NO MENU SUPERIOR -->
       <div class="home-cta-card">
         <div>
           <h3>Pronto para começar sua jornada na Matemática?</h3>
@@ -126,7 +126,7 @@
     </section>
 
     <!-- ======================================================================
-         2. MINHAS AULAS (4 COLUNAS FUNDAMENTAL II | 3 COLUNAS ENSINO MÉDIO)
+         2. MINHAS AULAS (SELEÇÃO POR ANO E LISTA EM COLUNA ÚNICA)
          ====================================================================== -->
     <section id="view-aulas" class="view">
       <div class="banner-box">
@@ -136,7 +136,7 @@
       <div class="section-head">
         <div>
           <h2>Minhas Aulas</h2>
-          <p class="muted">Selecione o nível escolar para visualizar os conteúdos organizados em colunas por ano e em 3 etapas.</p>
+          <p class="muted">Selecione o nível escolar para visualizar as unidades, capítulos e status de liberação dos materiais.</p>
         </div>
       </div>
 
@@ -146,7 +146,7 @@
             <img class="banner-img" src="./imagens/banner-fundamental.jpg" alt="Ensino Fundamental II" />
           </div>
           <h3>Ensino Fundamental II (6º ao 9º ano)</h3>
-          <p>Conteúdos completos organizados em 4 colunas (6º, 7º, 8º e 9º ano) com teoria, exercícios e resoluções.</p>
+          <p>Acesse cada ano separadamente (6º, 7º, 8º e 9º ano) com unidades, capítulos minimizáveis e controle de acesso.</p>
           <div class="card-actions">
             <span class="btn primary">Acessar</span>
           </div>
@@ -157,7 +157,7 @@
             <img class="banner-img" src="./imagens/banner-medio.jpg" alt="Ensino Médio" />
           </div>
           <h3>Ensino Médio (1º ao 3º ano)</h3>
-          <p>Preparação completa organizada em 3 colunas (1º, 2º e 3º ano) com foco escolar e ENEM.</p>
+          <p>Acesse cada série separadamente (1º, 2º e 3º ano) com capítulos minimizáveis e foco escolar/ENEM.</p>
           <div class="card-actions">
             <span class="btn primary">Acessar</span>
           </div>
@@ -330,7 +330,7 @@
       <div class="section-head">
         <div>
           <h2>Como Estudar pelo Portal</h2>
-          <p class="muted">Siga o ciclo das 3 etapas para consolidar o aprendizado com eficiência.</p>
+          <p class="muted">Siga o ciclo das etapas para consolidar o aprendizado com eficiência.</p>
         </div>
       </div>
 
@@ -357,7 +357,7 @@
       <div class="portal-info-card">
         <h3>Orientações Gerais de Uso do Portal</h3>
         <ul class="orientacoes-list">
-          <li><strong>Minhas Aulas:</strong> utilize as 4 colunas do Ensino Fundamental II (6º ao 9º ano) e as 3 colunas do Ensino Médio (1º ao 3º ano) para seguir a ordem curricular.</li>
+          <li><strong>Minhas Aulas:</strong> minimize ou expanda cada unidade e capítulo e acompanhe o status de cada link (Liberado, Programado ou Bloqueado).</li>
           <li><strong>Concursos:</strong> acesse as abas <em>Detalhes do Curso</em>, <em>Aulas &amp; Módulos</em> e <em>Materiais de Apoio</em> para baixar mapas mentais e cronogramas.</li>
           <li><strong>Bancas:</strong> filtre diretamente pela examinadora do seu edital para treinar o estilo exato das questões.</li>
         </ul>
@@ -408,7 +408,7 @@
   </footer>
 
   <!-- JS EXTERNO -->
-  <script src="./dados.js?v=6"></script>
-  <script src="./script.js?v=6"></script>
+  <script src="./dados.js?v=15"></script>
+<script src="./script.js?v=15"></script>
 </body>
 </html>

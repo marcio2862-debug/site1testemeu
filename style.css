@@ -1,5 +1,5 @@
 /* ==========================================================================
-   PORTAL PROFESSOR MÁRCIO 360 — STYLE.CSS COMPLETO E ATUALIZADO
+   PORTAL PROFESSOR MÁRCIO 360 — STYLE.CSS COMPLETO E ATUALIZADO (V14)
    ========================================================================== */
 
 :root {
@@ -14,6 +14,7 @@
   --primary-soft: rgba(37, 99, 235, 0.16);
   --accent: #f59e0b;
   --success: #10b981;
+  --danger: #ef4444;
   --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
 }
 
@@ -30,6 +31,7 @@ body.light-theme {
   --primary-soft: #dbeafe;
   --accent: #f59e0b;
   --success: #059669;
+  --danger: #dc2626;
   --shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.08);
 }
 
@@ -52,7 +54,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 1220px;
+  max-width: 1260px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -239,7 +241,7 @@ main.container {
 }
 
 /* ==========================================================================
-   BANNERS (TAMANHO COMPACTO E PROPORCIONAL EM TODAS AS PÁGINAS)
+   BANNERS (100% PROPORCIONAIS)
    ========================================================================== */
 .banner-box {
   width: 100%;
@@ -261,14 +263,12 @@ main.container {
   transition: transform 0.35s ease;
 }
 
-/* Banner da Página Inicial alinhado 100% com a largura do quadro de títulos (.hero) */
 #view-home > .banner-box {
   width: 100%;
-  max-width: 100%;
+  max-width: 920px;
   height: auto;
-  max-height: none;
   padding: 0;
-  margin: 0 0 22px 0;
+  margin: 0 auto 22px auto;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--border);
@@ -279,13 +279,10 @@ main.container {
 #view-home > .banner-box .banner-img {
   width: 100%;
   height: auto;
-  max-height: none;
   object-fit: contain;
   display: block;
-  border-radius: 0;
 }
 
-/* Imagens dentro dos cartões (Minhas Aulas e Concursos) */
 .banner-box.banner-card {
   max-width: 100%;
   height: 150px;
@@ -390,7 +387,13 @@ main.container {
 
 .grid {
   display: grid;
-  gap: 20px;
+  gap: 18px;
+}
+
+.grid.cols-1 {
+  grid-template-columns: 1fr;
+  max-width: 920px;
+  margin: 0 auto;
 }
 
 .grid.cols-2 {
@@ -428,7 +431,7 @@ main.container {
 }
 
 .card h3 {
-  font-size: 1.1rem;
+  font-size: 1.08rem;
   font-weight: 700;
   margin-bottom: 8px;
 }
@@ -436,7 +439,7 @@ main.container {
 .card p {
   color: var(--muted);
   font-size: 0.92rem;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   flex: 1;
 }
 
@@ -512,30 +515,189 @@ main.container {
 }
 
 /* ==========================================================================
-   COLUNAS POR ANO ESCOLAR (4 COLUNAS FUNDAMENTAL II | 3 COLUNAS MÉDIO)
+   UNIDADES E CAPÍTULOS MINIMIZÁVEIS + CONTROLE DE STATUS POR LINK
+   (LIBERADO | PROGRAMADO | BLOQUEADO)
    ========================================================================== */
-.year-column {
+.unit-header-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 12px;
+}
+
+.unit-header-toggle h3 {
+  margin-bottom: 0;
+  font-size: 1.06rem;
+  line-height: 1.35;
+}
+
+.toggle-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 8px;
   background-color: var(--surface-alt);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 800;
+  transition: transform 0.2s ease;
+}
+
+.unit-card.collapsed .chapters-list {
+  display: none;
+}
+
+.unit-card.collapsed .unit-header-toggle {
+  margin-bottom: 0;
+}
+
+.unit-card.collapsed .unit-header-toggle .toggle-chevron {
+  transform: rotate(-90deg);
+}
+
+.chapters-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
-.year-column-header {
-  background: linear-gradient(135deg, var(--primary) 0%, #0f294a 100%);
+.chapter-block {
+  background-color: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.chapter-header-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.chapter-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.chapter-block.collapsed .chapter-links {
+  display: none;
+}
+
+.chapter-block.collapsed .chapter-header-toggle .toggle-chevron {
+  transform: rotate(-90deg);
+}
+
+.chapter-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.link-control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 8px 10px;
+}
+
+.link-main-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn.btn-sm {
+  flex: 1;
+  min-width: 210px;
+  justify-content: flex-start;
+  padding: 7px 12px;
+  font-size: 0.84rem;
+  border-radius: 7px;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.btn.status-liberado {
+  background-color: var(--primary);
+  border-color: var(--primary);
   color: #ffffff;
-  font-size: 1.05rem;
-  font-weight: 800;
-  text-align: center;
-  padding: 10px 12px;
-  border-radius: 10px;
 }
 
-.year-column .card {
-  padding: 16px;
+.btn.status-programado {
+  background-color: rgba(245, 158, 11, 0.16);
+  border-color: var(--accent);
+  color: var(--accent);
+  cursor: not-allowed;
+}
+
+.btn.status-bloqueado {
+  background-color: rgba(239, 68, 68, 0.12);
+  border-color: var(--danger);
+  color: var(--danger);
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.status-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.status-opt-btn {
+  border: 1px solid var(--border);
+  background-color: var(--surface-alt);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.status-opt-btn:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.status-opt-btn[data-set-status="liberado"].active {
+  background-color: var(--success);
+  border-color: var(--success);
+  color: #ffffff;
+}
+
+.status-opt-btn[data-set-status="programado"].active {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #0f172a;
+}
+
+.status-opt-btn[data-set-status="bloqueado"].active {
+  background-color: var(--danger);
+  border-color: var(--danger);
+  color: #ffffff;
 }
 
 /* ==========================================================================
@@ -896,11 +1058,11 @@ main.container {
   align-self: flex-start;
   background-color: var(--primary-soft);
   color: var(--primary);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 999px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .pills {
@@ -966,7 +1128,7 @@ main.container {
 /* ==========================================================================
    RESPONSIVIDADE
    ========================================================================== */
-@media (max-width: 1120px) {
+@media (max-width: 1180px) {
   .topbar-inner {
     flex-wrap: wrap;
   }
@@ -988,11 +1150,13 @@ main.container {
   }
 
   #view-home > .banner-box {
-    max-height: 165px;
+    height: auto;
   }
 
   #view-home > .banner-box .banner-img {
-    max-height: 152px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
   }
 
   .banner-box.banner-card {
@@ -1013,37 +1177,33 @@ main.container {
     grid-template-columns: 1fr;
   }
 }
-@media (max-width: 768px) {
-  .banner-box {
-    height: 130px;
-  }
+/* Etiqueta fixa de status definida no dados.js */
+.status-badge-fixed {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 112px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-align: center;
+  flex-shrink: 0;
+  user-select: none;
+}
 
-  #view-home > .banner-box {
-    height: auto;
-    max-height: none;
-  }
+.badge-liberado {
+  background-color: var(--success);
+  color: #ffffff;
+}
 
-  #view-home > .banner-box .banner-img {
-    width: 100%;
-    height: auto;
-    max-height: none;
-  }
+.badge-programado {
+  background-color: var(--accent);
+  color: #0f172a;
+}
 
-  .banner-box.banner-card {
-    height: 125px;
-  }
-
-  .grid.cols-2,
-  .grid.cols-3,
-  .grid.cols-4 {
-    grid-template-columns: 1fr;
-  }
-
-  .bancas-logos-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .bancas-hero-checklist {
-    grid-template-columns: 1fr;
-  }
+.badge-bloqueado {
+  background-color: var(--danger);
+  color: #ffffff;
 }

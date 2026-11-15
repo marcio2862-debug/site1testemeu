@@ -1,5 +1,6 @@
 /* ==========================================================================
-   PORTAL PROFESSOR MÁRCIO 360 — LÓGICA COMPLETA E NAVEGAÇÃO PELO MENU SUPERIOR
+   PORTAL PROFESSOR MÁRCIO 360 — SCRIPT.JS COMPLETO E ATUALIZADO (V15)
+   Controle 100% centralizado no arquivo dados.js
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -185,59 +186,238 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-  // 6. MINHAS AULAS (4 COLUNAS FUNDAMENTAL II | 3 COLUNAS ENSINO MÉDIO)
-  function renderColunasPorAno(container, lista, anosConfig, colsClass, tituloVoltar, onVoltar) {
+  // 6. MINHAS AULAS — LÊ O STATUS CONFIGURADO NO DADOS.JS
+  //    status: "liberado" | "programado" | "bloqueado"
+  function gerarLinhaLinkHtml(lk) {
+    const status = (lk.status || (lk.url ? "liberado" : "programado")).toLowerCase().trim();
+
+    if (status === "liberado") {
+      const botaoPrincipal = lk.url
+        ? `<a href="${lk.url}" target="_blank" rel="noopener noreferrer" class="btn btn-sm status-liberado">${lk.rotulo}</a>`
+        : `<span class="btn btn-sm status-liberado">${lk.rotulo}</span>`;
+
+      return `
+        <div class="link-control-row">
+          <div class="link-main-line">
+            <div class="link-btn-slot" style="flex:1; display:flex;">
+              ${botaoPrincipal}
+            </div>
+            <span class="status-badge-fixed badge-liberado">Liberado</span>
+          </div>
+        </div>
+      `;
+    }
+
+    if (status === "programado") {
+      return `
+        <div class="link-control-row">
+          <div class="link-main-line">
+            <div class="link-btn-slot" style="flex:1; display:flex;">
+              <span class="btn btn-sm status-programado">${lk.rotulo}</span>
+            </div>
+            <span class="status-badge-fixed badge-programado">Programado</span>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="link-control-row">
+        <div class="link-main-line">
+          <div class="link-btn-slot" style="flex:1; display:flex;">
+            <span class="btn btn-sm status-bloqueado">${lk.rotulo}</span>
+          </div>
+          <span class="status-badge-fixed badge-bloqueado">Bloqueado</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderCardUnidade(item, categoriaPadrao, idx) {
+    if (Array.isArray(item.capitulos) && item.capitulos.length > 0) {
+      const capitulosHtml = item.capitulos
+        .map((cap) => {
+          const linksHtml = (cap.links || [])
+            .map((lk) => gerarLinhaLinkHtml(lk))
+            .join("");
+
+          return `
+            <div class="chapter-block">
+              <div class="chapter-header-toggle" role="button" tabindex="0" title="Minimizar ou expandir capítulo">
+                <span class="chapter-title">${cap.titulo}</span>
+                <span class="toggle-chevron">▾</span>
+              </div>
+              <div class="chapter-links">${linksHtml}</div>
+            </div>
+          `;
+        })
+        .join("");
+
+      return `
+        <div class="card unit-card">
+          <span class="tag">${item.categoria || categoriaPadrao}</span>
+          <div class="unit-header-toggle" role="button" tabindex="0" title="Minimizar ou expandir unidade">
+            <h3>${item.titulo || "Unidade " + (idx + 1)}</h3>
+            <span class="toggle-chevron">▾</span>
+          </div>
+          <div class="chapters-list">
+            ${capitulosHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="card">
+        <span class="tag">${item.categoria || categoriaPadrao}</span>
+        <h3>${item.titulo || item.nome || "Assunto " + (idx + 1)}</h3>
+        <p>${item.resumo || item.descricao || "Material estruturado em etapas."}</p>
+        <div class="card-actions">
+          ${
+            item.link
+              ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer" class="btn primary">Abrir Material</a>`
+              : `<span class="btn primary">Em breve</span>`
+          }
+        </div>
+      </div>
+    `;
+  }
+
+  function ativarInteracoesUnidades(container) {
     if (!container) return;
-    container.classList.remove("hidden");
-    const itens = Array.isArray(lista) ? lista : [];
 
-    const colunasHtml = anosConfig
-      .map((ano) => {
-        const doAno = itens.filter((item) =>
+    container.querySelectorAll(".unit-header-toggle").forEach((header) => {
+      header.addEventListener("click", () => {
+        header.closest(".unit-card")?.classList.toggle("collapsed");
+      });
+    });
+
+    container.querySelectorAll(".chapter-header-toggle").forEach((header) => {
+      header.addEventListener("click", () => {
+        header.closest(".chapter-block")?.classList.toggle("collapsed");
+      });
+    });
+  }
+
+  // Abre a página exclusiva de um único ano em UMA SÓ COLUNA
+  function abrirPaginaDoAno(conteudoBox, listaCompleta, nivelLabel, anoObj, voltarParaAnos) {
+    if (!conteudoBox) return;
+    conteudoBox.classList.remove("hidden");
+
+    setBreadcrumbs([
+      { label: "Início", action: () => ativarView("home") },
+      { label: "Minhas Aulas", action: () => ativarView("aulas") },
+      { label: nivelLabel, action: voltarParaAnos },
+      { label: anoObj.titulo }
+    ]);
+
+    const unidadesDoAno = (Array.isArray(listaCompleta) ? listaCompleta : []).filter((item) =>
+      (item.categoria || "").toLowerCase().includes(anoObj.filtro.toLowerCase())
+    );
+
+    const unidadesHtml =
+      unidadesDoAno.length > 0
+        ? unidadesDoAno.map((item, idx) => renderCardUnidade(item, anoObj.titulo, idx)).join("")
+        : `<div class="card"><p class="muted">Conteúdos do ${anoObj.titulo} em preparação.</p></div>`;
+
+    conteudoBox.innerHTML = `
+      <div class="section-head" style="margin-bottom: 14px;">
+        <div>
+          <h3>${anoObj.titulo} — ${nivelLabel}</h3>
+          <p class="muted">${anoObj.descricao}</p>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        <button type="button" class="btn" id="btn-voltar-anos">← Voltar para os Anos (${nivelLabel})</button>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn" id="btn-minimizar-tudo">Minimizar Capítulos</button>
+          <button type="button" class="btn" id="btn-expandir-tudo">Expandir Tudo</button>
+        </div>
+      </div>
+
+      <div class="grid cols-1">
+        ${unidadesHtml}
+      </div>
+    `;
+
+    document.getElementById("btn-voltar-anos")?.addEventListener("click", voltarParaAnos);
+
+    document.getElementById("btn-minimizar-tudo")?.addEventListener("click", () => {
+      conteudoBox.querySelectorAll(".chapter-block").forEach((el) => el.classList.add("collapsed"));
+    });
+
+    document.getElementById("btn-expandir-tudo")?.addEventListener("click", () => {
+      conteudoBox.querySelectorAll(".unit-card, .chapter-block").forEach((el) => el.classList.remove("collapsed"));
+    });
+
+    ativarInteracoesUnidades(conteudoBox);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Abre a página intermediária com os links/cartões de cada Ano
+  function abrirSeletorDeAnos(conteudoBox, listaCompleta, nivelLabel, anosConfig, colsClass) {
+    if (!conteudoBox) return;
+    conteudoBox.classList.remove("hidden");
+
+    setBreadcrumbs([
+      { label: "Início", action: () => ativarView("home") },
+      { label: "Minhas Aulas", action: () => ativarView("aulas") },
+      { label: nivelLabel }
+    ]);
+
+    const cardsAnosHtml = anosConfig
+      .map((ano, idx) => {
+        const qtdUnidades = (Array.isArray(listaCompleta) ? listaCompleta : []).filter((item) =>
           (item.categoria || "").toLowerCase().includes(ano.filtro.toLowerCase())
-        );
-
-        const cardsHtml =
-          doAno.length > 0
-            ? doAno
-                .map(
-                  (item, idx) => `
-                <div class="card">
-                  <span class="tag">${item.categoria || ano.titulo}</span>
-                  <h3>${item.titulo || item.nome || "Assunto " + (idx + 1)}</h3>
-                  <p>${item.resumo || item.descricao || "Material estruturado em 3 etapas."}</p>
-                  <div class="card-actions">
-                    ${
-                      item.link
-                        ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer" class="btn primary">Abrir Material</a>`
-                        : `<span class="btn primary">Em breve</span>`
-                    }
-                  </div>
-                </div>
-              `
-                )
-                .join("")
-            : `<div class="card"><p class="muted">Conteúdos em preparação.</p></div>`;
+        ).length;
 
         return `
-          <div class="year-column">
-            <div class="year-column-header">${ano.titulo}</div>
-            ${cardsHtml}
+          <div class="card card-link" data-open-ano="${idx}">
+            <span class="tag">${nivelLabel}</span>
+            <h3>${ano.titulo}</h3>
+            <p>${ano.descricao}</p>
+            <div class="card-actions" style="justify-content: space-between; width: 100%;">
+              <span class="btn primary">Acessar ${ano.titulo} →</span>
+              <span class="meta-pill">${qtdUnidades} ${qtdUnidades === 1 ? "unidade" : "unidades"}</span>
+            </div>
           </div>
         `;
       })
       .join("");
 
-    container.innerHTML = `
+    conteudoBox.innerHTML = `
       <div style="margin-bottom: 18px;">
-        <button type="button" class="btn" id="btn-voltar-secao">← ${tituloVoltar}</button>
+        <button type="button" class="btn" id="btn-voltar-niveis">← Voltar para Níveis Escolares</button>
       </div>
+
+      <div class="section-head">
+        <div>
+          <h3>Selecione o Ano — ${nivelLabel}</h3>
+          <p class="muted">Clique no ano desejado para abrir suas unidades, capítulos e links de estudo.</p>
+        </div>
+      </div>
+
       <div class="grid ${colsClass}">
-        ${colunasHtml}
+        ${cardsAnosHtml}
       </div>
     `;
 
-    document.getElementById("btn-voltar-secao")?.addEventListener("click", onVoltar);
+    document.getElementById("btn-voltar-niveis")?.addEventListener("click", () => ativarView("aulas"));
+
+    conteudoBox.querySelectorAll("[data-open-ano]").forEach((card) => {
+      card.addEventListener("click", () => {
+        const idx = parseInt(card.dataset.openAno, 10);
+        const anoSelecionado = anosConfig[idx];
+        if (anoSelecionado) {
+          abrirPaginaDoAno(conteudoBox, listaCompleta, nivelLabel, anoSelecionado, () =>
+            abrirSeletorDeAnos(conteudoBox, listaCompleta, nivelLabel, anosConfig, colsClass)
+          );
+        }
+      });
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   document.querySelectorAll("[data-go-area]").forEach((card) => {
@@ -248,43 +428,57 @@ document.addEventListener("DOMContentLoaded", () => {
       areasBox?.classList.add("hidden");
 
       if (area === "fundamental") {
-        setBreadcrumbs([
-          { label: "Início", action: () => ativarView("home") },
-          { label: "Minhas Aulas", action: () => ativarView("aulas") },
-          { label: "Ensino Fundamental II (6º ao 9º ano)" }
-        ]);
-
-        renderColunasPorAno(
+        abrirSeletorDeAnos(
           conteudoBox,
           db?.fundamental || [],
+          "Ensino Fundamental II (6º ao 9º ano)",
           [
-            { filtro: "6º Ano", titulo: "6º Ano" },
-            { filtro: "7º Ano", titulo: "7º Ano" },
-            { filtro: "8º Ano", titulo: "8º Ano" },
-            { filtro: "9º Ano", titulo: "9º Ano" }
+            {
+              filtro: "6º Ano",
+              titulo: "6º Ano",
+              descricao: "Sistemas de numeração, operações com números naturais, frações, decimais e geometria básica."
+            },
+            {
+              filtro: "7º Ano",
+              titulo: "7º Ano",
+              descricao: "Números inteiros e racionais, equações do 1º grau, razão, proporção e regra de três."
+            },
+            {
+              filtro: "8º Ano",
+              titulo: "8º Ano",
+              descricao: "Expressões algébricas, polinômios, produtos notáveis, sistemas de equações e geometria."
+            },
+            {
+              filtro: "9º Ano",
+              titulo: "9º Ano",
+              descricao: "Potenciação, radiciação, equações do 2º grau, Teorema de Tales e Teorema de Pitágoras."
+            }
           ],
-          "cols-4",
-          "Voltar para Níveis Escolares",
-          () => ativarView("aulas")
+          "cols-2"
         );
       } else {
-        setBreadcrumbs([
-          { label: "Início", action: () => ativarView("home") },
-          { label: "Minhas Aulas", action: () => ativarView("aulas") },
-          { label: "Ensino Médio (1º ao 3º ano)" }
-        ]);
-
-        renderColunasPorAno(
+        abrirSeletorDeAnos(
           conteudoBox,
           db?.medio || [],
+          "Ensino Médio (1º ao 3º ano)",
           [
-            { filtro: "1º Ano", titulo: "1º Ano" },
-            { filtro: "2º Ano", titulo: "2º Ano" },
-            { filtro: "3º Ano", titulo: "3º Ano" }
+            {
+              filtro: "1º Ano",
+              titulo: "1º Ano",
+              descricao: "Conjuntos numéricos, funções afim, quadrática, modular, exponencial e logarítmica."
+            },
+            {
+              filtro: "2º Ano",
+              titulo: "2º Ano",
+              descricao: "Trigonometria no ciclo, matrizes, determinantes, sistemas lineares e geometria espacial."
+            },
+            {
+              filtro: "3º Ano",
+              titulo: "3º Ano",
+              descricao: "Geometria analítica, análise combinatória, probabilidade, estatística e revisão ENEM."
+            }
           ],
-          "cols-3",
-          "Voltar para Níveis Escolares",
-          () => ativarView("aulas")
+          "cols-3"
         );
       }
     });
@@ -498,27 +692,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const todos = [...(db?.fundamental || []), ...(db?.medio || []), ...(db?.bancas || [])];
-    const encontrados = todos.filter((item) =>
-      `${item.titulo || ""} ${item.banca || ""} ${item.categoria || ""} ${item.descricao || ""} ${item.resumo || ""}`
+    const encontrados = todos.filter((item) => {
+      const textoCapitulos = Array.isArray(item.capitulos)
+        ? item.capitulos.map((c) => c.titulo).join(" ")
+        : "";
+      return `${item.titulo || ""} ${item.banca || ""} ${item.categoria || ""} ${item.descricao || ""} ${item.resumo || ""} ${textoCapitulos}`
         .toLowerCase()
-        .includes(termo)
-    );
+        .includes(termo);
+    });
 
     searchResults.classList.remove("hidden");
     searchResults.innerHTML =
       encontrados.length === 0
         ? `<p class="muted">Nenhum resultado encontrado para "<strong>${searchInput.value}</strong>".</p>`
         : `<div class="section-head"><h3>Resultados para "${searchInput.value}" (${encontrados.length})</h3></div>
-           <div class="grid cols-2">${encontrados
-             .map(
-               (item) => `
-              <div class="card">
-                <span class="tag">${item.banca || item.categoria || "Conteúdo"}</span>
-                <h3>${item.titulo}</h3>
-                <p>${item.descricao || item.resumo || ""}</p>
-              </div>`
+           <div class="grid cols-1">${encontrados
+             .map((item, idx) =>
+               Array.isArray(item.capitulos)
+                 ? renderCardUnidade(item, item.categoria || "Conteúdo", idx)
+                 : `<div class="card">
+                      <span class="tag">${item.banca || item.categoria || "Conteúdo"}</span>
+                      <h3>${item.titulo}</h3>
+                      <p>${item.descricao || item.resumo || ""}</p>
+                    </div>`
              )
              .join("")}</div>`;
+
+    ativarInteracoesUnidades(searchResults);
   }
 
   searchBtn?.addEventListener("click", executarPesquisa);

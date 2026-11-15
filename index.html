@@ -3,148 +3,345 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Márcio Educa 360 — Central de Concursos</title>
+  <title>Márcio Educa 360 — Plataforma de Estudos e Concursos</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <!-- 1. CENTRAL DE CONCURSOS -->
-    <section class="panel">
-      <div class="panel-header-flex">
-        <div>
-          <h1>Central de Concursos</h1>
-          <p class="subtitle">Acompanhamento geral dos estudos para concursos públicos.</p>
-        </div>
-        <div class="concurso-selector-box">
-          <label for="select-concurso-topo">CONCURSO SELECIONADO</label>
-          <select id="select-concurso-topo"></select>
+  <!-- BARRA DE NAVEGAÇÃO SUPERIOR (IGUAL À IMAGEM) -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand" onclick="navegarPara('inicio')" style="cursor:pointer;">
+        <div class="brand-logo">∑</div>
+        <div class="brand-text">
+          <div class="brand-title">MÁRCIO EDUCA <span>360</span></div>
+          <div class="brand-sub">AULAS E PREPARAÇÃO PARA CONCURSOS</div>
         </div>
       </div>
 
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <span class="kpi-value" id="kpi-concursos">0</span>
-          <span class="kpi-label">Concursos ativos</span>
+      <nav class="nav-pills" id="menu-principal">
+        <button class="pill pill-inicio active" data-tab="inicio" onclick="navegarPara('inicio')">
+          <span>🏠</span> Início
+        </button>
+        <button class="pill pill-aulas" data-tab="minhas-aulas" onclick="navegarPara('minhas-aulas')">
+          <span>📗</span> Minhas Aulas
+        </button>
+        <button class="pill pill-concursos" data-tab="concursos" onclick="navegarPara('concursos')">
+          <span>🏆</span> Concursos
+        </button>
+        <button class="pill pill-questoes" data-tab="questoes" onclick="navegarPara('questoes')">
+          <span>🎯</span> Questões por Bancas
+        </button>
+        <button class="pill pill-materiais" data-tab="materiais" onclick="navegarPara('materiais')">
+          <span>📘</span> Materials
+        </button>
+        <button class="pill pill-como" data-tab="como-estudar" onclick="navegarPara('como-estudar')">
+          <span>📚</span> Como Estudar
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- =========================================================
+         PÁGINA 1: INÍCIO (5 CARDS COLORIDOS EXATAMENTE COMO NA IMAGEM)
+    ========================================================= -->
+    <section id="view-inicio" class="view-section active">
+      <div class="hero-card">
+        <div class="hero-header">
+          <h1>Bem-vindo ao <span class="blue">MÁRCIO EDUCA</span> <span class="gold">360</span></h1>
+          <p>Sua plataforma de Matemática para aprender, revisar e se preparar para concursos.</p>
         </div>
-        <div class="kpi-card">
-          <span class="kpi-value" id="kpi-cargos">0</span>
-          <span class="kpi-label">Cargos</span>
+
+        <div class="cards-5-grid">
+          <!-- CARD 1: ENSINO FUNDAMENTAL II -->
+          <div class="portal-card card-blue">
+            <div class="portal-icon-badge">📖</div>
+            <div class="portal-body">
+              <h2>ENSINO<br>FUNDAMENTAL II</h2>
+              <span class="portal-tag">6º ao 9º Ano</span>
+            </div>
+            <div class="portal-footer">
+              <button class="btn-acessar" onclick="abrirTrilha('fundamental-2')">Acessar →</button>
+            </div>
+          </div>
+
+          <!-- CARD 2: ENSINO MÉDIO -->
+          <div class="portal-card card-purple">
+            <div class="portal-icon-badge">🎓</div>
+            <div class="portal-body">
+              <h2>ENSINO<br>MÉDIO</h2>
+              <span class="portal-tag">1º ao 3º Ano</span>
+            </div>
+            <div class="portal-footer">
+              <button class="btn-acessar" onclick="abrirTrilha('ensino-medio')">Acessar →</button>
+            </div>
+          </div>
+
+          <!-- CARD 3: MATEMÁTICA BÁSICA PARA CONCURSOS -->
+          <div class="portal-card card-green">
+            <div class="portal-icon-badge">🔢</div>
+            <div class="portal-body">
+              <h2>MATEMÁTICA<br>BÁSICA</h2>
+              <p class="portal-small">PARA CONCURSOS</p>
+              <span class="portal-tag">Diversos cargos</span>
+            </div>
+            <div class="portal-footer">
+              <button class="btn-acessar" onclick="abrirTrilha('matematica-basica')">Acessar →</button>
+            </div>
+          </div>
+
+          <!-- CARD 4: MATEMÁTICA ESPECÍFICA -->
+          <div class="portal-card card-red">
+            <div class="portal-icon-badge">∑</div>
+            <div class="portal-body">
+              <h2>MATEMÁTICA<br>ESPECÍFICA</h2>
+              <p class="portal-small">PARA PROFESSOR DE<br>MATEMÁTICA</p>
+            </div>
+            <div class="portal-footer">
+              <button class="btn-acessar" onclick="abrirTrilha('matematica-especifica')">Acessar →</button>
+            </div>
+          </div>
+
+          <!-- CARD 5: QUESTÕES POR BANCAS -->
+          <div class="portal-card card-navy">
+            <div class="portal-icon-badge">🎯</div>
+            <div class="portal-body">
+              <h2>QUESTÕES<br>POR BANCAS</h2>
+              <p class="portal-small">DE CONCURSOS</p>
+            </div>
+            <div class="portal-footer">
+              <button class="btn-acessar" onclick="navegarPara('questoes')">Acessar →</button>
+            </div>
+          </div>
         </div>
-        <div class="kpi-card">
-          <span class="kpi-value" id="kpi-conteudos">0</span>
-          <span class="kpi-label">Conteúdos</span>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-value" id="kpi-teoria">0%</span>
-          <span class="kpi-label">Teoria concluída</span>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-value" id="kpi-questoes">0</span>
-          <span class="kpi-label">Questões</span>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-value" id="kpi-acertos">0</span>
-          <span class="kpi-label">Acertos</span>
-        </div>
-        <div class="kpi-card">
-          <span class="kpi-value" id="kpi-aproveitamento">0%</span>
-          <span class="kpi-label">Aproveitamento</span>
+
+        <div class="hero-bottom-bar">
+          <div>📘 Conteúdos organizados</div>
+          <div>✅ Exercícios e questões</div>
+          <div>🧮 Resoluções passo a passo</div>
+          <div>🎯 Preparação por bancas</div>
         </div>
       </div>
     </section>
 
-    <!-- 2. GERENCIAR CONCURSOS (VIA CÓDIGO dados.js) -->
-    <section class="panel">
-      <h2>Gerenciar Concursos</h2>
-      <p class="subtitle">Estrutura cadastrada e controlada diretamente pelo arquivo <code>dados.js</code>.</p>
+    <!-- =========================================================
+         PÁGINA 2: MINHAS AULAS (TRILHAS + AULAS POR PARTES + LINKS ONEDRIVE)
+    ========================================================= -->
+    <section id="view-minhas-aulas" class="view-section">
+      <div class="panel">
+        <div class="panel-header-flex">
+          <div>
+            <h2>Minhas Aulas & Trilhas de Estudo</h2>
+            <p class="subtitle">Selecione a trilha desejada e acesse os PDFs, Vídeos e Imagens do OneDrive por partes.</p>
+          </div>
+          <div class="filter-inline">
+            <select id="filtro-trilha" onchange="renderizarMinhasAulas()">
+              <option value="">Todas as Trilhas (5 Categorias)</option>
+              <option value="fundamental-2">Ensino Fundamental II (6º ao 9º Ano)</option>
+              <option value="ensino-medio">Ensino Médio (1º ao 3º Ano)</option>
+              <option value="matematica-basica">Matemática Básica para Concursos</option>
+              <option value="matematica-especifica">Matemática Específica (Professor)</option>
+              <option value="concursos-gerais">Concursos Gerais</option>
+            </select>
+            <input type="text" id="busca-minhas-aulas" placeholder="Pesquisar aula..." oninput="renderizarMinhasAulas()" />
+          </div>
+        </div>
 
-      <div class="three-col-grid">
-        <div class="sub-box">
-          <h3>Bancas</h3>
-          <div id="lista-bancas" class="item-list"></div>
-        </div>
-        <div class="sub-box">
-          <h3>Concursos</h3>
-          <div id="lista-concursos" class="item-list"></div>
-        </div>
-        <div class="sub-box">
-          <h3>Cargos</h3>
-          <div id="lista-cargos" class="item-list"></div>
-        </div>
+        <div id="container-minhas-aulas" class="aulas-progresso-grid"></div>
       </div>
     </section>
 
-    <!-- 3. BIBLIOTECA PERMANENTE -->
-    <section class="panel">
-      <h2>Biblioteca Permanente</h2>
-      <p class="subtitle">Disciplinas e conteúdos organizados para utilização nos estudos.</p>
+    <!-- =========================================================
+         PÁGINA 3: CONCURSOS (PAINEL COMPLETO IGUAL ÀS IMAGENS ANTERIORES)
+    ========================================================= -->
+    <section id="view-concursos" class="view-section">
+      <!-- CENTRAL DE CONCURSOS -->
+      <div class="panel">
+        <div class="panel-header-flex">
+          <div>
+            <h2>Central de Concursos</h2>
+            <p class="subtitle">Acompanhamento geral dos estudos para concursos públicos.</p>
+          </div>
+          <div class="concurso-selector-box">
+            <label for="select-concurso-topo">CONCURSO SELECIONADO</label>
+            <select id="select-concurso-topo"></select>
+          </div>
+        </div>
 
-      <div class="two-col-grid">
-        <div class="sub-box">
-          <h3>Disciplinas</h3>
-          <div id="lista-disciplinas" class="item-list"></div>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-concursos">0</span>
+            <span class="kpi-label">Concursos ativos</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-cargos">0</span>
+            <span class="kpi-label">Cargos</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-conteudos">0</span>
+            <span class="kpi-label">Conteúdos</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-teoria">0%</span>
+            <span class="kpi-label">Teoria concluída</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-questoes">0</span>
+            <span class="kpi-label">Questões</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-acertos">0</span>
+            <span class="kpi-label">Acertos</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-value" id="kpi-aproveitamento">0%</span>
+            <span class="kpi-label">Aproveitamento</span>
+          </div>
         </div>
-        <div class="sub-box">
-          <h3>Conteúdos</h3>
-          <div id="lista-conteudos" class="item-list"></div>
+      </div>
+
+      <!-- GERENCIAR CONCURSOS -->
+      <div class="panel">
+        <h2>Gerenciar Concursos</h2>
+        <p class="subtitle">Bancas, Concursos e Cargos cadastrados no <code>dados.js</code>.</p>
+        <div class="three-col-grid">
+          <div class="sub-box">
+            <h3>Bancas</h3>
+            <div id="lista-bancas" class="item-list"></div>
+          </div>
+          <div class="sub-box">
+            <h3>Concursos</h3>
+            <div id="lista-concursos" class="item-list"></div>
+          </div>
+          <div class="sub-box">
+            <h3>Cargos</h3>
+            <div id="lista-cargos" class="item-list"></div>
+          </div>
         </div>
+      </div>
+
+      <!-- BIBLIOTECA PERMANENTE -->
+      <div class="panel">
+        <h2>Biblioteca Permanente</h2>
+        <p class="subtitle">Disciplinas e conteúdos organizados para utilização nos estudos.</p>
+        <div class="two-col-grid">
+          <div class="sub-box">
+            <h3>Disciplinas</h3>
+            <div id="lista-disciplinas" class="item-list"></div>
+          </div>
+          <div class="sub-box">
+            <h3>Conteúdos</h3>
+            <div id="lista-conteudos" class="item-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTEÚDOS DOS CARGOS -->
+      <div class="panel">
+        <h2>Conteúdos dos Cargos</h2>
+        <p class="subtitle">Conteúdos da Biblioteca Permanente vinculados aos cargos dos concursos.</p>
+        <div id="lista-vinculos" class="item-list"></div>
+      </div>
+
+      <!-- CONTROLE GERAL DE ESTUDOS -->
+      <div class="panel">
+        <h2>Controle Geral de Estudos</h2>
+        <p class="subtitle">Filtre por concurso, cargo ou plataforma e abra os arquivos do OneDrive por partes.</p>
+
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label for="filtro-concurso">Concurso</label>
+            <select id="filtro-concurso"></select>
+          </div>
+          <div class="filter-group">
+            <label for="filtro-cargo">Cargo</label>
+            <select id="filtro-cargo"></select>
+          </div>
+          <div class="filter-group">
+            <label for="filtro-plataforma">Plataforma</label>
+            <select id="filtro-plataforma"></select>
+          </div>
+          <div class="filter-group">
+            <label for="filtro-busca">Pesquisar aula</label>
+            <input type="text" id="filtro-busca" placeholder="Pesquisar conteúdo ou aula..." />
+          </div>
+        </div>
+
+        <div id="lista-progresso-aulas" class="aulas-progresso-grid"></div>
       </div>
     </section>
 
-    <!-- 4. CONTEÚDOS DOS CARGOS -->
-    <section class="panel">
-      <h2>Conteúdos dos Cargos</h2>
-      <p class="subtitle">Conteúdos da Biblioteca Permanente vinculados aos cargos dos concursos.</p>
-      <div id="lista-vinculos" class="item-list"></div>
+    <!-- =========================================================
+         PÁGINA 4: QUESTÕES POR BANCAS (CARD 5 + ABA DO MENU)
+    ========================================================= -->
+    <section id="view-questoes" class="view-section">
+      <div class="panel">
+        <div class="panel-header-flex">
+          <div>
+            <h2>Questões por Bancas de Concursos</h2>
+            <p class="subtitle">Cadernos de questões em PDF e resoluções em vídeo organizadas por banca no <code>dados.js</code>.</p>
+          </div>
+          <div class="filter-inline">
+            <select id="filtro-banca-questoes" onchange="renderizarQuestoesBancas()">
+              <option value="">Todas as Bancas</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="container-questoes-bancas" class="three-col-grid"></div>
+      </div>
     </section>
 
-    <!-- 5. CONTROLE GERAL DE ESTUDOS & PROGRESSO DAS AULAS -->
-    <section class="panel">
-      <h2>Controle Geral de Estudos</h2>
-      <p class="subtitle">Gerencie plataformas, aulas, links do OneDrive e o progresso das partes de teoria.</p>
+    <!-- =========================================================
+         PÁGINA 5: MATERIAIS (ACERVO GERAL DE LINKS DO ONEDRIVE)
+    ========================================================= -->
+    <section id="view-materiais" class="view-section">
+      <div class="panel">
+        <div class="panel-header-flex">
+          <div>
+            <h2>Materials — Biblioteca de PDFs, Vídeos e Imagens</h2>
+            <p class="subtitle">Todos os links do OneDrive reunidos em um só lugar para acesso rápido.</p>
+          </div>
+          <div class="filter-inline">
+            <input type="text" id="busca-materiais" placeholder="Filtrar material..." oninput="renderizarMateriais()" />
+          </div>
+        </div>
 
-      <div class="filter-bar">
-        <div class="filter-group">
-          <label for="filtro-concurso">Concurso</label>
-          <select id="filtro-concurso"></select>
-        </div>
-        <div class="filter-group">
-          <label for="filtro-cargo">Cargo</label>
-          <select id="filtro-cargo"></select>
-        </div>
-        <div class="filter-group">
-          <label for="filtro-plataforma">Plataforma</label>
-          <select id="filtro-plataforma"></select>
-        </div>
-        <div class="filter-group">
-          <label for="filtro-busca">Pesquisar aula</label>
-          <input type="text" id="filtro-busca" placeholder="Pesquisar conteúdo ou aula..." />
-        </div>
+        <div id="container-materiais" class="three-col-grid"></div>
       </div>
-
-      <div class="two-col-grid" style="margin-bottom: 24px;">
-        <div class="sub-box">
-          <h3>Plataformas</h3>
-          <div id="lista-plataformas" class="item-list"></div>
-        </div>
-        <div class="sub-box">
-          <h3>Aulas cadastradas</h3>
-          <div id="lista-aulas-resumo" class="item-list"></div>
-        </div>
-      </div>
-
-      <hr class="divider" />
-
-      <div class="progresso-header">
-        <div>
-          <h3>Progresso das Aulas</h3>
-          <p class="subtitle">Acompanhe as partes concluídas e abra PDFs, Vídeos e Imagens do OneDrive.</p>
-        </div>
-      </div>
-
-      <div id="lista-progresso-aulas" class="aulas-progresso-grid"></div>
     </section>
-  </div>
+
+    <!-- =========================================================
+         PÁGINA 6: COMO ESTUDAR (GUIA DE ORGANIZAÇÃO)
+    ========================================================= -->
+    <section id="view-como-estudar" class="view-section">
+      <div class="panel">
+        <h2>Como Estudar no Márcio Educa 360</h2>
+        <p class="subtitle">Roteiro prático para aproveitar ao máximo as trilhas, partes das aulas e cadernos de questões.</p>
+
+        <div class="three-col-grid">
+          <div class="sub-box">
+            <h3>1. Escolha sua Trilha na Tela Inicial</h3>
+            <p class="empty-msg" style="line-height:1.6;">
+              Comece pela base em <strong>Ensino Fundamental II</strong> ou <strong>Ensino Médio</strong>, avance para <strong>Matemática Básica</strong> ou aprofunde em <strong>Matemática Específica</strong>.
+            </p>
+          </div>
+          <div class="sub-box">
+            <h3>2. Estude por Partes e Marque o Progresso</h3>
+            <p class="empty-msg" style="line-height:1.6;">
+              Cada aula é dividida em partes com <strong>Apostila PDF</strong>, <strong>Videoaula</strong> e <strong>Mapas/Imagens</strong> no OneDrive. Marque a caixa <em>Concluída</em> ao finalizar cada parte.
+            </p>
+          </div>
+          <div class="sub-box">
+            <h3>3. Pratique em Questões por Bancas</h3>
+            <p class="empty-msg" style="line-height:1.6;">
+              Acesse os cadernos de questões da sua banca (IACP, Cebraspe, FGV, Vunesp etc.) e registre seus acertos para acompanhar seu percentual de aproveitamento.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script src="dados.js"></script>
   <script src="script.js"></script>

@@ -6,31 +6,282 @@
 }
 
 body {
-  background-color: #eef2f6;
+  background: linear-gradient(180deg, #e8eef7 0%, #f1f5f9 100%);
   color: #1e293b;
-  padding: 20px;
-  line-height: 1.4;
+  min-height: 100vh;
 }
 
-.container {
-  max-width: 1400px;
+/* TOPBAR IGUAL À IMAGEM */
+.topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #dbe3ef;
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.topbar-inner {
+  max-width: 1380px;
   margin: 0 auto;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #1d4ed8;
+  line-height: 1;
+}
+
+.brand-title {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: 0.02em;
+}
+
+.brand-title span {
+  color: #f59e0b;
+}
+
+.brand-sub {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.08em;
+}
+
+.nav-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.pill-inicio { background: #e0e7ff; color: #1e3a8a; }
+.pill-aulas { background: #dcfce7; color: #14532d; }
+.pill-concursos { background: #f3e8ff; color: #581c87; }
+.pill-questoes { background: #dbeafe; color: #1e40af; }
+.pill-materiais { background: #e0f2fe; color: #0c4a6e; }
+.pill-como { background: #e2e8f0; color: #1e293b; }
+
+.pill.active {
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.2);
+  transform: translateY(-1px);
+}
+
+/* CONTAINER PRINCIPAL */
+.main-wrapper {
+  max-width: 1380px;
+  margin: 22px auto;
+  padding: 0 20px 40px;
+}
+
+.view-section {
+  display: none;
   flex-direction: column;
   gap: 18px;
 }
 
+.view-section.active {
+  display: flex;
+}
+
+/* HERO CARD & 5 CARDS COLORIDOS (PÁGINA INICIAL) */
+.hero-card {
+  background: #ffffff;
+  border: 2px solid #1e293b;
+  border-radius: 14px;
+  padding: 34px 28px 24px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+.hero-header {
+  text-align: center;
+  margin-bottom: 34px;
+}
+
+.hero-header h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #0f172a;
+}
+
+.hero-header h1 .blue { color: #1d4ed8; }
+.hero-header h1 .gold { color: #f59e0b; }
+
+.hero-header p {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #475569;
+  margin-top: 6px;
+}
+
+.cards-5-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.portal-card {
+  border-radius: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 270px;
+  padding-top: 32px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+  transition: transform 0.2s ease;
+}
+
+.portal-card:hover {
+  transform: translateY(-4px);
+}
+
+.portal-icon-badge {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.portal-body {
+  padding: 16px 14px;
+  text-align: center;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.portal-body h2 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1.25;
+  color: #ffffff;
+}
+
+.portal-small {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  opacity: 0.95;
+}
+
+.portal-tag {
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.portal-footer {
+  background: rgba(255, 255, 255, 0.92);
+  padding: 12px;
+  border-radius: 0 0 14px 14px;
+  text-align: center;
+}
+
+.btn-acessar {
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  padding: 9px 16px;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-acessar:hover { opacity: 0.9; }
+
+/* Cores dos 5 Cards */
+.card-blue { background: linear-gradient(180deg, #0056b3 0%, #003d82 100%); }
+.card-blue .portal-icon-badge, .card-blue .btn-acessar { background: #004494; }
+
+.card-purple { background: linear-gradient(180deg, #7e22ce 0%, #581c87 100%); }
+.card-purple .portal-icon-badge, .card-purple .btn-acessar { background: #6b21a8; }
+
+.card-green { background: linear-gradient(180deg, #16a34a 0%, #15803d 100%); }
+.card-green .portal-icon-badge, .card-green .btn-acessar { background: #15803d; }
+
+.card-red { background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%); }
+.card-red .portal-icon-badge, .card-red .btn-acessar { background: #b91c1c; }
+
+.card-navy { background: linear-gradient(180deg, #075985 0%, #0c4a6e 100%); }
+.card-navy .portal-icon-badge, .card-navy .btn-acessar { background: #0369a1; }
+
+.hero-bottom-bar {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+/* PAINÉIS INTERNOS (CONCURSOS, MINHAS AULAS, QUESTÕES, MATERIAIS) */
 .panel {
   background: #ffffff;
   border: 1px solid #dce3ec;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 22px;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
 }
 
-.panel h1, .panel h2 {
+.panel h2 {
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
 }
 
@@ -50,6 +301,13 @@ body {
   margin-bottom: 14px;
 }
 
+.filter-inline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 280px;
+}
+
 .concurso-selector-box {
   display: flex;
   flex-direction: column;
@@ -61,7 +319,6 @@ body {
   font-size: 0.7rem;
   font-weight: 700;
   color: #475569;
-  letter-spacing: 0.04em;
 }
 
 select, input[type="text"], input[type="number"] {
@@ -71,13 +328,12 @@ select, input[type="text"], input[type="number"] {
   font-size: 0.85rem;
   color: #0f172a;
   background-color: #ffffff;
-  width: 100%;
 }
 
 /* KPIs */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
   gap: 12px;
 }
 
@@ -92,7 +348,7 @@ select, input[type="text"], input[type="number"] {
 
 .kpi-value {
   font-size: 1.35rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #1d4ed8;
 }
 
@@ -102,7 +358,6 @@ select, input[type="text"], input[type="number"] {
   margin-top: 4px;
 }
 
-/* Grids internos */
 .three-col-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -159,11 +414,10 @@ select, input[type="text"], input[type="number"] {
 }
 
 .empty-msg {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: #64748b;
 }
 
-/* Filtros */
 .filter-bar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -187,13 +441,7 @@ select, input[type="text"], input[type="number"] {
   color: #475569;
 }
 
-.divider {
-  border: none;
-  border-top: 1px solid #e2e8f0;
-  margin: 18px 0;
-}
-
-/* Progresso das Aulas */
+/* CARDS DE AULAS POR PARTES & LINKS ONEDRIVE */
 .aulas-progresso-grid {
   display: flex;
   flex-direction: column;
@@ -202,7 +450,7 @@ select, input[type="text"], input[type="number"] {
 
 .aula-box {
   border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 16px;
   background: #ffffff;
 }
@@ -217,15 +465,15 @@ select, input[type="text"], input[type="number"] {
 }
 
 .aula-meta {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: #1d4ed8;
   font-weight: 700;
   text-transform: uppercase;
 }
 
 .aula-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.02rem;
+  font-weight: 800;
   color: #0f172a;
   margin-top: 2px;
 }
@@ -255,7 +503,7 @@ select, input[type="text"], input[type="number"] {
 
 .parte-item {
   border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 12px;
   background: #f8fafc;
   display: flex;
@@ -308,10 +556,10 @@ select, input[type="text"], input[type="number"] {
 
 .btn-link {
   display: inline-block;
-  padding: 6px 10px;
-  border-radius: 5px;
+  padding: 6px 11px;
+  border-radius: 6px;
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   color: #ffffff;
 }

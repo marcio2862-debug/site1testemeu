@@ -3,548 +3,283 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Márcio Educa 360 — Aulas e Preparação para Concursos</title>
+  <title>Márcio Educa 360 — Portal de Matemática</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- BARRA SUPERIOR FIXA -->
+
+  <!-- TOPO FIXO COM MENU E SELETOR CLARO / ESCURO -->
   <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand" onclick="navegarPara('inicio')" style="cursor:pointer;">
-        <div class="brand-logo">∑</div>
+    <div class="container topbar-inner">
+      <div class="brand" id="go-home" role="button" tabindex="0" aria-label="Voltar para o início">
+        <div class="brand-badge">360</div>
         <div class="brand-text">
-          <div class="brand-title">MÁRCIO EDUCA <span>360</span></div>
-          <div class="brand-sub">AULAS E PREPARAÇÃO PARA CONCURSOS</div>
+          <h1>Márcio Educa 360</h1>
+          <span>Matemática • Aulas • Concursos • Bancas</span>
         </div>
       </div>
 
-      <nav class="nav-pills" id="menu-principal">
-        <button class="pill pill-inicio active" data-tab="inicio" onclick="navegarPara('inicio')">
-          <span>🏠</span> Início
-        </button>
-        <button class="pill pill-aulas" data-tab="minhas-aulas" onclick="navegarPara('minhas-aulas')">
-          <span>📗</span> Minhas Aulas
-        </button>
-        <button class="pill pill-concursos" data-tab="concursos" onclick="navegarPara('concursos')">
-          <span>🏆</span> Concursos
-        </button>
-        <button class="pill pill-questoes" data-tab="questoes" onclick="navegarPara('questoes')">
-          <span>🎯</span> Questões por Bancas
-        </button>
-        <button class="pill pill-materiais" data-tab="materiais" onclick="navegarPara('materiais')">
-          <span>📘</span> Materiais
-        </button>
-        <button class="pill pill-como" data-tab="como-estudar" onclick="navegarPara('como-estudar')">
-          <span>📚</span> Como Estudar
-        </button>
-      </nav>
+      <div class="topbar-right">
+        <nav class="nav" aria-label="Menu principal">
+          <button class="nav-btn active" data-view="home">Início</button>
+          <button class="nav-btn" data-view="aulas">Minhas Aulas</button>
+          <button class="nav-btn" data-view="concursos">Concursos</button>
+          <button class="nav-btn" data-view="bancas">Questões por Bancas</button>
+          <button class="nav-btn" data-view="materiais">Materiais</button>
+          <button class="nav-btn" data-view="como-estudar">Como Estudar</button>
+        </nav>
+
+        <div class="theme-switch" role="group" aria-label="Escolher tema do site">
+          <button type="button" class="theme-btn" id="btn-theme-light" title="Modo Claro">☀️ Claro</button>
+          <button type="button" class="theme-btn active" id="btn-theme-dark" title="Modo Escuro">🌙 Escuro</button>
+        </div>
+      </div>
     </div>
   </header>
 
-  <main class="main-wrapper">
-    <!-- =========================================================
-         PÁGINA 1: INÍCIO (5 CARDS COLORIDOS PRINCIPAIS)
-    ========================================================= -->
-    <section id="view-inicio" class="view-section active">
-      <div class="hero-card">
-        <div class="hero-header">
-          <h1>Bem-vindo ao <span class="blue">MÁRCIO EDUCA</span> <span class="gold">360</span></h1>
-          <p>Sua plataforma de Matemática para aprender, revisar e se preparar para concursos.</p>
+  <main class="container">
+    <div id="breadcrumbs" class="breadcrumbs"></div>
+
+    <!-- 1. INÍCIO (LIMPO E SEM REPETIÇÕES) -->
+    <section id="view-home" class="view active">
+      <div class="banner-box">
+        <img class="banner-img" src="imagens/banner-inicio.png" alt="Márcio Educa 360 — Matemática do Zero à Aprovação" />
+      </div>
+
+      <div class="hero">
+        <h2>Aprenda Matemática de forma clara, estruturada e direcionada</h2>
+        <p>
+          Explore os conteúdos pelo menu superior ou acesse diretamente uma das seções abaixo. Cada assunto é organizado em
+          <strong>Definições e Propriedades</strong>, <strong>Exercícios Propostos</strong> e <strong>Resoluções Comentadas</strong>.
+        </p>
+
+        <div class="search-bar">
+          <input
+            type="search"
+            id="global-search"
+            placeholder="Pesquisar conteúdo ou banca (ex.: frações, funções, porcentagem, FGV, CEBRASPE...)"
+            aria-label="Pesquisar conteúdo"
+          />
+          <button class="btn primary" id="btn-search">Pesquisar</button>
         </div>
+      </div>
 
-        <div class="cards-5-grid">
-          <!-- CARD 1: ENSINO FUNDAMENTAL II -->
-          <div class="portal-card card-blue">
-            <div class="portal-icon-badge">📖</div>
-            <div class="portal-body">
-              <h2>ENSINO<br>FUNDAMENTAL II</h2>
-              <span class="portal-tag">6º ao 9º Ano</span>
-            </div>
-            <div class="portal-footer">
-              <button class="btn-acessar" onclick="navegarPara('fundamental-2')">Acessar →</button>
-            </div>
+      <div id="search-results" class="search-results hidden"></div>
+
+      <div class="section-head">
+        <h3>Seções do Portal</h3>
+        <span class="muted">Escolha por onde deseja começar</span>
+      </div>
+
+      <div class="grid cols-3">
+        <div class="card card-link" data-go-view="aulas">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-aulas.png" alt="Minhas Aulas" />
           </div>
-
-          <!-- CARD 2: ENSINO MÉDIO -->
-          <div class="portal-card card-purple">
-            <div class="portal-icon-badge">🎓</div>
-            <div class="portal-body">
-              <h2>ENSINO<br>MÉDIO</h2>
-              <span class="portal-tag">1º ao 3º Ano</span>
-            </div>
-            <div class="portal-footer">
-              <button class="btn-acessar" onclick="navegarPara('ensino-medio')">Acessar →</button>
-            </div>
-          </div>
-
-          <!-- CARD 3: MATEMÁTICA BÁSICA PARA CONCURSOS -->
-          <div class="portal-card card-green">
-            <div class="portal-icon-badge">🔢</div>
-            <div class="portal-body">
-              <h2>MATEMÁTICA<br>BÁSICA</h2>
-              <p class="portal-small">PARA CONCURSOS</p>
-              <span class="portal-tag">Diversos cargos</span>
-            </div>
-            <div class="portal-footer">
-              <button class="btn-acessar" onclick="navegarPara('matematica-basica')">Acessar →</button>
-            </div>
-          </div>
-
-          <!-- CARD 4: MATEMÁTICA ESPECÍFICA -->
-          <div class="portal-card card-red">
-            <div class="portal-icon-badge">∑</div>
-            <div class="portal-body">
-              <h2>MATEMÁTICA<br>ESPECÍFICA</h2>
-              <p class="portal-small">PARA PROFESSOR DE<br>MATEMÁTICA</p>
-            </div>
-            <div class="portal-footer">
-              <button class="btn-acessar" onclick="navegarPara('matematica-especifica')">Acessar →</button>
-            </div>
-          </div>
-
-          <!-- CARD 5: QUESTÕES POR BANCAS -->
-          <div class="portal-card card-navy">
-            <div class="portal-icon-badge">🎯</div>
-            <div class="portal-body">
-              <h2>QUESTÕES<br>POR BANCAS</h2>
-              <p class="portal-small">DE CONCURSOS</p>
-            </div>
-            <div class="portal-footer">
-              <button class="btn-acessar" onclick="navegarPara('questoes')">Acessar →</button>
-            </div>
+          <h3>Minhas Aulas</h3>
+          <p>Ensino Fundamental II, Ensino Médio, Matemática Básica e Matemática Específica em 3 etapas.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
           </div>
         </div>
 
-        <div class="hero-bottom-bar">
-          <div>📘 Conteúdos organizados</div>
-          <div>✅ Exercícios e questões</div>
-          <div>🧮 Resoluções passo a passo</div>
-          <div>🎯 Preparação por bancas</div>
+        <div class="card card-link" data-go-view="concursos">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-concursos.png" alt="Concursos" />
+          </div>
+          <h3>Concursos</h3>
+          <p>Temas recorrentes em provas públicas com teoria objetiva, listas de treino e resoluções.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
+          </div>
+        </div>
+
+        <div class="card card-link" data-go-view="bancas">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-questoes.png" alt="Questões por Bancas" />
+          </div>
+          <h3>Questões por Bancas</h3>
+          <p>Filtre por banca organizadora e pratique com o estilo exato de cobrança de cada examinadora.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
+          </div>
+        </div>
+
+        <div class="card card-link" data-go-view="materiais">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-materiais.png" alt="Materiais" />
+          </div>
+          <h3>Materiais</h3>
+          <p>Apostilas resumidas em PDF A4, formulários e listas especiais de apoio.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
+          </div>
+        </div>
+
+        <div class="card card-link" data-go-view="como-estudar">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-como-estudar.png" alt="Como Estudar" />
+          </div>
+          <h3>Como Estudar</h3>
+          <p>Conheça o método em 3 etapas para consolidar a teoria e aumentar seus acertos.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- =========================================================
-         SUBPÁGINA CARD 1: ENSINO FUNDAMENTAL II (6º AO 9º ANO)
-    ========================================================= -->
-    <section id="view-fundamental-2" class="view-section">
-      <div class="banner-topo banner-blue">
-        <div class="banner-icon">📖</div>
+    <!-- 2. MINHAS AULAS (COM AS 4 TRILHAS EXCLUSIVAS AQUI) -->
+    <section id="view-aulas" class="view">
+      <div class="banner-box">
+        <img class="banner-img" src="imagens/banner-aulas.png" alt="Minhas Aulas de Matemática" />
+      </div>
+
+      <div class="section-head">
         <div>
-          <div class="banner-kicker">MÁRCIO EDUCA 360 • MATEMÁTICA</div>
-          <h2>Ensino Fundamental II</h2>
-          <p>Selecione seu ano escolar para acessar apostilas PDF A4, exercícios e videoaulas.</p>
+          <h2>Minhas Aulas</h2>
+          <p class="muted">Selecione a área de ensino para visualizar os conteúdos organizados em 3 etapas.</p>
         </div>
       </div>
 
-      <div class="breadcrumb">
-        <a href="#" onclick="navegarPara('inicio'); return false;">Início</a> ›
-        <a href="#" onclick="navegarPara('minhas-aulas'); return false;">Minhas Aulas</a> ›
-        <span>Ensino Fundamental II</span>
-      </div>
-
-      <div class="section-heading">
-        <h3>Ensino Fundamental II</h3>
-        <p>Escolha o ano escolar.</p>
-      </div>
-
-      <div class="cards-4-grid">
-        <div class="portal-card card-blue">
-          <div class="portal-icon-badge">📖</div>
-          <div class="portal-body">
-            <h2>6º<br>ANO</h2>
-            <span class="portal-tag">Ensino Fundamental II</span>
+      <div id="aulas-areas" class="grid cols-4">
+        <div class="card card-link" data-go-area="fundamental">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-fundamental.png" alt="Ensino Fundamental II" />
           </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarAnoEscolar('6-ano', '6º Ano — Ensino Fundamental II')">Acessar conteúdos →</button>
+          <h3>Ensino Fundamental II</h3>
+          <p>Organizado por ano escolar (6º ao 9º ano) em 3 etapas.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
           </div>
         </div>
 
-        <div class="portal-card card-blue">
-          <div class="portal-icon-badge">📖</div>
-          <div class="portal-body">
-            <h2>7º<br>ANO</h2>
-            <span class="portal-tag">Ensino Fundamental II</span>
+        <div class="card card-link" data-go-area="medio">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-medio.png" alt="Ensino Médio" />
           </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarAnoEscolar('7-ano', '7º Ano — Ensino Fundamental II')">Acessar conteúdos →</button>
-          </div>
-        </div>
-
-        <div class="portal-card card-blue">
-          <div class="portal-icon-badge">📖</div>
-          <div class="portal-body">
-            <h2>8º<br>ANO</h2>
-            <span class="portal-tag">Ensino Fundamental II</span>
-          </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarAnoEscolar('8-ano', '8º Ano — Ensino Fundamental II')">Acessar conteúdos →</button>
+          <h3>Ensino Médio</h3>
+          <p>Organizado por série (1º ao 3º ano) em 3 etapas.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
           </div>
         </div>
 
-        <div class="portal-card card-blue">
-          <div class="portal-icon-badge">📖</div>
-          <div class="portal-body">
-            <h2>9º<br>ANO</h2>
-            <span class="portal-tag">Ensino Fundamental II</span>
+        <div class="card card-link" data-go-area="basica">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-basica.png" alt="Matemática Básica" />
           </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarAnoEscolar('9-ano', '9º Ano — Ensino Fundamental II')">Acessar conteúdos →</button>
+          <h3>Matemática Básica</h3>
+          <p>Revisão essencial em 3 etapas para destravar qualquer conteúdo.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
+          </div>
+        </div>
+
+        <div class="card card-link" data-go-area="especifica">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="imagens/banner-especifica.png" alt="Matemática Específica" />
+          </div>
+          <h3>Matemática Específica</h3>
+          <p>Aprofundamento por temas em 3 etapas.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
           </div>
         </div>
       </div>
 
-      <!-- Conteúdos do Ano Selecionado -->
-      <div id="painel-conteudos-fund2" class="panel" style="display:none; margin-top:10px;">
-        <div class="panel-header-flex">
-          <div>
-            <h2 id="titulo-ano-fund2">Conteúdos do Ano</h2>
-            <p class="subtitle">Materiais divididos em Definições e Exemplos, Exercícios e Resoluções do Professor.</p>
-          </div>
-          <button class="btn-voltar" onclick="document.getElementById('painel-conteudos-fund2').style.display='none'">Fechar lista ✕</button>
-        </div>
-        <div id="lista-conteudos-fund2" class="conteudos-bloco-list"></div>
-      </div>
+      <div id="aulas-conteudo" class="hidden"></div>
     </section>
 
-    <!-- =========================================================
-         SUBPÁGINA CARD 2: ENSINO MÉDIO (1º AO 3º ANO)
-    ========================================================= -->
-    <section id="view-ensino-medio" class="view-section">
-      <div class="banner-topo banner-purple">
-        <div class="banner-icon">🎓</div>
+    <!-- 3. CONCURSOS -->
+    <section id="view-concursos" class="view">
+      <div class="banner-box">
+        <img class="banner-img" src="imagens/banner-concursos.png" alt="Matemática para Concursos" />
+      </div>
+
+      <div class="section-head">
         <div>
-          <div class="banner-kicker">MÁRCIO EDUCA 360 • MATEMÁTICA</div>
-          <h2>Ensino Médio</h2>
-          <p>Selecione sua série do Ensino Médio para acessar os conteúdos organizados.</p>
+          <h2>Matemática para Concursos</h2>
+          <p class="muted">Assuntos estruturados em Definições, Exercícios e Resoluções Comentadas.</p>
         </div>
       </div>
 
-      <div class="breadcrumb">
-        <a href="#" onclick="navegarPara('inicio'); return false;">Início</a> ›
-        <a href="#" onclick="navegarPara('minhas-aulas'); return false;">Minhas Aulas</a> ›
-        <span>Ensino Médio</span>
-      </div>
-
-      <div class="section-heading">
-        <h3>Ensino Médio</h3>
-        <p>Escolha a série escolar.</p>
-      </div>
-
-      <div class="cards-3-grid">
-        <div class="portal-card card-purple">
-          <div class="portal-icon-badge">🎓</div>
-          <div class="portal-body">
-            <h2>1º<br>ANO</h2>
-            <span class="portal-tag">Ensino Médio</span>
-          </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarSerieMedio('1-serie', '1º Ano — Ensino Médio')">Acessar conteúdos →</button>
-          </div>
-        </div>
-
-        <div class="portal-card card-purple">
-          <div class="portal-icon-badge">🎓</div>
-          <div class="portal-body">
-            <h2>2º<br>ANO</h2>
-            <span class="portal-tag">Ensino Médio</span>
-          </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarSerieMedio('2-serie', '2º Ano — Ensino Médio')">Acessar conteúdos →</button>
-          </div>
-        </div>
-
-        <div class="portal-card card-purple">
-          <div class="portal-icon-badge">🎓</div>
-          <div class="portal-body">
-            <h2>3º<br>ANO</h2>
-            <span class="portal-tag">Ensino Médio</span>
-          </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarSerieMedio('3-serie', '3º Ano — Ensino Médio')">Acessar conteúdos →</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="painel-conteudos-medio" class="panel" style="display:none; margin-top:10px;">
-        <div class="panel-header-flex">
-          <div>
-            <h2 id="titulo-serie-medio">Conteúdos da Série</h2>
-            <p class="subtitle">Materiais divididos em Definições e Exemplos, Exercícios e Resoluções do Professor.</p>
-          </div>
-          <button class="btn-voltar" onclick="document.getElementById('painel-conteudos-medio').style.display='none'">Fechar lista ✕</button>
-        </div>
-        <div id="lista-conteudos-medio" class="conteudos-bloco-list"></div>
-      </div>
+      <div id="concursos-lista" class="grid cols-2"></div>
     </section>
 
-    <!-- =========================================================
-         SUBPÁGINA CARD 3: MATEMÁTICA BÁSICA PARA CONCURSOS
-         (COM OS 3 CARDS DE IMAGEM/PDF A4 IGUAL À IMAGEM 2)
-    ========================================================= -->
-    <section id="view-matematica-basica" class="view-section">
-      <div class="breadcrumb">
-        <a href="#" onclick="navegarPara('inicio'); return false;">Início</a> ›
-        <a href="#" onclick="navegarPara('concursos'); return false;">Concursos</a> ›
-        <span>Matemática Básica</span>
+    <!-- 4. QUESTÕES POR BANCAS -->
+    <section id="view-bancas" class="view">
+      <div class="banner-box">
+        <img class="banner-img" src="imagens/banner-questoes.png" alt="Questões por Bancas" />
       </div>
 
-      <div class="section-heading">
-        <h3>Matemática Básica</h3>
-        <p>Materiais organizados de forma independente por conteúdo (Definições, Exercícios e Resoluções).</p>
-      </div>
-
-      <div id="container-mat-basica" class="conteudos-bloco-list"></div>
-    </section>
-
-    <!-- =========================================================
-         SUBPÁGINA CARD 4: MATEMÁTICA ESPECÍFICA (PARA PROFESSOR)
-         (COM OS 3 CARDS DE IMAGEM/PDF A4 IGUAL À IMAGEM 3)
-    ========================================================= -->
-    <section id="view-matematica-especifica" class="view-section">
-      <div class="breadcrumb">
-        <a href="#" onclick="navegarPara('inicio'); return false;">Início</a> ›
-        <a href="#" onclick="navegarPara('concursos'); return false;">Concursos</a> ›
-        <span>Matemática para Professor</span>
-      </div>
-
-      <div class="section-heading">
-        <h3>Matemática para Professor</h3>
-        <p>Conhecimentos Específicos de Matemática organizados por blocos de estudo e links do OneDrive.</p>
-      </div>
-
-      <div id="container-mat-especifica" class="conteudos-bloco-list"></div>
-    </section>
-
-    <!-- =========================================================
-         SUBPÁGINA CARD 5 & MENU: QUESTÕES POR BANCAS
-         (BANNER + CARDS COLORIDOS CEBRASPE, FCC, FGV, VUNESP, IBFC, AOCP, CONSULPLAN, IACP)
-    ========================================================= -->
-    <section id="view-questoes" class="view-section">
-      <div class="banner-topo banner-navy">
-        <div class="banner-icon">🎯</div>
+      <div class="section-head">
         <div>
-          <div class="banner-kicker">MÁRCIO EDUCA 360 • MATEMÁTICA</div>
-          <h2>QUESTÕES POR BANCAS</h2>
-          <p>Selecione sua banca organizadora e pratique com cadernos em PDF e resoluções comentadas.</p>
+          <h2>Questões por Bancas</h2>
+          <p class="muted">Selecione uma banca organizadora para acessar cadernos de questões e gabaritos comentados.</p>
         </div>
       </div>
 
-      <div class="breadcrumb">
-        <a href="#" onclick="navegarPara('inicio'); return false;">Início</a> ›
-        <span>Matemática para Concursos</span> ›
-        <span>Questões por Bancas</span>
-      </div>
-
-      <div class="section-heading">
-        <h3>Questões por Bancas de Concursos</h3>
-        <p>Escolha a banca do seu concurso para praticar questões organizadas por área e conteúdo.</p>
-      </div>
-
-      <div id="grid-cards-bancas" class="bancas-cards-grid"></div>
-
-      <!-- Painel com os cadernos da banca escolhida -->
-      <div id="painel-cadernos-banca" class="panel" style="margin-top: 12px;">
-        <div class="panel-header-flex">
-          <div>
-            <h2 id="titulo-banca-selecionada">Todos os Cadernos de Questões por Banca</h2>
-            <p class="subtitle">Clique nos botões para abrir o PDF da prova/caderno ou assistir à resolução em vídeo no OneDrive.</p>
-          </div>
-          <button class="btn-voltar" onclick="selecionarBancaCard('')">Mostrar Todas as Bancas</button>
-        </div>
-        <div id="lista-cadernos-banca" class="conteudos-bloco-list"></div>
-      </div>
+      <div id="bancas-filtros" class="pills"></div>
+      <div id="bancas-lista" class="grid cols-2"></div>
     </section>
 
-    <!-- =========================================================
-         ABA MENU: MINHAS AULAS (VISÃO GERAL DE TODAS AS TRILHAS)
-    ========================================================= -->
-    <section id="view-minhas-aulas" class="view-section">
-      <div class="panel">
-        <div class="panel-header-flex">
-          <div>
-            <h2>Minhas Aulas — Todas as Áreas</h2>
-            <p class="subtitle">Acesso direto a todos os conteúdos cadastrados nas 4 áreas de ensino e concursos.</p>
-          </div>
-          <div class="filter-inline">
-            <select id="filtro-area-geral" onchange="renderizarMinhasAulasGeral()">
-              <option value="">Todas as Áreas</option>
-              <option value="fundamental-2">Ensino Fundamental II (6º ao 9º Ano)</option>
-              <option value="ensino-medio">Ensino Médio (1º ao 3º Ano)</option>
-              <option value="matematica-basica">Matemática Básica para Concursos</option>
-              <option value="matematica-especifica">Matemática Específica (Professor)</option>
-            </select>
-            <input type="text" id="busca-geral-aulas" placeholder="Pesquisar assunto..." oninput="renderizarMinhasAulasGeral()" />
-          </div>
-        </div>
-        <div id="container-todas-aulas" class="conteudos-bloco-list"></div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         ABA MENU: MATERIAIS (3 CARDS GRANDES IGUAL À IMAGEM 5 + BUSCA)
-    ========================================================= -->
-    <section id="view-materiais" class="view-section">
-      <div class="breadcrumb">
-        <a href="#" onclick="navegarPara('inicio'); return false;">Início</a> ›
-        <span>Materiais</span>
+    <!-- 5. MATERIAIS -->
+    <section id="view-materiais" class="view">
+      <div class="banner-box">
+        <img class="banner-img" src="imagens/banner-materiais.png" alt="Materiais em PDF A4" />
       </div>
 
-      <div class="section-heading">
-        <h3>Materiais de Matemática</h3>
-        <p>Escolha a área para visualizar os materiais PDF A4 organizados por conteúdo.</p>
-      </div>
-
-      <div class="cards-3-grid">
-        <div class="portal-card card-blue">
-          <div class="portal-icon-badge">📖</div>
-          <div class="portal-body">
-            <h2>ENSINO<br>FUNDAMENTAL II</h2>
-            <span class="portal-tag">6º ao 9º Ano</span>
-          </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarMateriaisArea('fundamental-2', 'Materiais — Ensino Fundamental II')">Acessar →</button>
-          </div>
-        </div>
-
-        <div class="portal-card card-purple">
-          <div class="portal-icon-badge">🎓</div>
-          <div class="portal-body">
-            <h2>ENSINO<br>MÉDIO</h2>
-            <span class="portal-tag">1º ao 3º Ano</span>
-          </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarMateriaisArea('ensino-medio', 'Materiais — Ensino Médio')">Acessar →</button>
-          </div>
-        </div>
-
-        <div class="portal-card card-green">
-          <div class="portal-icon-badge">🏆</div>
-          <div class="portal-body">
-            <h2>MATEMÁTICA<br>PARA CONCURSOS</h2>
-            <span class="portal-tag">Teoria, exercícios e questões</span>
-          </div>
-          <div class="portal-footer">
-            <button class="btn-acessar" onclick="filtrarMateriaisArea('concursos', 'Materiais — Matemática para Concursos')">Acessar →</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="painel-materiais-filtrados" class="panel" style="margin-top: 12px;">
-        <div class="panel-header-flex">
-          <div>
-            <h2 id="titulo-materiais-area">Todos os Materiais PDF A4 e Vídeos</h2>
-            <p class="subtitle">Arquivos prontos vinculados ao OneDrive.</p>
-          </div>
-          <button class="btn-voltar" onclick="filtrarMateriaisArea('', 'Todos os Materiais PDF A4 e Vídeos')">Mostrar Todos</button>
-        </div>
-        <div id="lista-materiais-area" class="conteudos-bloco-list"></div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         ABA MENU: CONCURSOS (PAINEL DE GESTÃO E KPIs)
-    ========================================================= -->
-    <section id="view-concursos" class="view-section">
-      <div class="panel">
-        <div class="panel-header-flex">
-          <div>
-            <h2>Central de Concursos</h2>
-            <p class="subtitle">Acompanhamento geral dos estudos, concursos cadastrados e aproveitamento.</p>
-          </div>
-          <div class="concurso-selector-box">
-            <label for="select-concurso-topo">CONCURSO SELECIONADO</label>
-            <select id="select-concurso-topo"></select>
-          </div>
-        </div>
-
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <span class="kpi-value" id="kpi-concursos">0</span>
-            <span class="kpi-label">Concursos ativos</span>
-          </div>
-          <div class="kpi-card">
-            <span class="kpi-value" id="kpi-cargos">0</span>
-            <span class="kpi-label">Cargos</span>
-          </div>
-          <div class="kpi-card">
-            <span class="kpi-value" id="kpi-conteudos">0</span>
-            <span class="kpi-label">Conteúdos</span>
-          </div>
-          <div class="kpi-card">
-            <span class="kpi-value" id="kpi-teoria">0%</span>
-            <span class="kpi-label">Teoria concluída</span>
-          </div>
-          <div class="kpi-card">
-            <span class="kpi-value" id="kpi-questoes">0</span>
-            <span class="kpi-label">Questões</span>
-          </div>
-          <div class="kpi-card">
-            <span class="kpi-value" id="kpi-acertos">0</span>
-            <span class="kpi-label">Acertos</span>
-          </div>
-          <div class="kpi-card">
-            <span class="kpi-value" id="kpi-aproveitamento">0%</span>
-            <span class="kpi-label">Aproveitamento</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Estrutura Cadastrada no Código (<code>dados.js</code>)</h2>
-        <p class="subtitle">Edite, adicione ou exclua Bancas, Concursos, Cargos e Disciplinas direto no arquivo <code>dados.js</code>.</p>
-        <div class="three-col-grid">
-          <div class="sub-box">
-            <h3>Bancas</h3>
-            <div id="lista-bancas" class="item-list"></div>
-          </div>
-          <div class="sub-box">
-            <h3>Concursos</h3>
-            <div id="lista-concursos" class="item-list"></div>
-          </div>
-          <div class="sub-box">
-            <h3>Cargos</h3>
-            <div id="lista-cargos" class="item-list"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         ABA MENU: COMO ESTUDAR
-    ========================================================= -->
-    <section id="view-como-estudar" class="view-section">
-      <div class="banner-topo banner-blue">
-        <div class="banner-icon">📚</div>
+      <div class="section-head">
         <div>
-          <div class="banner-kicker">MÁRCIO EDUCA 360 • GUIA DO ALUNO</div>
-          <h2>Como Estudar na Plataforma</h2>
-          <p>Siga o ciclo em 3 etapas de cada conteúdo para fixar a teoria e dominar as questões de prova.</p>
+          <h2>Materiais de Estudo</h2>
+          <p class="muted">Apostilas resumidas, formulários e listas de apoio organizados por frente.</p>
         </div>
       </div>
 
-      <div class="three-col-grid">
-        <div class="sub-box" style="background:#fff; padding:20px;">
-          <h3>1. Etapa 01 — Definições e Exemplos</h3>
-          <p class="empty-msg" style="line-height:1.6;">
-            Abra o card azul <strong>Definições e Exemplos</strong> de cada assunto para ler os conceitos, propriedades, fórmulas e exemplos resolvidos em PDF A4.
-          </p>
+      <div id="materiais-lista" class="grid cols-3"></div>
+    </section>
+
+    <!-- 6. COMO ESTUDAR -->
+    <section id="view-como-estudar" class="view">
+      <div class="banner-box">
+        <img class="banner-img" src="imagens/banner-como-estudar.png" alt="Como Estudar em 3 Etapas" />
+      </div>
+
+      <div class="section-head">
+        <div>
+          <h2>Como Estudar pelo Portal</h2>
+          <p class="muted">Siga o ciclo das 3 etapas para consolidar o aprendizado com eficiência.</p>
         </div>
-        <div class="sub-box" style="background:#fff; padding:20px;">
-          <h3>2. Etapa 02 — Exercícios de Fixação</h3>
-          <p class="empty-msg" style="line-height:1.6;">
-            Acesse o card intermediário <strong>Exercícios</strong> para resolver as questões abertas e numeradas (sem gabarito comentado) e testar seu raciocínio.
-          </p>
+      </div>
+
+      <div class="grid cols-3">
+        <div class="card">
+          <span class="tag">Etapa 1</span>
+          <h3>Definições e Propriedades</h3>
+          <p>Leia os conceitos fundamentais, fórmulas e exemplos resolvidos antes de partir para as listas.</p>
         </div>
-        <div class="sub-box" style="background:#fff; padding:20px;">
-          <h3>3. Etapa 03 — Resoluções do Professor</h3>
-          <p class="empty-msg" style="line-height:1.6;">
-            Por fim, confira o card lilás <strong>Resoluções do Professor</strong> com o passo a passo detalhado em PDF ou vídeo no OneDrive e marque o conteúdo como concluído.
-          </p>
+
+        <div class="card">
+          <span class="tag">Etapa 2</span>
+          <h3>Exercícios Propostos</h3>
+          <p>Resolva as questões propostas sem consultar o gabarito, anotando dúvidas e pontos de atenção.</p>
+        </div>
+
+        <div class="card">
+          <span class="tag">Etapa 3</span>
+          <h3>Resoluções Comentadas</h3>
+          <p>Confira a resolução passo a passo, compare estratégias e marque o conteúdo como concluído.</p>
         </div>
       </div>
     </section>
   </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Márcio Educa 360</strong> — Portal de Matemática e Preparação para Concursos.</p>
+    </div>
+  </footer>
 
   <script src="dados.js"></script>
   <script src="script.js"></script>

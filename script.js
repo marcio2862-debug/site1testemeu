@@ -1,375 +1,528 @@
+/* ==========================================================================
+   PORTAL PROFESSOR MÁRCIO 360 — LÓGICA COMPLETA E NAVEGAÇÃO PELO MENU SUPERIOR
+   ========================================================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
-  const DADOS = window.MARCIO_DADOS || {};
-
-  // GESTÃO DE TEMA (CLARO / ESCURO)
-  const btnThemeLight = document.getElementById("btn-theme-light");
-  const btnThemeDark = document.getElementById("btn-theme-dark");
-
-  function aplicarTema(tema) {
-    const isLight = tema === "light";
-    document.body.classList.toggle("light-theme", isLight);
-    btnThemeLight?.classList.toggle("active", isLight);
-    btnThemeDark?.classList.toggle("active", !isLight);
-    localStorage.setItem("marcio_educa_tema", tema);
+  // 1. FALLBACK AUTOMÁTICO DE IMAGENS
+  const logoImg = document.getElementById("brand-logo-img");
+  if (logoImg) {
+    const logoFallbacks = [
+      "./apple-touch-icon.png",
+      "./android-chrome-512x512.jpg",
+      "./imagens/logo.png",
+      "./imagens/logo.jpg"
+    ];
+    let logoIdx = 0;
+    logoImg.addEventListener("error", () => {
+      if (logoIdx < logoFallbacks.length) logoImg.src = logoFallbacks[logoIdx++];
+    });
   }
 
-  const temaSalvo = localStorage.getItem("marcio_educa_tema") || "dark";
-  aplicarTema(temaSalvo);
-
-  btnThemeLight?.addEventListener("click", () => aplicarTema("light"));
-  btnThemeDark?.addEventListener("click", () => aplicarTema("dark"));
-
-  // ESTADO DA NAVEGAÇÃO
-  const state = {
-    view: "home",
-    area: null,
-    subfiltro: "todos",
-    banca: "TODAS",
-    concluidos: JSON.parse(localStorage.getItem("marcio_educa_concluidos") || "[]")
-  };
-
-  const AREA_CONFIG = {
-    fundamental: {
-      titulo: "Ensino Fundamental II (6º ao 9º ano)",
-      filtros: ["todos", "6º Ano", "7º Ano", "8º Ano", "9º Ano"]
-    },
-    medio: {
-      titulo: "Ensino Médio (1º ao 3º ano)",
-      filtros: ["todos", "1ª Série", "2ª Série", "3ª Série"]
-    },
-    basica: {
-      titulo: "Matemática Básica",
-      filtros: ["todos"]
-    },
-    especifica: {
-      titulo: "Matemática Específica",
-      filtros: ["todos"]
-    }
-  };
-
-  function salvarConcluidos() {
-    localStorage.setItem("marcio_educa_concluidos", JSON.stringify(state.concluidos));
+  const bannerInicio = document.getElementById("banner-inicio-img");
+  if (bannerInicio) {
+    const bannerFallbacks = [
+      "./imagens/banner-inicio.png",
+      "./imagens/banner-inicio.jpg.png",
+      "./imagens/banner-inicio.jpeg"
+    ];
+    let bannerIdx = 0;
+    bannerInicio.addEventListener("error", () => {
+      if (bannerIdx < bannerFallbacks.length) bannerInicio.src = bannerFallbacks[bannerIdx++];
+    });
   }
 
-  function alternarConcluido(id) {
-    if (state.concluidos.includes(id)) {
-      state.concluidos = state.concluidos.filter(item => item !== id);
-    } else {
-      state.concluidos.push(id);
+  // 2. NAVEGAÇÃO ENTRE TODAS AS PÁGINAS PELO MENU SUPERIOR
+  const breadcrumbs = document.getElementById("breadcrumbs");
+
+  function setBreadcrumbs(items) {
+    if (!breadcrumbs) return;
+    if (!items || items.length === 0) {
+      breadcrumbs.innerHTML = "";
+      return;
     }
-    salvarConcluidos();
-    renderTudo();
+    breadcrumbs.innerHTML = items
+      .map((item, idx) => {
+        if (item.action && idx < items.length - 1) {
+          return `<button type="button" data-bc="${idx}">${item.label}</button><span>/</span>`;
+        }
+        return `<span>${item.label}</span>`;
+      })
+      .join(" ");
+
+    breadcrumbs.querySelectorAll("button[data-bc]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = parseInt(btn.dataset.bc, 10);
+        if (items[i] && typeof items[i].action === "function") items[i].action();
+      });
+    });
   }
 
-  function setView(viewName, resetArea = true) {
-    state.view = viewName;
-    if (resetArea) {
-      state.area = null;
-      state.subfiltro = "todos";
-    }
+  function ativarView(viewName) {
+    document.querySelectorAll(".view").forEach((sec) => sec.classList.remove("active"));
+    const alvo = document.getElementById("view-" + viewName);
+    if (alvo) alvo.classList.add("active");
 
-    document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-    const target = document.getElementById(`view-${viewName}`);
-    if (target) target.classList.add("active");
-
-    document.querySelectorAll(".nav-btn").forEach(btn => {
+    document.querySelectorAll(".nav-btn").forEach((btn) => {
       btn.classList.toggle("active", btn.dataset.view === viewName);
     });
 
-    renderTudo();
+    if (viewName === "home") {
+      setBreadcrumbs([]);
+    } else if (viewName === "aulas") {
+      document.getElementById("aulas-areas")?.classList.remove("hidden");
+      document.getElementById("aulas-conteudo")?.classList.add("hidden");
+      setBreadcrumbs([
+        { label: "Início", action: () => ativarView("home") },
+        { label: "Minhas Aulas" }
+      ]);
+    } else if (viewName === "concursos") {
+      document.getElementById("concursos-areas")?.classList.remove("hidden");
+      document.getElementById("concursos-conteudo")?.classList.add("hidden");
+      setBreadcrumbs([
+        { label: "Início", action: () => ativarView("home") },
+        { label: "Matemática para Concursos" }
+      ]);
+    } else if (viewName === "bancas") {
+      setBreadcrumbs([
+        { label: "Início", action: () => ativarView("home") },
+        { label: "Questões por Bancas" }
+      ]);
+    } else if (viewName === "como-estudar") {
+      setBreadcrumbs([
+        { label: "Início", action: () => ativarView("home") },
+        { label: "Como Estudar" }
+      ]);
+    } else if (viewName === "faq") {
+      setBreadcrumbs([
+        { label: "Início", action: () => ativarView("home") },
+        { label: "Dúvidas & Contato" }
+      ]);
+    }
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function renderBreadcrumbs() {
-    const bc = document.getElementById("breadcrumbs");
-    if (!bc) return;
+  document.querySelectorAll(".nav-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (btn.dataset.view) ativarView(btn.dataset.view);
+    });
+  });
 
-    const nomes = {
-      home: "Início",
-      aulas: "Minhas Aulas",
-      concursos: "Concursos",
-      bancas: "Questões por Bancas",
-      materiais: "Materiais",
-      "como-estudar": "Como Estudar"
-    };
+  document.getElementById("go-home")?.addEventListener("click", () => ativarView("home"));
 
-    if (state.view === "home") {
-      bc.innerHTML = `<span>Você está em: <strong>Início</strong></span>`;
-      return;
-    }
+  document.querySelectorAll("[data-go-view]").forEach((el) => {
+    el.addEventListener("click", () => {
+      if (el.dataset.goView) ativarView(el.dataset.goView);
+    });
+  });
 
-    let html = `<button type="button" data-bc-view="home">Início</button> <span>›</span> `;
-    if (state.view === "aulas" && state.area && AREA_CONFIG[state.area]) {
-      html += `<button type="button" data-bc-view="aulas">Minhas Aulas</button> <span>›</span> <strong>${AREA_CONFIG[state.area].titulo}</strong>`;
+  // 3. SELETOR DE TEMA CLARO / ESCURO
+  const btnLight = document.getElementById("btn-theme-light");
+  const btnDark = document.getElementById("btn-theme-dark");
+
+  function aplicarTema(tema) {
+    if (tema === "light") {
+      document.body.classList.add("light-theme");
+      document.documentElement.setAttribute("data-theme", "light");
+      btnLight?.classList.add("active");
+      btnDark?.classList.remove("active");
     } else {
-      html += `<strong>${nomes[state.view] || state.view}</strong>`;
+      document.body.classList.remove("light-theme");
+      document.documentElement.setAttribute("data-theme", "dark");
+      btnDark?.classList.add("active");
+      btnLight?.classList.remove("active");
     }
-    bc.innerHTML = html;
-
-    bc.querySelectorAll("[data-bc-view]").forEach(btn => {
-      btn.addEventListener("click", () => setView(btn.dataset.bcView, true));
-    });
+    localStorage.setItem("pm360_theme", tema);
   }
 
-  function criarCardAssunto(item) {
-    const concluido = state.concluidos.includes(item.id);
-    const linkDef = item.definicoes || "#";
-    const linkExe = item.exercicios || "#";
-    const linkRes = item.resolucoes || "#";
+  btnLight?.addEventListener("click", () => aplicarTema("light"));
+  btnDark?.addEventListener("click", () => aplicarTema("dark"));
 
-    return `
-      <div class="card">
-        <span class="tag">${item.serie || item.categoria || "Matemática"}</span>
-        <h3>${item.titulo}</h3>
-        <p>${item.descricao || "Estude em 3 etapas: teoria, prática e resolução comentada."}</p>
+  const temaSalvo = localStorage.getItem("pm360_theme");
+  if (temaSalvo) aplicarTema(temaSalvo);
 
-        <div class="etapas-box">
-          <a class="etapa-link" href="${linkDef}" target="_blank" rel="noopener">
-            <span>1. Definições e Propriedades</span> <span>Abrir ↗</span>
-          </a>
-          <a class="etapa-link" href="${linkExe}" target="_blank" rel="noopener">
-            <span>2. Exercícios Propostos</span> <span>Abrir ↗</span>
-          </a>
-          <a class="etapa-link" href="${linkRes}" target="_blank" rel="noopener">
-            <span>3. Resoluções Comentadas</span> <span>Abrir ↗</span>
-          </a>
-        </div>
-
-        <div class="card-actions" style="margin-top: 14px;">
-          <button type="button" class="btn ${concluido ? "done" : ""}" data-toggle-done="${item.id}">
-            ${concluido ? "✓ Concluído" : "Marcar como concluído"}
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderAulas() {
-    const areasBox = document.getElementById("aulas-areas");
-    const conteudoBox = document.getElementById("aulas-conteudo");
-    if (!areasBox || !conteudoBox) return;
-
-    if (!state.area || !AREA_CONFIG[state.area]) {
-      areasBox.classList.remove("hidden");
-      conteudoBox.classList.add("hidden");
-      conteudoBox.innerHTML = "";
-      return;
+  // 4. BOTÃO FLUTUANTE PARTILHAR SITE
+  document.getElementById("btn-share-site")?.addEventListener("click", async () => {
+    const url = window.location.href;
+    const label = document.getElementById("share-btn-label");
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Professor Márcio 360 — Matemática Completa",
+          text: "Estude Matemática da base à aprovação no portal Professor Márcio 360!",
+          url
+        });
+        return;
+      } catch (e) {}
     }
+    try {
+      await navigator.clipboard.writeText(url);
+      if (label) {
+        label.textContent = "✔ Link Copiado!";
+        setTimeout(() => (label.textContent = "Partilhar Site"), 2500);
+      }
+    } catch (e) {}
+  });
 
-    areasBox.classList.add("hidden");
-    conteudoBox.classList.remove("hidden");
-
-    const cfg = AREA_CONFIG[state.area];
-    const lista = (DADOS.aulas && DADOS.aulas[state.area]) || [];
-    const filtrada = state.subfiltro === "todos"
-      ? lista
-      : lista.filter(i => (i.serie || "").toLowerCase() === state.subfiltro.toLowerCase());
-
-    const pillsHtml = cfg.filtros.length > 1
-      ? `<div class="pills">
-          ${cfg.filtros.map(f => `
-            <button type="button" class="pill ${state.subfiltro === f ? "active" : ""}" data-subfiltro="${f}">
-              ${f === "todos" ? "Todos" : f}
-            </button>
-          `).join("")}
-        </div>`
-      : "";
-
-    conteudoBox.innerHTML = `
-      <div class="section-head">
-        <div>
-          <h3>${cfg.titulo}</h3>
-          <p class="muted">Acesse cada assunto pelas 3 etapas de aprendizagem.</p>
-        </div>
-        <button type="button" class="btn" id="btn-voltar-areas">← Voltar às Áreas</button>
-      </div>
-      ${pillsHtml}
-      <div class="grid cols-2">
-        ${filtrada.length
-          ? filtrada.map(criarCardAssunto).join("")
-          : `<div class="card"><p>Nenhum conteúdo cadastrado para este filtro ainda.</p></div>`}
-      </div>
-    `;
-
-    document.getElementById("btn-voltar-areas")?.addEventListener("click", () => {
-      state.area = null;
-      state.subfiltro = "todos";
-      renderBreadcrumbs();
-      renderAulas();
-    });
-
-    conteudoBox.querySelectorAll("[data-subfiltro]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        state.subfiltro = btn.dataset.subfiltro;
-        renderAulas();
-      });
-    });
-  }
-
-  function renderConcursos() {
-    const box = document.getElementById("concursos-lista");
-    if (!box) return;
-    const lista = DADOS.concursos || [];
-    box.innerHTML = lista.length
-      ? lista.map(criarCardAssunto).join("")
-      : `<div class="card"><p>Conteúdos de concursos em atualização.</p></div>`;
-  }
-
-  function renderBancas() {
-    const filtrosBox = document.getElementById("bancas-filtros");
-    const listaBox = document.getElementById("bancas-lista");
-    if (!filtrosBox || !listaBox) return;
-
-    const bancas = ["TODAS", ...(DADOS.bancas || ["FGV", "CEBRASPE", "VUNESP", "FCC", "IBFC"])];
-    filtrosBox.innerHTML = bancas.map(b => `
-      <button type="button" class="pill ${state.banca === b ? "active" : ""}" data-banca="${b}">${b}</button>
-    `).join("");
-
-    filtrosBox.querySelectorAll("[data-banca]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        state.banca = btn.dataset.banca;
-        renderBancas();
-      });
-    });
-
-    const questoes = DADOS.questoesBancas || [];
-    const filtradas = state.banca === "TODAS"
-      ? questoes
-      : questoes.filter(q => (q.banca || "").toUpperCase() === state.banca.toUpperCase());
-
-    listaBox.innerHTML = filtradas.length
-      ? filtradas.map(q => `
-          <div class="card">
-            <span class="tag">${q.banca}</span>
-            <h3>${q.titulo}</h3>
-            <p>${q.descricao || "Caderno de questões selecionadas com gabarito comentado."}</p>
-            <div class="card-actions">
-              <a class="btn primary" href="${q.link || "#"}" target="_blank" rel="noopener">Abrir Caderno ↗</a>
-              ${q.gabarito ? `<a class="btn" href="${q.gabarito}" target="_blank" rel="noopener">Resolução ↗</a>` : ""}
-            </div>
+  // 5. DÚVIDAS FREQUENTES NA PÁGINA DÚVIDAS & CONTATO
+  const db = window.PORTAL_DATA || window.DADOS || null;
+  const faqPageContainer = document.getElementById("faq-page-container");
+  if (faqPageContainer && db?.faqGeralHome) {
+    faqPageContainer.innerHTML = `
+      <div class="course-faq-list">
+        ${db.faqGeralHome
+          .map(
+            (f) => `
+          <div class="faq-item">
+            <h4>${f.pergunta}</h4>
+            <p>${f.resposta}</p>
           </div>
-        `).join("")
-      : `<div class="card"><p>Nenhum caderno encontrado para a banca selecionada.</p></div>`;
+        `
+          )
+          .join("")}
+      </div>
+    `;
   }
 
-  function renderMateriais() {
-    const box = document.getElementById("materiais-lista");
-    if (!box) return;
-    const lista = DADOS.materiais || [];
+  // 6. MINHAS AULAS (4 COLUNAS FUNDAMENTAL II | 3 COLUNAS ENSINO MÉDIO)
+  function renderColunasPorAno(container, lista, anosConfig, colsClass, tituloVoltar, onVoltar) {
+    if (!container) return;
+    container.classList.remove("hidden");
+    const itens = Array.isArray(lista) ? lista : [];
 
-    box.innerHTML = lista.map(m => `
-      <div class="card">
-        <span class="tag">${m.tag || "Material"}</span>
-        <h3>${m.titulo}</h3>
-        <p>${m.descricao || ""}</p>
-        <div class="card-actions">
-          <a class="btn primary" href="${m.link || "#"}" target="_blank" rel="noopener">Baixar / Abrir ↗</a>
-        </div>
+    const colunasHtml = anosConfig
+      .map((ano) => {
+        const doAno = itens.filter((item) =>
+          (item.categoria || "").toLowerCase().includes(ano.filtro.toLowerCase())
+        );
+
+        const cardsHtml =
+          doAno.length > 0
+            ? doAno
+                .map(
+                  (item, idx) => `
+                <div class="card">
+                  <span class="tag">${item.categoria || ano.titulo}</span>
+                  <h3>${item.titulo || item.nome || "Assunto " + (idx + 1)}</h3>
+                  <p>${item.resumo || item.descricao || "Material estruturado em 3 etapas."}</p>
+                  <div class="card-actions">
+                    ${
+                      item.link
+                        ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer" class="btn primary">Abrir Material</a>`
+                        : `<span class="btn primary">Em breve</span>`
+                    }
+                  </div>
+                </div>
+              `
+                )
+                .join("")
+            : `<div class="card"><p class="muted">Conteúdos em preparação.</p></div>`;
+
+        return `
+          <div class="year-column">
+            <div class="year-column-header">${ano.titulo}</div>
+            ${cardsHtml}
+          </div>
+        `;
+      })
+      .join("");
+
+    container.innerHTML = `
+      <div style="margin-bottom: 18px;">
+        <button type="button" class="btn" id="btn-voltar-secao">← ${tituloVoltar}</button>
       </div>
-    `).join("");
-  }
-
-  function executarPesquisa() {
-    const input = document.getElementById("global-search");
-    const resultsBox = document.getElementById("search-results");
-    if (!input || !resultsBox) return;
-
-    const termo = input.value.trim().toLowerCase();
-    if (!termo) {
-      resultsBox.classList.add("hidden");
-      resultsBox.innerHTML = "";
-      return;
-    }
-
-    const todosAulas = Object.values(DADOS.aulas || {}).flat();
-    const todosConcursos = DADOS.concursos || [];
-    const todosBancas = DADOS.questoesBancas || [];
-
-    const encontrados = [
-      ...todosAulas.filter(i => `${i.titulo} ${i.serie || ""} ${i.descricao || ""}`.toLowerCase().includes(termo)),
-      ...todosConcursos.filter(i => `${i.titulo} ${i.descricao || ""}`.toLowerCase().includes(termo)),
-      ...todosBancas.filter(i => `${i.titulo} ${i.banca || ""} ${i.descricao || ""}`.toLowerCase().includes(termo))
-    ];
-
-    resultsBox.classList.remove("hidden");
-    resultsBox.innerHTML = `
-      <div class="section-head">
-        <h3>Resultados para "${input.value}" (${encontrados.length})</h3>
-        <button type="button" class="btn" id="close-search">Limpar</button>
-      </div>
-      <div class="grid cols-2">
-        ${encontrados.length
-          ? encontrados.map(item => item.banca
-              ? `<div class="card"><span class="tag">${item.banca}</span><h3>${item.titulo}</h3><p>${item.descricao || ""}</p><div class="card-actions"><a class="btn primary" href="${item.link || "#"}" target="_blank" rel="noopener">Abrir ↗</a></div></div>`
-              : criarCardAssunto(item)
-            ).join("")
-          : `<p class="muted">Nenhum resultado encontrado para este termo.</p>`}
+      <div class="grid ${colsClass}">
+        ${colunasHtml}
       </div>
     `;
 
-    document.getElementById("close-search")?.addEventListener("click", () => {
-      input.value = "";
-      resultsBox.classList.add("hidden");
-    });
-
-    bindDoneButtons();
+    document.getElementById("btn-voltar-secao")?.addEventListener("click", onVoltar);
   }
 
-  function bindDoneButtons() {
-    document.querySelectorAll("[data-toggle-done]").forEach(btn => {
-      btn.onclick = () => alternarConcluido(btn.dataset.toggleDone);
-    });
-  }
+  document.querySelectorAll("[data-go-area]").forEach((card) => {
+    card.addEventListener("click", () => {
+      const area = card.dataset.goArea;
+      const areasBox = document.getElementById("aulas-areas");
+      const conteudoBox = document.getElementById("aulas-conteudo");
+      areasBox?.classList.add("hidden");
 
-  function renderTudo() {
-    renderBreadcrumbs();
-    renderAulas();
-    renderConcursos();
-    renderBancas();
-    renderMateriais();
-    bindDoneButtons();
-  }
+      if (area === "fundamental") {
+        setBreadcrumbs([
+          { label: "Início", action: () => ativarView("home") },
+          { label: "Minhas Aulas", action: () => ativarView("aulas") },
+          { label: "Ensino Fundamental II (6º ao 9º ano)" }
+        ]);
 
-  // Fallback automático (.png -> .jpg -> .jpeg)
-  document.querySelectorAll("img.banner-img").forEach(img => {
-    img.addEventListener("error", function tentarExtensao() {
-      const src = this.getAttribute("src") || "";
-      if (src.endsWith(".png")) {
-        this.setAttribute("src", src.replace(".png", ".jpg"));
-      } else if (src.endsWith(".jpg")) {
-        this.setAttribute("src", src.replace(".jpg", ".jpeg"));
+        renderColunasPorAno(
+          conteudoBox,
+          db?.fundamental || [],
+          [
+            { filtro: "6º Ano", titulo: "6º Ano" },
+            { filtro: "7º Ano", titulo: "7º Ano" },
+            { filtro: "8º Ano", titulo: "8º Ano" },
+            { filtro: "9º Ano", titulo: "9º Ano" }
+          ],
+          "cols-4",
+          "Voltar para Níveis Escolares",
+          () => ativarView("aulas")
+        );
       } else {
-        const box = this.closest(".banner-box");
-        if (box) box.style.display = "none";
-        this.removeEventListener("error", tentarExtensao);
+        setBreadcrumbs([
+          { label: "Início", action: () => ativarView("home") },
+          { label: "Minhas Aulas", action: () => ativarView("aulas") },
+          { label: "Ensino Médio (1º ao 3º ano)" }
+        ]);
+
+        renderColunasPorAno(
+          conteudoBox,
+          db?.medio || [],
+          [
+            { filtro: "1º Ano", titulo: "1º Ano" },
+            { filtro: "2º Ano", titulo: "2º Ano" },
+            { filtro: "3º Ano", titulo: "3º Ano" }
+          ],
+          "cols-3",
+          "Voltar para Níveis Escolares",
+          () => ativarView("aulas")
+        );
       }
     });
   });
 
-  // Navegação pelo menu superior
-  document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.addEventListener("click", () => setView(btn.dataset.view, true));
-  });
+  // 7. MATEMÁTICA PARA CONCURSOS (ESTILO PLATAFORMA)
+  function renderCursoPlataforma(container, curso) {
+    if (!container || !curso) return;
+    container.classList.remove("hidden");
 
-  // Navegação pelos cartões da página inicial
-  document.querySelectorAll("[data-go-view]").forEach(el => {
-    el.addEventListener("click", () => setView(el.dataset.goView, true));
-  });
+    const accordionHtml = curso.modulosAccordion
+      .map(
+        (mod, idx) => `
+        <div class="course-acc-item ${idx === 1 ? "open" : ""}">
+          <button type="button" class="course-acc-header">
+            <span>${mod.titulo}</span>
+            <span>⌄</span>
+          </button>
+          <div class="course-acc-body">
+            ${mod.aulas
+              .map(
+                (aula) => `
+              <div class="course-lesson-row">
+                <span>▶</span>
+                <span class="lesson-title">${aula.nome}</span>
+                ${
+                  aula.link
+                    ? `<a href="${aula.link}" target="_blank" rel="noopener noreferrer" class="btn primary">Acessar Aula</a>`
+                    : `<span class="lesson-badge">Em breve</span>`
+                }
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        </div>
+      `
+      )
+      .join("");
 
-  // Navegação para as trilhas dentro de Minhas Aulas
-  document.querySelectorAll("[data-go-area]").forEach(el => {
-    el.addEventListener("click", () => {
-      state.area = el.dataset.goArea;
-      state.subfiltro = "todos";
-      setView("aulas", false);
+    const materiaisHtml = curso.materiaisApoio
+      .map(
+        (mat) => `
+        <a href="${mat.link || "javascript:void(0)"}" ${
+          mat.link ? 'target="_blank" rel="noopener noreferrer"' : ""
+        } class="course-download-row">
+          <span>⬇</span>
+          <span class="download-title">${mat.titulo}</span>
+          <span class="download-status">${mat.link ? "Baixar PDF" : "Em breve"}</span>
+        </a>
+      `
+      )
+      .join("");
+
+    const ementaHtml = curso.ementaPartes
+      .map(
+        (p) => `
+        <div class="ementa-parte">
+          <h4>${p.parte}</h4>
+          ${p.grupos
+            .map(
+              (g) => `
+            <div class="ementa-grupo">
+              <strong>» ${g.nome}:</strong>
+              <ul>${g.itens.map((it) => `<li>${it}</li>`).join("")}</ul>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `
+      )
+      .join("");
+
+    container.innerHTML = `
+      <div class="course-shell">
+        <div class="course-top-bar">
+          <button type="button" class="btn" id="btn-voltar-concursos">← Voltar para Frentes de Concursos</button>
+          <span class="course-workload">${curso.cargaHoraria}</span>
+        </div>
+
+        <div class="course-banner-header">
+          <span class="tag">PORTAL PROFESSOR MÁRCIO 360</span>
+          <h2>${curso.tituloCurso}</h2>
+          <p class="muted">${curso.subtitulo}</p>
+        </div>
+
+        <div class="course-tabs">
+          <button type="button" class="course-tab active" data-ctab="detalhes">Detalhes do Curso</button>
+          <button type="button" class="course-tab" data-ctab="aulas">Aulas &amp; Módulos</button>
+          <button type="button" class="course-tab" data-ctab="materiais">Materiais de Apoio</button>
+        </div>
+
+        <div class="course-panel active" id="cpanel-detalhes">
+          <div class="mini-box" style="margin-bottom: 18px;">
+            <h4>${curso.boasVindas.titulo}</h4>
+            <p>${curso.boasVindas.texto}</p>
+          </div>
+          ${ementaHtml}
+        </div>
+
+        <div class="course-panel" id="cpanel-aulas">
+          <div class="course-accordion">${accordionHtml}</div>
+        </div>
+
+        <div class="course-panel" id="cpanel-materiais">
+          <div class="course-downloads-list">${materiaisHtml}</div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("btn-voltar-concursos")?.addEventListener("click", () => ativarView("concursos"));
+
+    container.querySelectorAll(".course-tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        container.querySelectorAll(".course-tab").forEach((t) => t.classList.toggle("active", t === tab));
+        container.querySelectorAll(".course-panel").forEach((p) => p.classList.toggle("active", p.id === "cpanel-" + tab.dataset.ctab));
+      });
+    });
+
+    container.querySelectorAll(".course-acc-header").forEach((header) => {
+      header.addEventListener("click", () => header.parentElement?.classList.toggle("open"));
+    });
+  }
+
+  document.querySelectorAll("[data-go-concurso]").forEach((card) => {
+    card.addEventListener("click", () => {
+      const frente = card.dataset.goConcurso;
+      document.getElementById("concursos-areas")?.classList.add("hidden");
+      renderCursoPlataforma(document.getElementById("concursos-conteudo"), db?.concursosCursos?.[frente]);
     });
   });
 
-  document.getElementById("go-home")?.addEventListener("click", () => setView("home", true));
-  document.getElementById("btn-search")?.addEventListener("click", executarPesquisa);
-  document.getElementById("global-search")?.addEventListener("keyup", e => {
-    if (e.key === "Enter") executarPesquisa();
+  // 8. BANCAS E PESQUISA GLOBAL
+  const bancasFiltros = document.getElementById("bancas-filtros");
+  const bancasLista = document.getElementById("bancas-lista");
+  const questoesBancas = db && Array.isArray(db.bancas) ? db.bancas : [];
+
+  function renderBancas(filtro = "TODAS") {
+    if (!bancasLista) return;
+    const filtradas =
+      filtro === "TODAS"
+        ? questoesBancas
+        : questoesBancas.filter((q) => (q.banca || "").toUpperCase().includes(filtro.toUpperCase()));
+
+    bancasLista.innerHTML =
+      filtradas.length > 0
+        ? filtradas
+            .map(
+              (q) => `
+          <div class="card">
+            <span class="tag">${q.banca || filtro}</span>
+            <h3>${q.titulo || "Caderno de Questões"}</h3>
+            <p>${q.descricao || "Questões selecionadas com resolução comentada."}</p>
+            <div class="card-actions">
+              ${q.link ? `<a href="${q.link}" target="_blank" rel="noopener noreferrer" class="btn primary">Resolver Questões</a>` : ""}
+            </div>
+          </div>
+        `
+            )
+            .join("")
+        : `<div class="card"><span class="tag">${filtro}</span><h3>Caderno de Questões — ${filtro}</h3><p>Novas listas comentadas da banca <strong>${filtro}</strong> estão sendo adicionadas ao portal.</p></div>`;
+  }
+
+  if (bancasFiltros) {
+    const nomesBancas = [
+      "TODAS", "CESPE", "CEBRASPE", "FGV", "FCC", "IBFC", "IADES", "QUADRIX",
+      "IDECAN", "VUNESP", "FUNDATEC", "AOCP", "CONSULPAM", "AVALIA", "CMM",
+      "MULTI", "RBO", "CESGRANRIO", "CONSULPLAN", "COPEVE", "SELECON",
+      "UPENET", "FUNDEP", "OBJETIVA", "ADM&TEC"
+    ];
+
+    bancasFiltros.innerHTML = nomesBancas
+      .map((b, i) => `<button type="button" class="pill ${i === 0 ? "active" : ""}" data-filter-banca="${b}">${b}</button>`)
+      .join("");
+
+    bancasFiltros.querySelectorAll(".pill").forEach((pill) => {
+      pill.addEventListener("click", () => {
+        bancasFiltros.querySelectorAll(".pill").forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
+        renderBancas(pill.dataset.filterBanca);
+      });
+    });
+
+    renderBancas("TODAS");
+  }
+
+  document.querySelectorAll(".banca-tile").forEach((tile) => {
+    tile.addEventListener("click", () => {
+      const banca = tile.dataset.banca || "TODAS";
+      const pill = Array.from(document.querySelectorAll("#bancas-filtros .pill")).find(
+        (p) => p.dataset.filterBanca?.toUpperCase() === banca.toUpperCase()
+      );
+      if (pill) pill.click();
+      else renderBancas(banca);
+      bancasLista?.scrollIntoView({ behavior: "smooth" });
+    });
   });
 
-  renderTudo();
+  const searchInput = document.getElementById("global-search");
+  const searchBtn = document.getElementById("btn-search");
+  const searchResults = document.getElementById("search-results");
+
+  function executarPesquisa() {
+    if (!searchInput || !searchResults) return;
+    const termo = searchInput.value.trim().toLowerCase();
+    if (!termo) {
+      searchResults.classList.add("hidden");
+      searchResults.innerHTML = "";
+      return;
+    }
+
+    const todos = [...(db?.fundamental || []), ...(db?.medio || []), ...(db?.bancas || [])];
+    const encontrados = todos.filter((item) =>
+      `${item.titulo || ""} ${item.banca || ""} ${item.categoria || ""} ${item.descricao || ""} ${item.resumo || ""}`
+        .toLowerCase()
+        .includes(termo)
+    );
+
+    searchResults.classList.remove("hidden");
+    searchResults.innerHTML =
+      encontrados.length === 0
+        ? `<p class="muted">Nenhum resultado encontrado para "<strong>${searchInput.value}</strong>".</p>`
+        : `<div class="section-head"><h3>Resultados para "${searchInput.value}" (${encontrados.length})</h3></div>
+           <div class="grid cols-2">${encontrados
+             .map(
+               (item) => `
+              <div class="card">
+                <span class="tag">${item.banca || item.categoria || "Conteúdo"}</span>
+                <h3>${item.titulo}</h3>
+                <p>${item.descricao || item.resumo || ""}</p>
+              </div>`
+             )
+             .join("")}</div>`;
+  }
+
+  searchBtn?.addEventListener("click", executarPesquisa);
+  searchInput?.addEventListener("keyup", (e) => {
+    if (e.key === "Enter") executarPesquisa();
+  });
 });

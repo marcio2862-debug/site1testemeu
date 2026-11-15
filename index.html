@@ -3,30 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Márcio Educa 360 — Portal de Matemática</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Professor Márcio 360 — Matemática Completa: Da Base à Aprovação</title>
+
+  <!-- FAVICONS OFICIAIS -->
+  <link rel="icon" href="./favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+  <link rel="manifest" href="./site.webmanifest" />
+  <link rel="stylesheet" href="./style.css?v=8" />
 </head>
 <body>
 
-  <!-- TOPO FIXO COM MENU E SELETOR CLARO / ESCURO -->
+  <!-- ======================================================================
+       MENU SUPERIOR FIXO — ÚNICO PONTO DE ACESSO A TODAS AS PÁGINAS DO PORTAL
+       ====================================================================== -->
   <header class="topbar">
     <div class="container topbar-inner">
       <div class="brand" id="go-home" role="button" tabindex="0" aria-label="Voltar para o início">
-        <div class="brand-badge">360</div>
+        
         <div class="brand-text">
-          <h1>Márcio Educa 360</h1>
-          <span>Matemática • Aulas • Concursos • Bancas</span>
+          <h1>Professor Márcio Educa 360</h1>
+          <span>Matemática Completa: Da Base à Aprovação</span>
         </div>
       </div>
 
       <div class="topbar-right">
         <nav class="nav" aria-label="Menu principal">
-          <button class="nav-btn active" data-view="home">Início</button>
-          <button class="nav-btn" data-view="aulas">Minhas Aulas</button>
-          <button class="nav-btn" data-view="concursos">Concursos</button>
-          <button class="nav-btn" data-view="bancas">Questões por Bancas</button>
-          <button class="nav-btn" data-view="materiais">Materiais</button>
-          <button class="nav-btn" data-view="como-estudar">Como Estudar</button>
+          <button type="button" class="nav-btn active" data-view="home">Início</button>
+          <button type="button" class="nav-btn" data-view="aulas">Minhas Aulas</button>
+          <button type="button" class="nav-btn" data-view="concursos">Concursos</button>
+          <button type="button" class="nav-btn" data-view="bancas">Bancas</button>
+          <button type="button" class="nav-btn" data-view="como-estudar">Como Estudar</button>
+          <button type="button" class="nav-btn" data-view="faq">Dúvidas &amp; Contato</button>
         </nav>
 
         <div class="theme-switch" role="group" aria-label="Escolher tema do site">
@@ -40,115 +49,104 @@
   <main class="container">
     <div id="breadcrumbs" class="breadcrumbs"></div>
 
-    <!-- 1. INÍCIO (LIMPO E SEM REPETIÇÕES) -->
+    <!-- ======================================================================
+         1. PÁGINA INICIAL — CARTÃO DE VISITAS (SEM LINKS DE NAVEGAÇÃO INTERNA)
+         ====================================================================== -->
     <section id="view-home" class="view active">
+      <!-- BANNER OFICIAL -->
       <div class="banner-box">
-        <img class="banner-img" src="imagens/banner-inicio.png" alt="Márcio Educa 360 — Matemática do Zero à Aprovação" />
+        <img
+          id="banner-inicio-img"
+          class="banner-img"
+          src="./imagens/banner-inicio.jpg"
+          alt="Professor Márcio 360 — Matemática do Zero à Aprovação"
+        />
       </div>
 
+      <!-- APRESENTAÇÃO + PESQUISA RÁPIDA -->
       <div class="hero">
+        <div class="hero-badges">
+          <span class="meta-pill"><strong>PORTAL PROFESSOR MÁRCIO 360</strong></span>
+          <span class="meta-pill">Ensino Regular • ENEM • Concursos • Magistério</span>
+        </div>
+
         <h2>Aprenda Matemática de forma clara, estruturada e direcionada</h2>
         <p>
-          Explore os conteúdos pelo menu superior ou acesse diretamente uma das seções abaixo. Cada assunto é organizado em
-          <strong>Definições e Propriedades</strong>, <strong>Exercícios Propostos</strong> e <strong>Resoluções Comentadas</strong>.
+          Bem-vindo(a) ao portal oficial do <strong>Professor Márcio 360</strong>. Utilize o <strong>menu superior</strong> acima para navegar entre as aulas do Ensino Fundamental II e Médio, cursos para Concursos, questões por Bancas e orientações de estudo.
         </p>
 
         <div class="search-bar">
           <input
             type="search"
             id="global-search"
-            placeholder="Pesquisar conteúdo ou banca (ex.: frações, funções, porcentagem, FGV, CEBRASPE...)"
+            placeholder="Pesquisar assunto, série ou banca (ex.: frações, 8º ano, funções, porcentagem, FGV, CEBRASPE...)"
             aria-label="Pesquisar conteúdo"
           />
-          <button class="btn primary" id="btn-search">Pesquisar</button>
+          <button type="button" class="btn primary" id="btn-search">Pesquisar</button>
         </div>
       </div>
 
       <div id="search-results" class="search-results hidden"></div>
 
+      <!-- DIFERENCIAIS DO PORTAL (CARTÃO DE VISITAS) -->
       <div class="section-head">
-        <h3>Seções do Portal</h3>
-        <span class="muted">Escolha por onde deseja começar</span>
+        <div>
+          <h3>Por que estudar no Portal Professor Márcio 360?</h3>
+          <p class="muted">Uma estrutura completa pensada para cada etapa da sua formação</p>
+        </div>
       </div>
 
-      <div class="grid cols-3">
-        <div class="card card-link" data-go-view="aulas">
-          <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-aulas.png" alt="Minhas Aulas" />
-          </div>
-          <h3>Minhas Aulas</h3>
-          <p>Ensino Fundamental II, Ensino Médio, Matemática Básica e Matemática Específica em 3 etapas.</p>
-          <div class="card-actions">
-            <span class="btn primary">Acessar</span>
-          </div>
+      <div class="grid cols-3" style="margin-bottom: 32px;">
+        <div class="card">
+          <span class="tag">01 • Base Sólida</span>
+          <h3>Do Zero ao Avançado</h3>
+          <p>Explicações passo a passo que eliminam lacunas da base matemática antes de avançar para questões de alta complexidade.</p>
         </div>
 
-        <div class="card card-link" data-go-view="concursos">
-          <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-concursos.png" alt="Concursos" />
-          </div>
-          <h3>Concursos</h3>
-          <p>Temas recorrentes em provas públicas com teoria objetiva, listas de treino e resoluções.</p>
-          <div class="card-actions">
-            <span class="btn primary">Acessar</span>
-          </div>
+        <div class="card">
+          <span class="tag">02 • Material Estratégico</span>
+          <h3>Tabelas-Resumo e Mapas Mentais</h3>
+          <p>Formulários objetivos, cronogramas de estudo e listas de fixação organizados por assunto, série e banca examinadora.</p>
         </div>
 
-        <div class="card card-link" data-go-view="bancas">
-          <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-questoes.png" alt="Questões por Bancas" />
-          </div>
-          <h3>Questões por Bancas</h3>
-          <p>Filtre por banca organizadora e pratique com o estilo exato de cobrança de cada examinadora.</p>
-          <div class="card-actions">
-            <span class="btn primary">Acessar</span>
-          </div>
+        <div class="card">
+          <span class="tag">03 • Foco na Prova</span>
+          <h3>Resolução Comentada</h3>
+          <p>Cada exercício acompanha resolução detalhada para você dominar o raciocínio e evitar as pegadinhas mais comuns.</p>
         </div>
+      </div>
 
-        <div class="card card-link" data-go-view="materiais">
-          <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-materiais.png" alt="Materiais" />
-          </div>
-          <h3>Materiais</h3>
-          <p>Apostilas resumidas em PDF A4, formulários e listas especiais de apoio.</p>
-          <div class="card-actions">
-            <span class="btn primary">Acessar</span>
-          </div>
-        </div>
-
-        <div class="card card-link" data-go-view="como-estudar">
-          <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-como-estudar.png" alt="Como Estudar" />
-          </div>
-          <h3>Como Estudar</h3>
-          <p>Conheça o método em 3 etapas para consolidar a teoria e aumentar seus acertos.</p>
-          <div class="card-actions">
-            <span class="btn primary">Acessar</span>
-          </div>
+      <!-- ORIENTAÇÃO DE NAVEGAÇÃO NO MENU SUPERIOR -->
+      <div class="home-cta-card">
+        <div>
+          <h3>Pronto para começar sua jornada na Matemática?</h3>
+          <p class="muted">Selecione uma das páginas no <strong>menu superior</strong> (Minhas Aulas, Concursos, Bancas, Como Estudar ou Dúvidas &amp; Contato) para iniciar seus estudos.</p>
         </div>
       </div>
     </section>
 
-    <!-- 2. MINHAS AULAS (COM AS 4 TRILHAS EXCLUSIVAS AQUI) -->
+    <!-- ======================================================================
+         2. MINHAS AULAS (4 COLUNAS FUNDAMENTAL II | 3 COLUNAS ENSINO MÉDIO)
+         ====================================================================== -->
     <section id="view-aulas" class="view">
       <div class="banner-box">
-        <img class="banner-img" src="imagens/banner-aulas.png" alt="Minhas Aulas de Matemática" />
+        <img class="banner-img" src="./imagens/banner-aulas.jpg" alt="Minhas Aulas — Professor Márcio 360" />
       </div>
 
       <div class="section-head">
         <div>
           <h2>Minhas Aulas</h2>
-          <p class="muted">Selecione a área de ensino para visualizar os conteúdos organizados em 3 etapas.</p>
+          <p class="muted">Selecione o nível escolar para visualizar os conteúdos organizados em colunas por ano e em 3 etapas.</p>
         </div>
       </div>
 
-      <div id="aulas-areas" class="grid cols-4">
+      <div id="aulas-areas" class="grid cols-2">
         <div class="card card-link" data-go-area="fundamental">
           <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-fundamental.png" alt="Ensino Fundamental II" />
+            <img class="banner-img" src="./imagens/banner-fundamental.jpg" alt="Ensino Fundamental II" />
           </div>
-          <h3>Ensino Fundamental II</h3>
-          <p>Organizado por ano escolar (6º ao 9º ano) em 3 etapas.</p>
+          <h3>Ensino Fundamental II (6º ao 9º ano)</h3>
+          <p>Conteúdos completos organizados em 4 colunas (6º, 7º, 8º e 9º ano) com teoria, exercícios e resoluções.</p>
           <div class="card-actions">
             <span class="btn primary">Acessar</span>
           </div>
@@ -156,32 +154,10 @@
 
         <div class="card card-link" data-go-area="medio">
           <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-medio.png" alt="Ensino Médio" />
+            <img class="banner-img" src="./imagens/banner-medio.jpg" alt="Ensino Médio" />
           </div>
-          <h3>Ensino Médio</h3>
-          <p>Organizado por série (1º ao 3º ano) em 3 etapas.</p>
-          <div class="card-actions">
-            <span class="btn primary">Acessar</span>
-          </div>
-        </div>
-
-        <div class="card card-link" data-go-area="basica">
-          <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-basica.png" alt="Matemática Básica" />
-          </div>
-          <h3>Matemática Básica</h3>
-          <p>Revisão essencial em 3 etapas para destravar qualquer conteúdo.</p>
-          <div class="card-actions">
-            <span class="btn primary">Acessar</span>
-          </div>
-        </div>
-
-        <div class="card card-link" data-go-area="especifica">
-          <div class="banner-box banner-card">
-            <img class="banner-img" src="imagens/banner-especifica.png" alt="Matemática Específica" />
-          </div>
-          <h3>Matemática Específica</h3>
-          <p>Aprofundamento por temas em 3 etapas.</p>
+          <h3>Ensino Médio (1º ao 3º ano)</h3>
+          <p>Preparação completa organizada em 3 colunas (1º, 2º e 3º ano) com foco escolar e ENEM.</p>
           <div class="card-actions">
             <span class="btn primary">Acessar</span>
           </div>
@@ -191,26 +167,145 @@
       <div id="aulas-conteudo" class="hidden"></div>
     </section>
 
-    <!-- 3. CONCURSOS -->
+    <!-- ======================================================================
+         3. MATEMÁTICA PARA CONCURSOS (PLATAFORMA COM ABAS, SANFONAS E PDFs)
+         ====================================================================== -->
     <section id="view-concursos" class="view">
       <div class="banner-box">
-        <img class="banner-img" src="imagens/banner-concursos.png" alt="Matemática para Concursos" />
+        <img class="banner-img" src="./imagens/banner-concursos.jpg" alt="Matemática para Concursos — Professor Márcio 360" />
       </div>
 
       <div class="section-head">
         <div>
           <h2>Matemática para Concursos</h2>
-          <p class="muted">Assuntos estruturados em Definições, Exercícios e Resoluções Comentadas.</p>
+          <p class="muted">Escolha a frente de preparação para acessar módulos, aulões por bancas, mapas mentais e cronogramas.</p>
         </div>
       </div>
 
-      <div id="concursos-lista" class="grid cols-2"></div>
+      <div id="concursos-areas" class="grid cols-2">
+        <div class="card card-link" data-go-concurso="basica">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="./imagens/banner-basica.jpg" alt="Matemática Básica para Concursos" />
+          </div>
+          <h3>Matemática Básica para Concursos</h3>
+          <p>Porcentagem, razão e proporção, regra de três, equações, raciocínio lógico e matemática financeira.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
+          </div>
+        </div>
+
+        <div class="card card-link" data-go-concurso="especifica">
+          <div class="banner-box banner-card">
+            <img class="banner-img" src="./imagens/banner-especifica.jpg" alt="Matemática Específica para o Cargo de Professor de Matemática" />
+          </div>
+          <h3>Matemática Específica para o Cargo de Professor de Matemática</h3>
+          <p>Funções, logaritmos, trigonometria, matrizes, análise combinatória, geometria analítica, cálculo e BNCC.</p>
+          <div class="card-actions">
+            <span class="btn primary">Acessar</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="concursos-conteudo" class="hidden"></div>
     </section>
 
-    <!-- 4. QUESTÕES POR BANCAS -->
+    <!-- ======================================================================
+         4. QUESTÕES POR BANCAS (24 LOGOMARCAS REAIS EM SVG)
+         ====================================================================== -->
     <section id="view-bancas" class="view">
-      <div class="banner-box">
-        <img class="banner-img" src="imagens/banner-questoes.png" alt="Questões por Bancas" />
+      <div class="bancas-hero-banner">
+        <div class="bancas-hero-header">
+          <h3>Estude com foco nas principais bancas do Brasil!</h3>
+          <div class="bancas-yellow-line"></div>
+        </div>
+
+        <div class="bancas-logos-grid">
+          <button type="button" class="banca-tile" data-banca="CESPE" title="CESPE / UnB">
+            <svg viewBox="0 0 220 76"><rect x="82" y="6" width="56" height="22" rx="4" fill="#005ca9"/><path d="M88 19 Q102 10 112 18 T132 14" stroke="#ffffff" stroke-width="3" fill="none"/><text x="110" y="48" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="21" font-weight="900" fill="#005ca9">CESPE</text><text x="110" y="66" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="800" fill="#003d73">UnB</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="CEBRASPE" title="CEBRASPE">
+            <svg viewBox="0 0 220 76"><circle cx="110" cy="24" r="14" fill="none" stroke="#003b71" stroke-width="5"/><path d="M104 20 L118 12 L114 26 Z" fill="#f37021"/><text x="110" y="59" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="900" fill="#003b71">Cebraspe</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="FGV" title="FGV Conhecimento">
+            <svg viewBox="0 0 220 76"><polygon points="84,8 102,8 110,22 100,22" fill="#003d73"/><polygon points="136,8 118,8 110,22 120,22" fill="#0088ce"/><text x="110" y="47" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="22" font-weight="900" fill="#003d73">FGV</text><text x="110" y="64" text-anchor="middle" font-family="Arial, sans-serif" font-size="11.5" font-weight="800" letter-spacing="1" fill="#003d73">CONHECIMENTO</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="FCC" title="FCC">
+            <svg viewBox="0 0 220 76"><path d="M52 44 C64 14, 156 14, 168 44" fill="none" stroke="#0072bc" stroke-width="5" stroke-linecap="round"/><path d="M68 46 C80 26, 140 26, 152 46" fill="none" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round"/><text x="115" y="62" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="24" font-weight="900" fill="#004a80">FCC</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="IBFC" title="IBFC">
+            <svg viewBox="0 0 220 76"><circle cx="67" cy="14" r="4.5" fill="#eab308"/><text x="110" y="45" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="27" font-weight="900" fill="#003366">IBFC</text><text x="110" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="7.2" font-weight="700" fill="#334155">INSTITUTO BRASILEIRO DE</text><text x="110" y="67" text-anchor="middle" font-family="Arial, sans-serif" font-size="7.2" font-weight="700" fill="#334155">FORMAÇÃO E CAPACITAÇÃO</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="IADES" title="IADES">
+            <svg viewBox="0 0 220 76"><path d="M46 42 C72 12, 148 12, 174 34 C144 20, 78 22, 46 42 Z" fill="#c8102e"/><text x="115" y="59" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="23" font-weight="900" letter-spacing="1.5" fill="#1e293b">IADES</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="QUADRIX" title="QUADRIX">
+            <svg viewBox="0 0 220 76"><text x="90" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" font-weight="700" fill="#334155">INSTITUTO</text><text x="82" y="51" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="800" fill="#1e293b">QUADRI</text><rect x="132" y="21" width="38" height="38" rx="4" fill="none" stroke="#dc2626" stroke-width="3.5"/><text x="151" y="49" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="24" font-weight="900" fill="#dc2626">X</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="IDECAN" title="IDECAN">
+            <svg viewBox="0 0 220 76"><circle cx="48" cy="23" r="6" fill="#0284c7"/><path d="M36 30 Q48 48 60 30 M40 52 L56 34 M56 52 L40 34" stroke="#0284c7" stroke-width="3.5" fill="none" stroke-linecap="round"/><text x="130" y="46" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="21" font-weight="900" fill="#0369a1">IDECAN</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="VUNESP" title="VUNESP">
+            <svg viewBox="0 0 220 76"><text x="92" y="47" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="21" font-weight="900" fill="#0f172a">VUNESP</text><path d="M152 20 L162 34 L162 46 L152 34 Z" fill="#dc2626"/><path d="M174 20 L164 34 L164 46 L174 34 Z" fill="#dc2626"/><circle cx="163" cy="54" r="4.5" fill="#dc2626"/></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="FUNDATEC" title="FUNDATEC">
+            <svg viewBox="0 0 220 76"><circle cx="45" cy="21" r="5.5" fill="#f59e0b"/><path d="M32 32 Q45 38 58 26 M45 35 L40 56 M45 35 L54 54" stroke="#f59e0b" stroke-width="4" fill="none" stroke-linecap="round"/><text x="130" y="47" text-anchor="middle" font-family="Arial, sans-serif" font-size="19.5" font-weight="900" font-style="italic" fill="#003d73">fundatec</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="AOCP" title="Instituto AOCP">
+            <svg viewBox="0 0 220 76"><path d="M62 24 Q110 6 158 24 Q110 15 62 24 Z" fill="#f59e0b"/><text x="110" y="48" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="23" font-weight="900" fill="#003d73">AOCP</text><text x="110" y="63" text-anchor="middle" font-family="Arial, sans-serif" font-size="8.5" font-weight="800" letter-spacing="0.8" fill="#003d73">CONCURSOS PÚBLICOS</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="CONSULPAM" title="CONSULPAM">
+            <svg viewBox="0 0 220 76"><circle cx="107" cy="21" r="10" fill="#1e3a8a"/><circle cx="114" cy="19" r="7" fill="#84cc16"/><text x="110" y="46" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" font-weight="800" letter-spacing="1.5" fill="#1e293b">INSTITUTO</text><text x="110" y="62" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="15.5" font-weight="900" fill="#0f172a">CONSULPAM</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="AVALIA" title="Instituto AVALIA">
+            <svg viewBox="0 0 220 76"><path d="M32 42 L42 52 L64 22 L76 52" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="132" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="800" letter-spacing="1.2" fill="#003d73">INSTITUTO</text><text x="132" y="52" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="22" font-weight="900" fill="#003d73">Avalia</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="CMM" title="CMM Concursos">
+            <svg viewBox="0 0 220 76"><text x="110" y="45" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="26" font-weight="900" fill="#003d73">CMM</text><text x="110" y="62" text-anchor="middle" font-family="Arial, sans-serif" font-size="11.5" font-weight="800" fill="#0284c7">Concursos</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="MULTI" title="MULTI Institutos">
+            <svg viewBox="0 0 220 76"><text x="52" y="49" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="28" font-weight="900" fill="#dc2626">M</text><text x="136" y="37" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="16" font-weight="900" fill="#0f172a">MULTI</text><text x="136" y="53" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="800" fill="#334155">INSTITUTOS</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="RBO" title="RBO">
+            <svg viewBox="0 0 220 76"><text x="110" y="47" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="28" font-weight="900" fill="#004a99">RBO</text><text x="110" y="62" text-anchor="middle" font-family="Arial, sans-serif" font-size="8.5" font-weight="700" fill="#475569">Assessoria Pública e Projetos</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="CESGRANRIO" title="CESGRANRIO">
+            <svg viewBox="0 0 220 76"><circle cx="110" cy="18" r="9" fill="#005ca9"/><text x="110" y="49" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="18.5" font-weight="900" fill="#003d73">CESGRANRIO</text><text x="110" y="63" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#475569">FUNDAÇÃO</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="CONSULPLAN" title="CONSULPLAN">
+            <svg viewBox="0 0 220 76"><rect x="30" y="22" width="160" height="32" rx="6" fill="#004a80"/><text x="110" y="44" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="16.5" font-weight="900" fill="#ffffff">CONSULPLAN</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="COPEVE" title="COPEVE / UFAL">
+            <svg viewBox="0 0 220 76"><text x="110" y="42" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="22" font-weight="900" fill="#005ca9">COPEVE</text><text x="110" y="61" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="800" fill="#dc2626">UFAL</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="SELECON" title="SELECON">
+            <svg viewBox="0 0 220 76"><text x="110" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" font-weight="800" letter-spacing="1.2" fill="#0284c7">INSTITUTO</text><text x="110" y="52" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="21" font-weight="900" fill="#0f172a">SELECON</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="UPENET" title="UPENET / IAUPE">
+            <svg viewBox="0 0 220 76"><text x="110" y="42" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="21" font-weight="900" fill="#1e3a8a">UPENET</text><text x="110" y="61" text-anchor="middle" font-family="Arial, sans-serif" font-size="12.5" font-weight="800" fill="#dc2626">IAUPE</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="FUNDEP" title="FUNDEP">
+            <svg viewBox="0 0 220 76"><text x="110" y="46" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="23" font-weight="900" fill="#006633">FUNDEP</text><text x="110" y="62" text-anchor="middle" font-family="Arial, sans-serif" font-size="8.5" font-weight="700" fill="#475569">GESTÃO DE CONCURSOS</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="OBJETIVA" title="OBJETIVA">
+            <svg viewBox="0 0 220 76"><circle cx="44" cy="38" r="13" fill="none" stroke="#dc2626" stroke-width="3.5"/><circle cx="44" cy="38" r="5" fill="#003d73"/><text x="130" y="41" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="18.5" font-weight="900" fill="#003d73">OBJETIVA</text><text x="130" y="56" text-anchor="middle" font-family="Arial, sans-serif" font-size="10.5" font-weight="700" fill="#dc2626">CONCURSOS</text></svg>
+          </button>
+          <button type="button" class="banca-tile" data-banca="ADM&TEC" title="ADM&TEC">
+            <svg viewBox="0 0 220 76"><text x="110" y="46" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="22" font-weight="900" fill="#0f172a">ADM<tspan fill="#16a34a">&amp;</tspan>TEC</text><text x="110" y="62" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="700" fill="#475569">INSTITUTO DE ADMINISTRAÇÃO E TECNOLOGIA</text></svg>
+          </button>
+        </div>
+
+        <div class="bancas-hero-checklist">
+          <span>✔ Conheça as bancas</span>
+          <span>✔ Resolva questões reais</span>
+          <span>✔ Entenda o perfil das provas</span>
+          <span>✔ Acerte mais</span>
+          <span>✔ Prepare-se com estratégia</span>
+          <span class="highlight">✔ Conquiste sua vaga!</span>
+        </div>
+
+        <div class="bancas-hero-footer">
+          <span class="bancas-cta-badge">Seu futuro começa agora!</span>
+        </div>
       </div>
 
       <div class="section-head">
@@ -224,26 +319,12 @@
       <div id="bancas-lista" class="grid cols-2"></div>
     </section>
 
-    <!-- 5. MATERIAIS -->
-    <section id="view-materiais" class="view">
-      <div class="banner-box">
-        <img class="banner-img" src="imagens/banner-materiais.png" alt="Materiais em PDF A4" />
-      </div>
-
-      <div class="section-head">
-        <div>
-          <h2>Materiais de Estudo</h2>
-          <p class="muted">Apostilas resumidas, formulários e listas de apoio organizados por frente.</p>
-        </div>
-      </div>
-
-      <div id="materiais-lista" class="grid cols-3"></div>
-    </section>
-
-    <!-- 6. COMO ESTUDAR -->
+    <!-- ======================================================================
+         5. COMO ESTUDAR
+         ====================================================================== -->
     <section id="view-como-estudar" class="view">
       <div class="banner-box">
-        <img class="banner-img" src="imagens/banner-como-estudar.png" alt="Como Estudar em 3 Etapas" />
+        <img class="banner-img" src="./imagens/banner-como-estudar.jpg" alt="Como Estudar em 3 Etapas" />
       </div>
 
       <div class="section-head">
@@ -253,11 +334,11 @@
         </div>
       </div>
 
-      <div class="grid cols-3">
+      <div class="grid cols-3" style="margin-bottom: 24px;">
         <div class="card">
           <span class="tag">Etapa 1</span>
           <h3>Definições e Propriedades</h3>
-          <p>Leia os conceitos fundamentais, fórmulas e exemplos resolvidos antes de partir para as listas.</p>
+          <p>Leia os conceitos fundamentais, fórmulas, tabelas-resumo e exemplos resolvidos antes de partir para as listas.</p>
         </div>
 
         <div class="card">
@@ -269,19 +350,65 @@
         <div class="card">
           <span class="tag">Etapa 3</span>
           <h3>Resoluções Comentadas</h3>
-          <p>Confira a resolução passo a passo, compare estratégias e marque o conteúdo como concluído.</p>
+          <p>Confira a resolução passo a passo, compare estratégias e consolide o conteúdo para as provas.</p>
+        </div>
+      </div>
+
+      <div class="portal-info-card">
+        <h3>Orientações Gerais de Uso do Portal</h3>
+        <ul class="orientacoes-list">
+          <li><strong>Minhas Aulas:</strong> utilize as 4 colunas do Ensino Fundamental II (6º ao 9º ano) e as 3 colunas do Ensino Médio (1º ao 3º ano) para seguir a ordem curricular.</li>
+          <li><strong>Concursos:</strong> acesse as abas <em>Detalhes do Curso</em>, <em>Aulas &amp; Módulos</em> e <em>Materiais de Apoio</em> para baixar mapas mentais e cronogramas.</li>
+          <li><strong>Bancas:</strong> filtre diretamente pela examinadora do seu edital para treinar o estilo exato das questões.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         6. DÚVIDAS & CONTATO (ACESSÍVEL PELO MENU SUPERIOR)
+         ====================================================================== -->
+    <section id="view-faq" class="view">
+      <div class="section-head">
+        <div>
+          <h2>Dúvidas Frequentes &amp; Contato</h2>
+          <p class="muted">Respostas sobre a metodologia, materiais de apoio, cronogramas e acesso ao portal.</p>
+        </div>
+      </div>
+
+      <div id="faq-page-container" style="margin-bottom: 24px;"></div>
+
+      <div class="portal-info-card">
+        <h3>Suporte &amp; Contato Oficial</h3>
+        <div class="grid cols-2" style="margin-top: 12px;">
+          <div class="mini-box">
+            <h4>👤 Portal Professor Márcio 360</h4>
+            <p><strong>Coordenação:</strong> Professor Márcio</p>
+            <p><strong>Frentes:</strong> Ensino Fundamental II, Ensino Médio, Concursos Públicos e Magistério.</p>
+          </div>
+          <div class="mini-box">
+            <h4>✉️ Atendimento e Dúvidas</h4>
+            <p>Para dúvidas sobre materiais em PDF, listas de exercícios ou navegação no site:</p>
+            <p><strong>E-mail:</strong> contato@professormarcio360.com.br</p>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- BOTÃO FLUTUANTE DO SITE -->
+  <button type="button" id="btn-share-site" class="site-float-btn" title="Partilhar link do site Professor Márcio 360">
+    <img src="./android-chrome-192x192.png" alt="Logo" />
+    <span id="share-btn-label">Partilhar Site</span>
+  </button>
+
   <footer class="footer">
     <div class="container">
-      <p><strong>Márcio Educa 360</strong> — Portal de Matemática e Preparação para Concursos.</p>
+      <p><strong>Professor Márcio 360</strong> — Matemática Completa: Da Base à Aprovação.</p>
     </div>
   </footer>
 
-  <script src="dados.js"></script>
-  <script src="script.js"></script>
+  <!-- JS EXTERNO -->
+  <script src="./dados.js?v=6"></script>
+  <script src="./script.js?v=6"></script>
 </body>
 </html>
